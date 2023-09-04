@@ -38,4 +38,6 @@ private: // メンバ変数
 	POINT mousePos;
 	
 	Vector2 markerPos_{};
+
+	bool isMove_ = false;
 };

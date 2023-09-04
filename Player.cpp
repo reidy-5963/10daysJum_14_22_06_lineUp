@@ -1,7 +1,7 @@
 #include "Player.h"
-#include "TextureManager.h"
-#include "MyMath.h"
 #include "ImGuiManager.h"
+#include "MyMath.h"
+#include "TextureManager.h"
 #include "WinApp.h"
 
 /// <summary>
@@ -40,15 +40,19 @@ void Player::Update() {
 	HWND hwnd = WinApp::GetInstance()->GetHwnd();
 	ScreenToClient(hwnd, &mousePos);
 
-
 	if (input_->IsTriggerMouse(0)) {
 		markerPos_.x = float(mousePos.x);
 		markerPos_.y = float(mousePos.y);
+		isMove_ = true;
 	}
-
 	Vector2 move;
-	const float kMoveSpeed = 4.0f;
+	const float kMoveSpeed = 3.0f;
 	move = markerPos_ - pos_;
+
+	ImGui::Begin("debug");
+	ImGui::Text("%f, %f", move.x, move.y);
+	ImGui::End();
+
 	move = MyMath::Normalize(move);
 
 	pos_.x += move.x * kMoveSpeed;
@@ -87,7 +91,7 @@ void Player::KeyMove() { // 移動距離
 /// <summary>
 /// 描画処理
 /// </summary>
-void Player::Draw() { 
+void Player::Draw() {
 	// スプライトの描画
-	sprite_->Draw(); 
+	sprite_->Draw();
 }

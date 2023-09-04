@@ -35,3 +35,4 @@ struct Vector2 final {
 		return result;
 	}
 };
+
