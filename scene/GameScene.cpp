@@ -11,9 +11,18 @@ void GameScene::Initialize() {
 	dxCommon_ = DirectXCommon::GetInstance();
 	input_ = Input::GetInstance();
 	audio_ = Audio::GetInstance();
+
+
+	// プレイヤー生成
+	player_ = std::make_unique<Player>();
+	// プレイヤーの初期化処理
+	player_->Initialize();
 }
 
-void GameScene::Update() {}
+void GameScene::Update() {
+	// プレイヤーの更新処理
+	player_->Update();
+}
 
 void GameScene::Draw() {
 
@@ -53,6 +62,10 @@ void GameScene::Draw() {
 	/// <summary>
 	/// ここに前景スプライトの描画処理を追加できる
 	/// </summary>
+
+	// 描画処理
+	player_->Draw();
+
 
 	// スプライト描画後処理
 	Sprite::PostDraw();
