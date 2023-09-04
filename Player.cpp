@@ -37,32 +37,42 @@ void Player::Initialize() {
 /// 更新処理
 /// </summary>
 void Player::Update() {
+	// カーソルの位置の取得
 	GetCursorPos(&mousePos);
 	// クライアントエリア座標に変換する
 	HWND hwnd = WinApp::GetInstance()->GetHwnd();
 	ScreenToClient(hwnd, &mousePos);
 
+	// もし左クリックしたら
 	if (input_->IsTriggerMouse(0)) {
+		// 前フレームのマーカー位置を取得
 		preMarkerPos_ = markerPos_;
 
+		// マーカーの位置を現在のマウス位置に設定
 		markerPos_.x = float(mousePos.x);
 		markerPos_.y = float(mousePos.y);
+		// クリックしたときの位置を取得
 		prePos_ = pos_;
+		// 線形補間の初期化
 		move_t_ = 0.0f;
 	}
 
+	// 1.0になるまで加算
 	if (move_t_ >= 1.0f) {
 		move_t_ = 1.0f;
 	} else {
 		move_t_ += 0.01f;
 	}
 
+	// ベジエ曲線のスタート位置計算
 	bezierStartPos_.x = MyMath::lerp(move_t_, prePos_.x, preMarkerPos_.x);
 	bezierStartPos_.y = MyMath::lerp(move_t_, prePos_.y, preMarkerPos_.y);
-
+	
+	// ベジエ曲線の終わり位置計算
 	bezierEndPos_.x = MyMath::lerp(move_t_, preMarkerPos_.x, markerPos_.x);
 	bezierEndPos_.y = MyMath::lerp(move_t_, preMarkerPos_.y, markerPos_.y);
 
+	// 実際にプレイヤーの位置を計算
 	pos_.x = MyMath::lerp(move_t_, bezierStartPos_.x, bezierEndPos_.x);
 	pos_.y = MyMath::lerp(move_t_, bezierStartPos_.y, bezierEndPos_.y);
 
