@@ -26,6 +26,8 @@ public: // メンバ関数
 	/// </summary>
 	void Update() override;
 
+	void KeyMove();
+
 	/// <summary>
 	/// 描画処理
 	/// </summary>
@@ -33,5 +35,7 @@ public: // メンバ関数
 
 private: // メンバ変数	
 	Input* input_ = nullptr;
-
+	POINT mousePos;
+	
+	Vector2 markerPos_{};
 };

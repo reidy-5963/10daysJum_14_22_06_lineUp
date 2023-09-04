@@ -1,5 +1,8 @@
 #include "Player.h"
 #include "TextureManager.h"
+#include "MyMath.h"
+#include "ImGuiManager.h"
+#include "WinApp.h"
 
 /// <summary>
 /// コンストラクタ
@@ -32,7 +35,30 @@ void Player::Initialize() {
 /// 更新処理
 /// </summary>
 void Player::Update() {
-	// 移動距離
+	GetCursorPos(&mousePos);
+	// クライアントエリア座標に変換する
+	HWND hwnd = WinApp::GetInstance()->GetHwnd();
+	ScreenToClient(hwnd, &mousePos);
+
+
+	if (input_->IsTriggerMouse(0)) {
+		markerPos_.x = float(mousePos.x);
+		markerPos_.y = float(mousePos.y);
+	}
+
+	Vector2 move;
+	const float kMoveSpeed = 4.0f;
+	move = markerPos_ - pos_;
+	move = MyMath::Normalize(move);
+
+	pos_.x += move.x * kMoveSpeed;
+	pos_.y += move.y * kMoveSpeed;
+
+	// スプライトに位置を反映させる
+	sprite_->SetPosition(pos_);
+}
+
+void Player::KeyMove() { // 移動距離
 	Vector2 move{};
 	// 移動速度定数
 	const float kMoveSpeed = 5.0f;
@@ -52,15 +78,10 @@ void Player::Update() {
 		move.x = 1.0f;
 	}
 
-
-	// 後でノーマライズするとこ
+	move = MyMath::Normalize(move);
 	// 移動速度をかけて加算する
 	pos_.x += move.x * kMoveSpeed;
 	pos_.y += move.y * kMoveSpeed;
-
-
-	// スプライトに位置を反映させる
-	sprite_->SetPosition(pos_);
 }
 
 /// <summary>
