@@ -1,19 +1,19 @@
 #include "BaseCharacter.h"
 
 /// <summary>
-/// ‰Šú‰»ˆ—
+/// åˆæœŸåŒ–å‡¦ç†
 /// </summary>
 void BaseCharacter::Initialize() {}
 
 /// <summary>
-/// XVˆ—
+/// æ›´æ–°å‡¦ç†
 /// </summary>
 void BaseCharacter::Update() {}
 
 /// <summary>
-/// •`‰æˆ—
+/// æç”»å‡¦ç†
 /// </summary>
 void BaseCharacter::Draw() { 
-	// ƒXƒvƒ‰ƒCƒg‚Ì•`‰æ
+	// ã‚¹ãƒ—ãƒ©ã‚¤ãƒˆã®æç”»
 	sprite_->Draw();
 }
