@@ -77,7 +77,6 @@ void Player::Update() {
 	pos_.x = MyMath::lerp(move_t_, bezierStartPos_.x, bezierEndPos_.x);
 	pos_.y = MyMath::lerp(move_t_, bezierStartPos_.y, bezierEndPos_.y);
 
-
 	// スプライトに位置を反映させる
 	sprite_->SetPosition(pos_);
 	//sprite_->SetRotation();
