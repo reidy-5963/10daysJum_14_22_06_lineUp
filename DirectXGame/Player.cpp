@@ -80,7 +80,7 @@ void Player::Update() {
 
 	// スプライトに位置を反映させる
 	sprite_->SetPosition(pos_);
-	sprite_->SetRotation();
+	//sprite_->SetRotation();
 }
 
 void Player::KeyMove() { // 移動距離
