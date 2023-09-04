@@ -29,6 +29,8 @@ void Player::Initialize() {
 
 	// 初期位置(仮)
 	pos_ = {760, 320};
+	prePos_ = pos_;
+	markerPos_ = pos_;
 }
 
 /// <summary>
@@ -41,22 +43,29 @@ void Player::Update() {
 	ScreenToClient(hwnd, &mousePos);
 
 	if (input_->IsTriggerMouse(0)) {
+		preMarkerPos_ = markerPos_;
+
 		markerPos_.x = float(mousePos.x);
 		markerPos_.y = float(mousePos.y);
-		isMove_ = true;
+		prePos_ = pos_;
+		move_t_ = 0.0f;
 	}
-	Vector2 move;
-	const float kMoveSpeed = 3.0f;
-	move = markerPos_ - pos_;
 
-	ImGui::Begin("debug");
-	ImGui::Text("%f, %f", move.x, move.y);
-	ImGui::End();
+	if (move_t_ >= 1.0f) {
+		move_t_ = 1.0f;
+	} else {
+		move_t_ += 0.01f;
+	}
 
-	move = MyMath::Normalize(move);
+	bezierStartPos_.x = MyMath::lerp(move_t_, prePos_.x, preMarkerPos_.x);
+	bezierStartPos_.y = MyMath::lerp(move_t_, prePos_.y, preMarkerPos_.y);
 
-	pos_.x += move.x * kMoveSpeed;
-	pos_.y += move.y * kMoveSpeed;
+	bezierEndPos_.x = MyMath::lerp(move_t_, preMarkerPos_.x, markerPos_.x);
+	bezierEndPos_.y = MyMath::lerp(move_t_, preMarkerPos_.y, markerPos_.y);
+
+	pos_.x = MyMath::lerp(move_t_, bezierStartPos_.x, bezierEndPos_.x);
+	pos_.y = MyMath::lerp(move_t_, bezierStartPos_.y, bezierEndPos_.y);
+
 
 	// スプライトに位置を反映させる
 	sprite_->SetPosition(pos_);

@@ -38,6 +38,13 @@ private: // メンバ変数
 	POINT mousePos;
 	
 	Vector2 markerPos_{};
+	Vector2 preMarkerPos_{};
+
+	Vector2 prePos_{};
 
 	bool isMove_ = false;
+	float move_t_ = 0.0f;
+
+	Vector2 bezierStartPos_{};
+	Vector2 bezierEndPos_{};
 };
