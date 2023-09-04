@@ -63,7 +63,7 @@ void GameScene::Draw() {
 	/// ここに前景スプライトの描画処理を追加できる
 	/// </summary>
 
-	// 描画処理
+	// プレイヤーの描画処理
 	player_->Draw();
 
 
