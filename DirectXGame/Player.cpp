@@ -77,9 +77,13 @@ void Player::Update() {
 	pos_.x = MyMath::lerp(move_t_, bezierStartPos_.x, bezierEndPos_.x);
 	pos_.y = MyMath::lerp(move_t_, bezierStartPos_.y, bezierEndPos_.y);
 
+
 	// スプライトに位置を反映させる
 	sprite_->SetPosition(pos_);
-	//sprite_->SetRotation();
+
+	// 向きの計算
+	Vector2 move = bezierEndPos_ - bezierStartPos_;
+	sprite_->SetRotation(std::atan2(move.y, move.x));
 }
 
 void Player::KeyMove() { // 移動距離
