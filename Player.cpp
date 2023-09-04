@@ -31,6 +31,7 @@ void Player::Initialize() {
 	pos_ = {760, 320};
 	prePos_ = pos_;
 	markerPos_ = pos_;
+	preMarkerPos_ = markerPos_;
 }
 
 /// <summary>
@@ -79,6 +80,7 @@ void Player::Update() {
 
 	// スプライトに位置を反映させる
 	sprite_->SetPosition(pos_);
+	sprite_->SetRotation();
 }
 
 void Player::KeyMove() { // 移動距離
