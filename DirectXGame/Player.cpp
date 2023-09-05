@@ -76,48 +76,14 @@ void Player::Update() {
 		isMove_ = true;
 		root_t_ = 0.0f;
 
-		Vector2 distance;
-		distance = markerPos_ - pos_;
+		Vector2 preMark2Pos_distance;
+		preMark2Pos_distance = preMarkerPos_ - clickPlayerPos_;
 
-		const float kRootSpeed = 450.0f;
-		RotateRootPos_[0] = markerPos_;
-		if (distance.x > 0 && distance.y > 0) {
-			RotateRootPos_[1].x = markerPos_.x;
-			RotateRootPos_[2].x = markerPos_.x + kRootSpeed;
-			RotateRootPos_[3].x = markerPos_.x + kRootSpeed;
+		Vector2 preMark2Mark_distance;
+		preMark2Mark_distance = markerPos_ - preMarkerPos_;
 
-			RotateRootPos_[1].y = markerPos_.y - kRootSpeed;
-			RotateRootPos_[2].y = markerPos_.y;
-			RotateRootPos_[3].y = markerPos_.y - kRootSpeed;
-		}
-		else if (distance.x < 0 && distance.y > 0) {
-			RotateRootPos_[1].x = markerPos_.x;
-			RotateRootPos_[2].x = markerPos_.x - kRootSpeed;
-			RotateRootPos_[3].x = markerPos_.x - kRootSpeed;
-
-			RotateRootPos_[1].y = markerPos_.y;
-			RotateRootPos_[2].y = markerPos_.y + kRootSpeed;
-			RotateRootPos_[3].y = markerPos_.y + kRootSpeed;
-		} 
-		else if (distance.x > 0 && distance.y < 0) {
-			RotateRootPos_[1].x = markerPos_.x - kRootSpeed;
-			RotateRootPos_[2].x = markerPos_.x;
-			RotateRootPos_[3].x = markerPos_.x - kRootSpeed;
-
-			RotateRootPos_[1].y = markerPos_.y;
-			RotateRootPos_[2].y = markerPos_.y - kRootSpeed;
-			RotateRootPos_[3].y = markerPos_.y - kRootSpeed;
-		} 
-		else if (distance.x < 0 && distance.y < 0) {
-			RotateRootPos_[1].x = markerPos_.x;
-			RotateRootPos_[2].x = markerPos_.x - kRootSpeed;
-			RotateRootPos_[3].x = markerPos_.x - kRootSpeed;
-
-			RotateRootPos_[1].y = markerPos_.y;
-			RotateRootPos_[2].y = markerPos_.y + kRootSpeed;
-			RotateRootPos_[3].y = markerPos_.y + kRootSpeed;
-		}
-
+		RotateRootPos_ = markerPos_ - preMark2Pos_distance;
+		
 		
 		
 
@@ -128,10 +94,10 @@ void Player::Update() {
 		if (!isRootMove_) {
 
 			// ベジエ曲線のスタート位置計算
-			bezierStartPos_ = MyMath::lerp(root_t_, RotateRootPos_[0], RotateRootPos_[2]);
+			bezierStartPos_ = MyMath::lerp(root_t_, markerPos_, RotateRootPos_);
 
 			// ベジエ曲線の終わり位置計算
-			bezierEndPos_ = MyMath::lerp(root_t_, RotateRootPos_[2], RotateRootPos_[3]);
+			bezierEndPos_ = MyMath::lerp(root_t_, RotateRootPos_, clickPlayerPos_);
 
 			prePos_ = pos_;
 
@@ -149,10 +115,10 @@ void Player::Update() {
 		//
 		else if (isRootMove_) { 
 			// ベジエ曲線のスタート位置計算
-			bezierStartPos_ = MyMath::lerp(root_t_, RotateRootPos_[3], RotateRootPos_[1]);
+			bezierStartPos_ = MyMath::lerp(root_t_, clickPlayerPos_, preMarkerPos_);
 
 			// ベジエ曲線の終わり位置計算
-			bezierEndPos_ = MyMath::lerp(root_t_, RotateRootPos_[1], RotateRootPos_[0]);
+			bezierEndPos_ = MyMath::lerp(root_t_, preMarkerPos_, markerPos_);
 			
 			// 実際にプレイヤーの位置を計算
 			pos_ = MyMath::lerp(root_t_, bezierStartPos_, bezierEndPos_);
@@ -216,17 +182,12 @@ void Player::Update() {
 		tail->Update();
 	}
 
-	Fire();
 
 	for (PlayerBullet* bullet : bullets_) {
 		bullet->Update();
 	}
 	ImGui::Begin("debug");
 	ImGui::Text("%f", root_t_);
-	ImGui::Text("0 : %f, %f", RotateRootPos_[0].x, RotateRootPos_[0].y);
-	ImGui::Text("1 : %f, %f", RotateRootPos_[1].x, RotateRootPos_[1].y);
-	ImGui::Text("2 : %f, %f", RotateRootPos_[2].x, RotateRootPos_[2].y);
-	ImGui::Text("3 : %f, %f", RotateRootPos_[3].x, RotateRootPos_[3].y);
 
 	ImGui::End();
 
@@ -276,10 +237,6 @@ void Player::Draw() {
 
 	// スプライトの描画
 	BaseCharacter::Draw();
-}
-
-void Player::Fire() {
-
 }
 
 void Player::AddTails() {

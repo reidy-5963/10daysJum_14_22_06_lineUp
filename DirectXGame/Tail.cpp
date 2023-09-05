@@ -106,8 +106,8 @@ void Tail::Fire() {
 	else if (!isFire_) {
 
 		Vector2 Tail2Marker_distance;
-		Tail2Marker_distance.x = player_->GetMarkerPos().x - GetPosition()->x;
-		Tail2Marker_distance.y = player_->GetMarkerPos().y - GetPosition()->y;
+		Tail2Marker_distance.x = player_->GetMarkerPos().x - pos_.x;
+		Tail2Marker_distance.y = player_->GetMarkerPos().y - pos_.y;
 		float distance =
 		    std::sqrtf(std::powf(Tail2Marker_distance.x, 2) + std::powf(Tail2Marker_distance.y, 2));
 		float radius = (32 + GetRadius());

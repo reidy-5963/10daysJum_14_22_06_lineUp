@@ -17,7 +17,7 @@ void PlayerBullet::Update() {
 	pos_.x += velocity_.x * 5.0f;
 	pos_.y += velocity_.y * 5.0f;
 
-//	sprite_->SetSize({0.5f, 0.5f});
+	sprite_->SetSize({16.0f, 16.0f});
 
 	sprite_->SetPosition(pos_);
 }

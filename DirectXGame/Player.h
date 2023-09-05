@@ -40,8 +40,6 @@ public: // メンバ関数
 	/// </summary>
 	void Draw() override;
 
-	void Fire();
-
 	void AddTails();
 	void AddBullets(PlayerBullet* bullet);
 	uint32_t GetBulletTex() { return bulletTexture_; }
@@ -61,7 +59,7 @@ private: // メンバ変数
 	Vector2 markerPos_{};
 	Vector2 preMarkerPos_{};
 
-	Vector2 RotateRootPos_[4];
+	Vector2 RotateRootPos_;
 	float root_t_ = 0.0f;
 	bool isRootMove_ = false;
 
