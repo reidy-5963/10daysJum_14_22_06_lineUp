@@ -27,3 +27,8 @@ void PlayerBullet::Draw() {
 	//
 	sprite_->Draw();
 }
+
+void PlayerBullet::OnCollision() 
+{ 
+	isDead_ = true;
+}

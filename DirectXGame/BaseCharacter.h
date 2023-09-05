@@ -29,10 +29,20 @@ public:
 	/// </summary>
 	virtual void OnCollision();
 
-	bool IsMove() { return isMove_; }
+protected: 
+	// スプライト
+	std::unique_ptr<Sprite> sprite_ = nullptr;
+	// テクスチャ
+	uint32_t charaTex_ = 0u;
+	// 位置
+	Vector2 pos_{}; 
+	
+	// 動くときのフラグ
+	bool isMove_ = false;
+	// 半径サイズ
+	float radius_;
 
 public:
-
 	/// <summary>
 	/// 座標のSetter
 	/// </summary>
@@ -57,17 +67,5 @@ public:
 	/// <returns></returns>
 	float GetRadius() { return radius_; }
 
-protected: 
-	// スプライト
-	std::unique_ptr<Sprite> sprite_ = nullptr;
-	// テクスチャ
-	uint32_t charaTex_ = 0u;
-	// 位置
-	Vector2 pos_{}; 
-	
-	// 動くときのフラグ
-	bool isMove_ = false;
-	// 半径サイズ
-	float radius_;
-
+	bool IsMove() { return isMove_; }
 };

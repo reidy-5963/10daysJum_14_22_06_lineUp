@@ -11,6 +11,7 @@ void BaseBullet::Initialize(uint32_t texture, const Vector2& pos, Vector2 velosi
 void BaseBullet::Update() {}
 
 void BaseBullet::Draw() {}
+void BaseBullet::OnCollision() {}
 // クラスの枠つくっただけやね
 // さっき触れ始めた
 //うん☆

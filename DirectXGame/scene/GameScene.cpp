@@ -117,6 +117,9 @@ void GameScene::CheckAllCollision()
 {
 	// リスト取得
 	Vector2 targetA, targetB;
+
+	const std::list<PlayerBullet*>& playerBullet = player_->GetBullets();
+
 	targetA = player_->GetPosition();
 	for (Enemy* enemy : enemys_) {
 		targetB = enemy->GetPosition();
@@ -130,6 +133,25 @@ void GameScene::CheckAllCollision()
 
 			player_->OnCollision();
 		}
+	}
+
+
+	for (PlayerBullet* playerBullet_ : playerBullet) {
+		targetA = playerBullet_->GetPosition();
+		for (Enemy* enemy : enemys_) {
+			targetB = enemy->GetPosition();
+			float distance = std::sqrtf(
+			    std::powf(targetA.x - targetB.x, 2) + std::powf(targetA.y - targetB.y, 2));
+			float radius = playerBullet_->GetRadius() + enemy->GetRadius();
+
+			if (distance <= radius) {
+				// コールバック
+				enemy->OnCollision();
+				playerBullet_->OnCollision();
+			}
+
+		}
 
 	}
+
 }

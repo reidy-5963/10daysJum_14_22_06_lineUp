@@ -22,6 +22,11 @@ public: // メンバ関数
 	/// </summary>
 	void Draw() override;
 
+	/// <summary>
+	/// 衝突処理
+	/// </summary>
+	void OnCollision() override;
+
 private: // メンバ変数
 
 };

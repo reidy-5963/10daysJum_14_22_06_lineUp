@@ -40,14 +40,23 @@ public: // メンバ関数
 	/// </summary>
 	void Draw() override;
 
-	void AddTails();
-	void AddBullets(PlayerBullet* bullet);
-	uint32_t GetBulletTex() { return bulletTexture_; }
-	Vector2 GetMarkerPos() { return markerPos_; }
 	/// <summary>
 	/// 衝突処理
 	/// </summary>
 	void OnCollision() override;
+
+public:
+
+	void AddTails();
+	void AddBullets(PlayerBullet* bullet);
+	uint32_t GetBulletTex() { return bulletTexture_; }
+	Vector2 GetMarkerPos() { return markerPos_; }
+
+	/// <summary>
+	/// 弾のリストの取得
+	/// </summary>
+	/// <returns></returns>
+	const std::list<PlayerBullet*>& GetBullets() { return bullets_; }
 
 private: // メンバ変数	
 	// 入力

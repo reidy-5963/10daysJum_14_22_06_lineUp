@@ -23,6 +23,11 @@ class BaseBullet {
 	/// </summary>
 	virtual void Draw();
 
+	/// <summary>
+	/// 衝突処理
+	/// </summary>
+	virtual void OnCollision();
+
 protected: // メンバ変数
 	// スプライト
 	std::unique_ptr<Sprite> sprite_;
@@ -34,7 +39,39 @@ protected: // メンバ変数
 	// 速度
 	Vector2 velocity_;
 
+	bool isDead_;
 
+	float radius_;
 
+public:
+	/// <summary>
+	/// 座標のSetter
+	/// </summary>
+	/// <param name="pos"></param>
+	void SetPosition(Vector2& pos) { pos_ = pos; }
+
+	/// <summary>
+	/// 座標のGetter
+	/// </summary>
+	/// <returns></returns>
+	Vector2 GetPosition() { return pos_; }
+
+	/// <summary>
+	/// 半径のSetter
+	/// </summary>
+	/// <param name="rad"></param>
+	void SetRadius(float rad) { radius_ = rad; }
+
+	/// <summary>
+	/// 半径のGetter
+	/// </summary>
+	/// <returns></returns>
+	float GetRadius() { return radius_; }
+
+	/// <summary>
+	/// フラグの取得
+	/// </summary>
+	/// <returns></returns>
+	bool GetIsDead() { return isDead_; }
 
 };

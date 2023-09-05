@@ -190,6 +190,14 @@ void Player::Update() {
 	}
 
 
+	bullets_.remove_if([](PlayerBullet* bullet) {
+		if (bullet->GetIsDead()) {
+			delete bullet;
+			return true;
+		}
+		return false;
+	});
+
 	for (PlayerBullet* bullet : bullets_) {
 		bullet->Update();
 	}
@@ -262,7 +270,4 @@ void Player::AddTails() {
 
 void Player::AddBullets(PlayerBullet* bullet) { bullets_.push_back(bullet); }
 
-void Player::OnCollision() 
-{ 
-
-}
+void Player::OnCollision() { AddTails(); }
