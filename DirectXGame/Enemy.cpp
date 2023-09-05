@@ -11,7 +11,7 @@ void Enemy::Initialize()
 	sprite_.reset(
 	    Sprite::Create(charaTex_, {pos_.x, pos_.y}, {1.0f, 1.0f, 1.0f, 1.0f}, {0.5f, 0.5f}));
 
-	radius_ = sprite_->GetSize().x / 2;
+	radius_ = 32.0f;
 
 }
 

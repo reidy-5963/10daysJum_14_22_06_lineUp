@@ -1,6 +1,9 @@
 #include "GameScene.h"
 #include "TextureManager.h"
 #include <cassert>
+#include <cmath>
+#include <time.h>
+#include <stdlib.h>
 
 GameScene::GameScene() {}
 
@@ -12,33 +15,17 @@ void GameScene::Initialize() {
 	input_ = Input::GetInstance();
 	audio_ = Audio::GetInstance();
 
+	unsigned int currentTime = (int)time(nullptr);
+	srand(currentTime);
 
 	// プレイヤー生成
 	player_ = std::make_unique<Player>();
 	// プレイヤーの初期化処理
 	player_->Initialize();
-
-	// エネミー生成
-	enemy_ = std::make_unique<Enemy>();
-	// エネミーの初期化処理
-	enemy_->Initialize();
-
 }
 
 void GameScene::Update() {
-	// プレイヤーの更新処理
-	player_->Update();
-	respownCount--;
-	if (respownCount == 0) {
-		cou++;
-		Vector2 res = {cou * 50.0f, 100.0f};
-		Enemy* newEnemy = new Enemy();
-		newEnemy->Initialize();
-		newEnemy->SetPosition(res);
-		enemys_.push_back(newEnemy);
-		respownCount = kRespownTimer;
-	}
-
+	// 消去処理
 	enemys_.remove_if([](Enemy* enemy) {
 		if (enemy->GetIsDead()) {
 			delete enemy;
@@ -47,13 +34,28 @@ void GameScene::Update() {
 		return false;
 	});
 
-	// エネミー
-	//enemy_->Update();
+	// 生成（仮
+	respownCount--;
+	if (respownCount == 0) {
+		Enemy* newEnemy = new Enemy();
+		newEnemy->Initialize();
+		Vector2 res = {
+		    float(rand() % 1280 + newEnemy->GetRadius()),
+		    float(rand() % 720 + newEnemy->GetRadius())};
+		newEnemy->SetPosition(res);
+		enemys_.push_back(newEnemy);
+		respownCount = kRespownTimer;
+	}
 
+
+	// プレイヤーの更新処理
+	player_->Update();
+	// エネミーの更新
 	for (Enemy* enemy : enemys_) {
 		enemy->Update();
 	}
 
+	// 当たり判定
 	CheckAllCollision();
 
 }
@@ -98,7 +100,6 @@ void GameScene::Draw() {
 	/// </summary>
 
 	// エネミーの描画処理
-	//enemy_->Draw();
 	for (Enemy* enemy : enemys_) {
 		enemy->Draw();
 	}
@@ -119,8 +120,8 @@ void GameScene::CheckAllCollision()
 	targetA = player_->GetPosition();
 	for (Enemy* enemy : enemys_) {
 		targetB = enemy->GetPosition();
-
-		float distance = powf(targetA.x - targetB.x, 2) + powf(targetA.y - targetB.y, 2);
+		float distance =
+		    std::sqrtf(std::powf(targetA.x - targetB.x, 2) + std::powf(targetA.y - targetB.y, 2));
 		float radius = player_->GetRadius() + enemy->GetRadius();
 		// 交差判定
 		if (distance <= radius) {

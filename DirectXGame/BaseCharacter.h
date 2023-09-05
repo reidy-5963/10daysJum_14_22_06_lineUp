@@ -65,7 +65,6 @@ protected:
 	
 	// 動くときのフラグ
 	bool isMove_ = false;
-	Vector2 pos_{};
 
 	float radius_;
 

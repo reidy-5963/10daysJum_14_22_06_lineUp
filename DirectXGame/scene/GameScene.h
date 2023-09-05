@@ -64,10 +64,9 @@ private: // メンバ変数
 	std::unique_ptr<Player> player_ = nullptr;
 
 	// エネミー
-	std::unique_ptr<Enemy> enemy_ = nullptr;
 	std::list<Enemy*> enemys_;
 
 	const int kRespownTimer = 180;
 	int respownCount = kRespownTimer;
-	int cou = 0;
+
 };

@@ -47,7 +47,7 @@ void Player::Initialize() {
 	markerPos_ = pos_;
 	preMarkerPos_ = markerPos_;
 
-	radius_ = sprite_->GetSize().x / 2;
+	radius_ = 32.0f;
 }
 
 /// <summary>
@@ -84,20 +84,15 @@ void Player::Update() {
 	}
 
 	// ベジエ曲線のスタート位置計算
-	bezierStartPos_ = MyMath::lerp(move_t_, prePos_, preMarkerPos_);
-	bezierStartPos_.x = MyMath::lerp(move_t_, clickPos_.x, preMarkerPos_.x);
-	bezierStartPos_.y = MyMath::lerp(move_t_, clickPos_.y, preMarkerPos_.y);
+	bezierStartPos_ = MyMath::lerp(move_t_, clickPos_, preMarkerPos_);
+	//bezierStartPos_.x = MyMath::lerp(move_t_, clickPos_.x, preMarkerPos_.x);
+	//bezierStartPos_.y = MyMath::lerp(move_t_, clickPos_.y, preMarkerPos_.y);
 	
 	// ベジエ曲線の終わり位置計算
 	bezierEndPos_ = MyMath::lerp(move_t_, preMarkerPos_, markerPos_);
 
-	//if (prePosTimer < 0) {
-	//	prePosTimer = setPrePosTime;
-		prePos_ = pos_;
+	prePos_ = pos_;
 
-	//} else {
-	//	prePosTimer--;
-	//}
 	// 実際にプレイヤーの位置を計算
 	pos_ = MyMath::lerp(move_t_, bezierStartPos_, bezierEndPos_);
 
@@ -114,16 +109,11 @@ void Player::Update() {
 	}
 
 	for (Tail* tail : tails_) {
-			tail->SetIsMove(isMove_);
-		//else if (!isMove_)
-		//	tail->SetIsMove(false);
-
+		tail->SetIsMove(isMove_);
 		tail->Update();
 	}
-}
 
 	markerSprite_->SetPosition(markerPos_);
-
 }
 
 void Player::KeyMove() { // 移動距離
@@ -181,11 +171,8 @@ void Player::AddTails() {
 	if (tails_.size() != 0) {
 		newTail->Initialize(
 		    tailTexture_, tails_.back()->GetPosition(), (tails_.back()->GetTailNo() + 1));
-		//newTail->SetT(tails_.back()->GetT());
-
 	} else {
 		newTail->Initialize(tailTexture_, &pos_, 0);
-		//newTail->SetT(&move_t_);
 	}
 
 	tails_.push_back(newTail);
