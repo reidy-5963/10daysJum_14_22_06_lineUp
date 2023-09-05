@@ -146,15 +146,15 @@ void Player::KeyMove() { // 移動距離
 /// 描画処理
 /// </summary>
 void Player::Draw() {
+	// しっぽの描画
 	for (Tail* tail : tails_) {
 		tail->Draw();
 	}
-
-
+	// クリックした位置マーカーの描画
 	markerSprite_->Draw();
 
 	// スプライトの描画
-	sprite_->Draw();
+	BaseCharacter::Draw();
 }
 
 void Player::Fire() {

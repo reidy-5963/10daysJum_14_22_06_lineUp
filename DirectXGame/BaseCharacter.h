@@ -24,12 +24,14 @@ public:
 	/// </summary>
 	virtual void Draw();
 
-	bool IsMove() { return isMove_; }
-
 	/// <summary>
 	/// 衝突処理
 	/// </summary>
 	virtual void OnCollision();
+
+	bool IsMove() { return isMove_; }
+
+public:
 
 	/// <summary>
 	/// 座標のSetter
@@ -65,7 +67,7 @@ protected:
 	
 	// 動くときのフラグ
 	bool isMove_ = false;
-
+	// 半径サイズ
 	float radius_;
 
 };

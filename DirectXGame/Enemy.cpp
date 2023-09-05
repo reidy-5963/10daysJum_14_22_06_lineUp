@@ -1,6 +1,7 @@
 ﻿#include "Enemy.h"
 #include "TextureManager.h"
 #include "Sprite.h"
+#include "ImGuiManager.h"
 
 void Enemy::Initialize() 
 {
@@ -17,7 +18,6 @@ void Enemy::Initialize()
 
 void Enemy::Update() 
 { 
-
 
 	// 座標設定
 	sprite_->SetPosition(pos_);
