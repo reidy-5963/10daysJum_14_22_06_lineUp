@@ -44,8 +44,7 @@ void Tail::Update() {
 		}
 
 		// 線形補完
-		pos_.x = MyMath::lerp(t_, prePos_.x, velo_.x);
-		pos_.y = MyMath::lerp(t_, prePos_.y, velo_.y);
+		pos_ = MyMath::lerp(t_, prePos_, velo_);
 	}
 	// もし動いていないとき
 	if (!isMove_) {

@@ -25,9 +25,9 @@ void Player::Initialize() {
 	// キャラのテクスチャ読み込み
 	charaTex_ = TextureManager::Load("Player.png");
 	// キャラのテクスチャ読み込み
-	tailTexture_ = TextureManager::Load("Player.png");
+	tailTexture_ = TextureManager::Load("Cannon.png");
 	// キャラのテクスチャ読み込み
-	bulletTexture_ = TextureManager::Load("Player.png");
+	bulletTexture_ = TextureManager::Load("Bullet.png");
 
 	// スプライトの生成
 	sprite_.reset(Sprite::Create(charaTex_, {720, 360}, {1.0f, 1.0f, 1.0f, 1.0f}, {0.5f, 0.5f}));
@@ -126,18 +126,15 @@ void Player::Update() {
 		if (!isRootMove_) {
 
 			// ベジエ曲線のスタート位置計算
-			bezierStartPos_.x = MyMath::lerp(root_t_, RotateRootPos_[0].x, RotateRootPos_[2].x);
-			bezierStartPos_.y = MyMath::lerp(root_t_, RotateRootPos_[0].y, RotateRootPos_[2].y);
+			bezierStartPos_ = MyMath::lerp(root_t_, RotateRootPos_[0], RotateRootPos_[2]);
 
 			// ベジエ曲線の終わり位置計算
-			bezierEndPos_.x = MyMath::lerp(root_t_, RotateRootPos_[2].x, RotateRootPos_[3].x);
-			bezierEndPos_.y = MyMath::lerp(root_t_, RotateRootPos_[2].y, RotateRootPos_[3].y);
+			bezierEndPos_ = MyMath::lerp(root_t_, RotateRootPos_[2], RotateRootPos_[3]);
 
 			prePos_ = pos_;
 
 			// 実際にプレイヤーの位置を計算
-			pos_.x = MyMath::lerp(root_t_, bezierStartPos_.x, bezierEndPos_.x);
-			pos_.y = MyMath::lerp(root_t_, bezierStartPos_.y, bezierEndPos_.y);
+			pos_ = MyMath::lerp(root_t_, bezierStartPos_, bezierEndPos_);
 			
 			if (root_t_ > 1.0f) {
 				root_t_ = 0.0f;
@@ -150,16 +147,13 @@ void Player::Update() {
 		//
 		else if (isRootMove_) { 
 			// ベジエ曲線のスタート位置計算
-			bezierStartPos_.x = MyMath::lerp(root_t_, RotateRootPos_[3].x, RotateRootPos_[1].x);
-			bezierStartPos_.y = MyMath::lerp(root_t_, RotateRootPos_[3].y, RotateRootPos_[1].y);
+			bezierStartPos_ = MyMath::lerp(root_t_, RotateRootPos_[3], RotateRootPos_[1]);
 
 			// ベジエ曲線の終わり位置計算
-			bezierEndPos_.x = MyMath::lerp(root_t_, RotateRootPos_[1].x, RotateRootPos_[0].x);
-			bezierEndPos_.y = MyMath::lerp(root_t_, RotateRootPos_[1].y, RotateRootPos_[0].y);
+			bezierEndPos_ = MyMath::lerp(root_t_, RotateRootPos_[1], RotateRootPos_[0]);
 			
 			// 実際にプレイヤーの位置を計算
-			pos_.x = MyMath::lerp(root_t_, bezierStartPos_.x, bezierEndPos_.x);
-			pos_.y = MyMath::lerp(root_t_, bezierStartPos_.y, bezierEndPos_.y);
+			pos_ = MyMath::lerp(root_t_, bezierStartPos_, bezierEndPos_);
 
 			prePos_ = pos_;
 
@@ -190,18 +184,15 @@ void Player::Update() {
 		}
 
 		// ベジエ曲線のスタート位置計算
-		bezierStartPos_.x = MyMath::lerp(move_t_, clickPos_.x, preMarkerPos_.x);
-		bezierStartPos_.y = MyMath::lerp(move_t_, clickPos_.y, preMarkerPos_.y);
+		bezierStartPos_ = MyMath::lerp(move_t_, clickPos_, preMarkerPos_);
 
 		// ベジエ曲線の終わり位置計算
-		bezierEndPos_.x = MyMath::lerp(move_t_, preMarkerPos_.x, markerPos_.x);
-		bezierEndPos_.y = MyMath::lerp(move_t_, preMarkerPos_.y, markerPos_.y);
+		bezierEndPos_ = MyMath::lerp(move_t_, preMarkerPos_, markerPos_);
 
 		prePos_ = pos_;
 
 		// 実際にプレイヤーの位置を計算
-		pos_.x = MyMath::lerp(move_t_, bezierStartPos_.x, bezierEndPos_.x);
-		pos_.y = MyMath::lerp(move_t_, bezierStartPos_.y, bezierEndPos_.y);
+		pos_ = MyMath::lerp(move_t_, bezierStartPos_, bezierEndPos_);
 		for (Tail* tail : tails_) {
 			tail->SetIsMove(isMove_);
 		}
