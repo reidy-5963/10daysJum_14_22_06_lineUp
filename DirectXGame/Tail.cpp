@@ -1,6 +1,7 @@
 ﻿#include "Tail.h"
 #include "MyMath.h"
 #include "ImGuiManager.h"
+#include <cmath>
 
 /// <summary>
 /// 初期化処理
@@ -58,8 +59,11 @@ void Tail::Update() {
 
 	}
 
+	Vector2 move = velo_ - prePos_;
+
 	// 位置の更新処理
 	sprite_->SetPosition(pos_);
+	sprite_->SetRotation(std::atan2(move.y, move.x));
 
 	ImGui::Begin("debug");
 	ImGui::Text("%f, %f", prePos_.x, prePos_.y);

@@ -1,5 +1,6 @@
 ﻿#pragma once
 #include "BaseCharacter.h"
+#include <list>
 
 /// <summary>
 /// しっぽ
