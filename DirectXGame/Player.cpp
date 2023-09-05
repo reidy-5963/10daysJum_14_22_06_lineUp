@@ -27,11 +27,20 @@ void Player::Initialize() {
 	// スプライトの生成
 	sprite_.reset(Sprite::Create(charaTex_, {720, 360}, {1.0f, 1.0f, 1.0f, 1.0f}, {0.5f, 0.5f}));
 
+	// マーカーのテクスチャ読み込み
+	markerTex_ = TextureManager::Load("Marker.png");
+
+	// マーカーのスプライトの生成
+	markerSprite_.reset(
+	    Sprite::Create(markerTex_, {720, 360}, {1.0f, 1.0f, 1.0f, 1.0f}, {0.5f, 0.5f}));
+
 	// 初期位置(仮)
 	pos_ = {760, 320};
 	prePos_ = pos_;
 	markerPos_ = pos_;
 	preMarkerPos_ = markerPos_;
+
+	radius_ = sprite_->GetSize().x / 2;
 }
 
 /// <summary>
@@ -66,17 +75,13 @@ void Player::Update() {
 	}
 
 	// ベジエ曲線のスタート位置計算
-	bezierStartPos_.x = MyMath::lerp(move_t_, prePos_.x, preMarkerPos_.x);
-	bezierStartPos_.y = MyMath::lerp(move_t_, prePos_.y, preMarkerPos_.y);
+	bezierStartPos_ = MyMath::lerp(move_t_, prePos_, preMarkerPos_);
 	
 	// ベジエ曲線の終わり位置計算
-	bezierEndPos_.x = MyMath::lerp(move_t_, preMarkerPos_.x, markerPos_.x);
-	bezierEndPos_.y = MyMath::lerp(move_t_, preMarkerPos_.y, markerPos_.y);
+	bezierEndPos_ = MyMath::lerp(move_t_, preMarkerPos_, markerPos_);
 
 	// 実際にプレイヤーの位置を計算
-	pos_.x = MyMath::lerp(move_t_, bezierStartPos_.x, bezierEndPos_.x);
-	pos_.y = MyMath::lerp(move_t_, bezierStartPos_.y, bezierEndPos_.y);
-
+	pos_ = MyMath::lerp(move_t_, bezierStartPos_, bezierEndPos_);
 
 	// スプライトに位置を反映させる
 	sprite_->SetPosition(pos_);
@@ -84,6 +89,9 @@ void Player::Update() {
 	// 向きの計算
 	Vector2 move = bezierEndPos_ - bezierStartPos_;
 	sprite_->SetRotation(std::atan2(move.y, move.x));
+
+	markerSprite_->SetPosition(markerPos_);
+
 }
 
 void Player::KeyMove() { // 移動距離
@@ -116,6 +124,13 @@ void Player::KeyMove() { // 移動距離
 /// 描画処理
 /// </summary>
 void Player::Draw() {
+	markerSprite_->Draw();
+
 	// スプライトの描画
 	sprite_->Draw();
+}
+
+void Player::OnCollision() 
+{ 
+
 }

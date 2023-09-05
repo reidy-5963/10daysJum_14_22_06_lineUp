@@ -24,6 +24,35 @@ public:
 	/// </summary>
 	virtual void Draw();
 
+	/// <summary>
+	/// 衝突処理
+	/// </summary>
+	virtual void OnCollision();
+
+	/// <summary>
+	/// 座標のSetter
+	/// </summary>
+	/// <param name="pos"></param>
+	void SetPosition(Vector2& pos) { pos_ = pos; }
+
+	/// <summary>
+	/// 座標のGetter
+	/// </summary>
+	/// <returns></returns>
+	Vector2 GetPosition() { return pos_; }
+
+	/// <summary>
+	/// 半径のSetter
+	/// </summary>
+	/// <param name="rad"></param>
+	void SetRadius(float rad) { radius_ = rad; }
+
+	/// <summary>
+	/// 半径のGetter
+	/// </summary>
+	/// <returns></returns>
+	float GetRadius() { return radius_; }
+
 protected: 
 	// スプライト
 	std::unique_ptr<Sprite> sprite_ = nullptr;
@@ -31,4 +60,7 @@ protected:
 	uint32_t charaTex_ = 0u;
 	// 位置
 	Vector2 pos_{};
+
+	float radius_;
+
 };

@@ -33,6 +33,11 @@ public: // メンバ関数
 	/// </summary>
 	void Draw() override;
 
+	/// <summary>
+	/// 衝突処理
+	/// </summary>
+	void OnCollision() override;
+
 private: // メンバ変数	
 	Input* input_ = nullptr;
 	POINT mousePos;
@@ -40,11 +45,14 @@ private: // メンバ変数
 	Vector2 markerPos_{};
 	Vector2 preMarkerPos_{};
 
-	Vector2 prePos_{};
+	Vector2 prePos_{};	
 
 	bool isMove_ = false;
 	float move_t_ = 0.0f;
 
 	Vector2 bezierStartPos_{};
 	Vector2 bezierEndPos_{};
+
+	uint32_t markerTex_ = 0u;
+	std::unique_ptr<Sprite> markerSprite_ = nullptr;
 };

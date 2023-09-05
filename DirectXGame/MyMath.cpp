@@ -989,7 +989,10 @@ float MyMath::Mymin(float a, float b) {
 
 //
 float MyMath::lerp(float t, float start, float end) { 
-	return (1.0f - t) * start + t * end;
+	return (1.0f - t) * start + t * end; }
+
+Vector2 MyMath::lerp(float t, Vector2 start, Vector2 end) { 
+	return Vector2((1.0f - t) * start.x + t * end.x, (1.0f - t) * start.y + t * end.y);
 }
 
 float MyMath::EaseInQuadF(float t, float start, float end) {

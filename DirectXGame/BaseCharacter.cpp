@@ -17,3 +17,5 @@ void BaseCharacter::Draw() {
 	// スプライトの描画
 	sprite_->Draw();
 }
+
+void BaseCharacter::OnCollision() {}

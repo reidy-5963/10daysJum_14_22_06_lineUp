@@ -354,6 +354,8 @@ public:
 
 	static float lerp(float t, float start, float end);
 
+	static Vector2 lerp(float t, Vector2 start, Vector2 end);
+
 
 	static float EaseInQuadF(float t, float start, float end);
 	static float EaseOutQuadF(float t, float start, float end);

@@ -9,15 +9,19 @@
 #include "ViewProjection.h"
 #include "WorldTransform.h"
 #include <memory>
+#include <list>
 
 
+#include "BaseScene.h"
 #include "Player.h"
+#include "Enemy.h"
 
 
 /// <summary>
 /// ゲームシーン
 /// </summary>
-class GameScene {
+class GameScene : public BaseScene
+{
 
 public: // メンバ関数
 	/// <summary>
@@ -33,17 +37,19 @@ public: // メンバ関数
 	/// <summary>
 	/// 初期化
 	/// </summary>
-	void Initialize();
+	void Initialize() override;
 
 	/// <summary>
 	/// 毎フレーム処理
 	/// </summary>
-	void Update();
+	void Update() override;
 
 	/// <summary>
 	/// 描画
 	/// </summary>
-	void Draw();
+	void Draw() override;
+
+	void CheckAllCollision();
 
 private: // メンバ変数
 	DirectXCommon* dxCommon_ = nullptr;
@@ -57,4 +63,11 @@ private: // メンバ変数
 	// プレイヤー
 	std::unique_ptr<Player> player_ = nullptr;
 
+	// エネミー
+	std::unique_ptr<Enemy> enemy_ = nullptr;
+	std::list<Enemy*> enemys_;
+
+	const int kRespownTimer = 180;
+	int respownCount = kRespownTimer;
+	int cou = 0;
 };
