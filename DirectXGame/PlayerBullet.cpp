@@ -1,17 +1,24 @@
 ﻿#include "PlayerBullet.h"
 #include <cassert>
 
-void PlayerBullet::Initialize(uint32_t texture) {
+void PlayerBullet::Initialize(uint32_t texture, const Vector2& pos, Vector2 velosity) {
 	assert(texture != 0u);
-	
+	texture_ = texture;
+	pos_ = pos;
+	velocity_ = velosity;
+		
 	// スプライトの生成
-	sprite_.reset(Sprite::Create(texture, {720, 360}, {1.0f, 1.0f, 1.0f, 1.0f}, {0.5f, 0.5f}));
-
-	
+	sprite_.reset(Sprite::Create(texture, pos_, {1.0f, 1.0f, 1.0f, 1.0f}, {0.5f, 0.5f}));
+	//sprite_->SetSize({0.5f, 0.5f});
 }
 
 void PlayerBullet::Update() { 
-	//
+	
+	pos_.x += velocity_.x * 5.0f;
+	pos_.y += velocity_.y * 5.0f;
+
+//	sprite_->SetSize({0.5f, 0.5f});
+
 	sprite_->SetPosition(pos_);
 }
 

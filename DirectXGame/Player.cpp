@@ -4,6 +4,8 @@
 #include "TextureManager.h"
 #include "WinApp.h"
 #include <cassert>
+#include <complex>
+#include <cmath>
 
 /// <summary>
 /// コンストラクタ
@@ -41,7 +43,7 @@ void Player::Initialize() {
 
 	// 初期位置(仮)
 	pos_ = {760, 320};
-	clickPos_ = pos_;
+	clickPlayerPos_ = pos_;
 	markerPos_ = pos_;
 	preMarkerPos_ = markerPos_;
 
@@ -66,7 +68,7 @@ void Player::Update() {
 		markerPos_.x = float(mousePos.x);
 		markerPos_.y = float(mousePos.y);
 		// クリックしたときの位置を取得
-		clickPos_ = pos_;
+		clickPlayerPos_ = pos_;
 		// 線形補間の初期化
 		move_t_ = 0.0f;
 
@@ -184,7 +186,7 @@ void Player::Update() {
 		}
 
 		// ベジエ曲線のスタート位置計算
-		bezierStartPos_ = MyMath::lerp(move_t_, clickPos_, preMarkerPos_);
+		bezierStartPos_ = MyMath::lerp(move_t_, clickPlayerPos_, preMarkerPos_);
 
 		// ベジエ曲線の終わり位置計算
 		bezierEndPos_ = MyMath::lerp(move_t_, preMarkerPos_, markerPos_);
@@ -210,9 +212,15 @@ void Player::Update() {
 	}
 
 	for (Tail* tail : tails_) {
+
 		tail->Update();
 	}
 
+	Fire();
+
+	for (PlayerBullet* bullet : bullets_) {
+		bullet->Update();
+	}
 	ImGui::Begin("debug");
 	ImGui::Text("%f", root_t_);
 	ImGui::Text("0 : %f, %f", RotateRootPos_[0].x, RotateRootPos_[0].y);
@@ -255,10 +263,14 @@ void Player::KeyMove() { // 移動距離
 /// 描画処理
 /// </summary>
 void Player::Draw() {
+	for (PlayerBullet* bullet : bullets_) {
+		bullet->Draw();
+	}
 	// しっぽの描画
 	for (Tail* tail : tails_) {
 		tail->Draw();
 	}
+
 	// クリックした位置マーカーの描画
 	markerSprite_->Draw();
 
@@ -267,10 +279,7 @@ void Player::Draw() {
 }
 
 void Player::Fire() {
-	////
-	//	if (--bulletTimer_ < 0) {
-	//		bulletTimer_ = setBulletTime;
-	//	}
+
 }
 
 void Player::AddTails() {
@@ -282,9 +291,12 @@ void Player::AddTails() {
 	} else {
 		newTail->Initialize(tailTexture_, &pos_, 0);
 	}
-
+	
+	newTail->SetPlayer(this);
 	tails_.push_back(newTail);
 }
+
+void Player::AddBullets(PlayerBullet* bullet) { bullets_.push_back(bullet); }
 
 void Player::OnCollision() 
 { 

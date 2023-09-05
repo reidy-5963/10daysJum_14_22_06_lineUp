@@ -1,38 +1,27 @@
 ﻿#pragma once
-#include "Sprite.h"
-#include "Vector2.h"
-#include <memory>
+#include "BaseBullet.h"
+
 
 /// <summary>
 /// 自機の弾
 /// </summary>
-class PlayerBullet {
+class PlayerBullet : public BaseBullet {
 public: // メンバ関数
 	/// <summary>
 	/// 初期化処理
 	/// </summary>
-	void Initialize(uint32_t texture);
+	void Initialize(uint32_t texture, const Vector2& pos, Vector2 velosity) override;
 
 	/// <summary>
 	/// 更新処理
 	/// </summary>
-	void Update();
+	void Update() override;
 
 	/// <summary>
 	/// 描画処理
 	/// </summary>
-	void Draw();
+	void Draw() override;
 
 private: // メンバ変数
-	// スプライト
-	std::unique_ptr<Sprite> sprite_;
-	uint32_t texture_;
-
-	// 位置
-	Vector2 pos_;
-
-	// 速度
-	Vector2 velocity_;
-
 
 };

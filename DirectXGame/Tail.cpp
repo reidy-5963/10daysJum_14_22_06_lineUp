@@ -2,6 +2,8 @@
 #include "MyMath.h"
 #include "ImGuiManager.h"
 #include <cmath>
+#include "Player.h"
+
 
 /// <summary>
 /// 初期化処理
@@ -25,7 +27,11 @@ void Tail::Initialize(uint32_t texture,const Vector2* parent, int tailNo) {
 	pos_.y = parentPos_->y;
 
 	// 親の位置に初期化
-	prePos_ = pos_;
+	prePos_ = pos_; 
+	
+	// 線形補完の完了地点を親の位置に
+	lerpEndPos_.x = parentPos_->x;
+	lerpEndPos_.y = parentPos_->y;
 }
 
 void Tail::Update() {
@@ -44,7 +50,7 @@ void Tail::Update() {
 		}
 
 		// 線形補完
-		pos_ = MyMath::lerp(t_, prePos_, velo_);
+		pos_ = MyMath::lerp(t_, prePos_, lerpEndPos_);
 	}
 	// もし動いていないとき
 	if (!isMove_) {
@@ -53,26 +59,64 @@ void Tail::Update() {
 		// 媒介変数tの初期化
 		t_ = 0.0f;
 		// 線形補完の完了地点を親の位置に
-		velo_.x = parentPos_->x;
-		velo_.y = parentPos_->y;
+		lerpEndPos_.x = parentPos_->x;
+		lerpEndPos_.y = parentPos_->y;
 
 	}
 
-	Vector2 move = velo_ - prePos_;
-
+	direction_ = lerpEndPos_ - prePos_;
+	direction_ = MyMath::Normalize(direction_);
 	// 位置の更新処理
 	sprite_->SetPosition(pos_);
-	sprite_->SetRotation(std::atan2(move.y, move.x));
+	sprite_->SetRotation(std::atan2(direction_.y, direction_.x));
 
 	ImGui::Begin("debug");
 	ImGui::Text("%f, %f", prePos_.x, prePos_.y);
 	ImGui::Text("%f, %f", parentPos_->x, parentPos_->y);
-	ImGui::Text("%f", t_);
+	ImGui::Text("%d", bulletTimer_);
 	ImGui::End();
-
+	Fire();
 }
 
 void Tail::Draw() { 
 	//
 	sprite_->Draw(); 
+}
+
+void Tail::Fire() {
+	if (bulletTimer_ < 0) {
+		bulletTimer_ = 0;
+	} else {
+		bulletTimer_--;
+	}
+
+
+
+	if (isFire_) {
+		// 尻尾の進む向きから弾を打ち出す向きを計算
+		Vector2 tailDirection = GetDirection();
+		Vector2 bulletDirection{-tailDirection.x, tailDirection.y};
+
+		PlayerBullet* newBullet = new PlayerBullet();
+		newBullet->Initialize(player_->GetBulletTex(), *GetPosition(), bulletDirection);
+		player_->AddBullets(newBullet);
+		
+		isFire_ = false;
+	}
+	else if (!isFire_) {
+
+		Vector2 Tail2Marker_distance;
+		Tail2Marker_distance.x = player_->GetMarkerPos().x - GetPosition()->x;
+		Tail2Marker_distance.y = player_->GetMarkerPos().y - GetPosition()->y;
+		float distance =
+		    std::sqrtf(std::powf(Tail2Marker_distance.x, 2) + std::powf(Tail2Marker_distance.y, 2));
+		float radius = (32 + GetRadius());
+
+		if (distance <= radius && bulletTimer_ <= 0) {
+			SetIsFire(true);
+			bulletTimer_ = kBulletTime;
+
+		}
+
+	}
 }

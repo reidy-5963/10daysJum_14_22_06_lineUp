@@ -2,6 +2,8 @@
 #include "BaseCharacter.h"
 #include <list>
 
+class Player;
+
 /// <summary>
 /// しっぽ
 /// </summary>
@@ -25,6 +27,8 @@ public: // メンバ関数
 	/// </summary>
 	void Draw();
 
+	void Fire();
+
 	/// <summary>
 	/// 尻尾番号の取得
 	/// </summary>
@@ -36,23 +40,42 @@ public: // メンバ関数
 	/// </summary>
 	/// <returns>位置</returns>
 	const Vector2 *GetPosition() { return &pos_; }
+	
+	bool IsFire() { return isFire_; }
 
+	Vector2 GetDirection() { return direction_; }
+
+ 
 	/// <summary>
 	/// プレイヤーが動いているかのフラグ取得
 	/// </summary>
 	/// <param name="isMove">プレイヤーが動いているか</param>
 	void SetIsMove(bool isMove) { isPlayerMove_ = isMove; }
 
+	void SetIsFire(bool isFire) { isFire_ = isFire; }
+
+	void SetPlayer(Player* player) { player_ = player; }
+
+
 private: // メンバ変数
 	// 
 	Vector2 prePos_;
 	// 親の位置
 	const Vector2* parentPos_;
-	Vector2 velo_;
+	Vector2 lerpEndPos_;
+
+	Vector2 direction_{};
 	// 何番目の尻尾か
 	int tailNo_ = -1;
 
 	float t_;
 	bool isPlayerMove_ = false;
-	//bool isMove_ = false;
+	
+	// 弾発射フラグ
+	bool isFire_ = false;
+
+	const int kBulletTime = 60;
+	int bulletTimer_ = kBulletTime;
+
+	Player* player_;
 };

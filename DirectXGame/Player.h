@@ -43,7 +43,9 @@ public: // メンバ関数
 	void Fire();
 
 	void AddTails();
-
+	void AddBullets(PlayerBullet* bullet);
+	uint32_t GetBulletTex() { return bulletTexture_; }
+	Vector2 GetMarkerPos() { return markerPos_; }
 	/// <summary>
 	/// 衝突処理
 	/// </summary>
@@ -64,7 +66,7 @@ private: // メンバ変数
 	bool isRootMove_ = false;
 
 	// 前フレーム時の位置
-	Vector2 clickPos_{};
+	Vector2 clickPlayerPos_{};
 
 	// 前フレーム時の位置
 	Vector2 prePos_{};
