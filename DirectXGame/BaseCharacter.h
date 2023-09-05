@@ -24,11 +24,16 @@ public:
 	/// </summary>
 	virtual void Draw();
 
+	bool IsMove() { return isMove_; }
+
 protected: 
 	// スプライト
 	std::unique_ptr<Sprite> sprite_ = nullptr;
 	// テクスチャ
 	uint32_t charaTex_ = 0u;
 	// 位置
-	Vector2 pos_{};
+	Vector2 pos_{}; 
+	
+	// 動くときのフラグ
+	bool isMove_ = false;
 };

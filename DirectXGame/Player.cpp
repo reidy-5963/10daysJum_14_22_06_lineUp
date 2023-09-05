@@ -3,6 +3,7 @@
 #include "MyMath.h"
 #include "TextureManager.h"
 #include "WinApp.h"
+#include <cassert>
 
 /// <summary>
 /// コンストラクタ
@@ -23,13 +24,19 @@ void Player::Initialize() {
 
 	// キャラのテクスチャ読み込み
 	charaTex_ = TextureManager::Load("Player.png");
+	// キャラのテクスチャ読み込み
+	tailTexture_ = TextureManager::Load("Player.png");
+	// キャラのテクスチャ読み込み
+	bulletTexture_ = TextureManager::Load("Player.png");
+
+
 
 	// スプライトの生成
 	sprite_.reset(Sprite::Create(charaTex_, {720, 360}, {1.0f, 1.0f, 1.0f, 1.0f}, {0.5f, 0.5f}));
 
 	// 初期位置(仮)
 	pos_ = {760, 320};
-	prePos_ = pos_;
+	clickPos_ = pos_;
 	markerPos_ = pos_;
 	preMarkerPos_ = markerPos_;
 }
@@ -53,26 +60,35 @@ void Player::Update() {
 		markerPos_.x = float(mousePos.x);
 		markerPos_.y = float(mousePos.y);
 		// クリックしたときの位置を取得
-		prePos_ = pos_;
+		clickPos_ = pos_;
 		// 線形補間の初期化
 		move_t_ = 0.0f;
+
+		//
+		isMove_ = true;
 	}
 
 	// 1.0になるまで加算
-	if (move_t_ >= 1.0f) {
+	if ((move_t_ += 0.01f) >= 1.0f) {
 		move_t_ = 1.0f;
-	} else {
-		move_t_ += 0.01f;
+		isMove_ = false;
 	}
 
 	// ベジエ曲線のスタート位置計算
-	bezierStartPos_.x = MyMath::lerp(move_t_, prePos_.x, preMarkerPos_.x);
-	bezierStartPos_.y = MyMath::lerp(move_t_, prePos_.y, preMarkerPos_.y);
+	bezierStartPos_.x = MyMath::lerp(move_t_, clickPos_.x, preMarkerPos_.x);
+	bezierStartPos_.y = MyMath::lerp(move_t_, clickPos_.y, preMarkerPos_.y);
 	
 	// ベジエ曲線の終わり位置計算
 	bezierEndPos_.x = MyMath::lerp(move_t_, preMarkerPos_.x, markerPos_.x);
 	bezierEndPos_.y = MyMath::lerp(move_t_, preMarkerPos_.y, markerPos_.y);
 
+	//if (prePosTimer < 0) {
+	//	prePosTimer = setPrePosTime;
+		prePos_ = pos_;
+
+	//} else {
+	//	prePosTimer--;
+	//}
 	// 実際にプレイヤーの位置を計算
 	pos_.x = MyMath::lerp(move_t_, bezierStartPos_.x, bezierEndPos_.x);
 	pos_.y = MyMath::lerp(move_t_, bezierStartPos_.y, bezierEndPos_.y);
@@ -84,6 +100,19 @@ void Player::Update() {
 	// 向きの計算
 	Vector2 move = bezierEndPos_ - bezierStartPos_;
 	sprite_->SetRotation(std::atan2(move.y, move.x));
+
+
+	if (input_->TriggerKey(DIK_SPACE)) {
+		AddTails();
+	}
+
+	for (Tail* tail : tails_) {
+			tail->SetIsMove(isMove_);
+		//else if (!isMove_)
+		//	tail->SetIsMove(false);
+
+		tail->Update();
+	}
 }
 
 void Player::KeyMove() { // 移動距離
@@ -116,6 +145,35 @@ void Player::KeyMove() { // 移動距離
 /// 描画処理
 /// </summary>
 void Player::Draw() {
+	for (Tail* tail : tails_) {
+		tail->Draw();
+	}
+
+
 	// スプライトの描画
 	sprite_->Draw();
+}
+
+void Player::Fire() {
+////
+//	if (--bulletTimer_ < 0) {
+//		bulletTimer_ = setBulletTime;
+//	}
+
+}
+
+void Player::AddTails() { 
+	Tail* newTail = new Tail();
+	
+	if (tails_.size() != 0) {
+		newTail->Initialize(
+		    tailTexture_, tails_.back()->GetPosition(), (tails_.back()->GetTailNo() + 1));
+		//newTail->SetT(tails_.back()->GetT());
+
+	} else {
+		newTail->Initialize(tailTexture_, &pos_, 0);
+		//newTail->SetT(&move_t_);
+	}
+
+	tails_.push_back(newTail);
 }
