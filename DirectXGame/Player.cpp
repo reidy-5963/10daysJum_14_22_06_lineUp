@@ -79,17 +79,24 @@ void Player::Update() {
 		Vector2 preMark2Pos_distance;
 		preMark2Pos_distance = preMarkerPos_ - clickPlayerPos_;
 
-		Vector2 preMark2Mark_distance;
-		preMark2Mark_distance = markerPos_ - preMarkerPos_;
+		{ // （仮）
+			Vector2 A2B = clickPlayerPos_ - markerPos_;
+			A2B.x = A2B.x / 2;
+			A2B.y = A2B.y / 2;
+
+			Vector2 verticalA2B = {A2B.x, -A2B.y};
+			if (A2B.x > 0) {
+			}
+			// 通常時の回転で使う四つ目の点を求める
+			RotateRootPos_ = clickPlayerPos_ + A2B /*markerPos_ - preMark2Pos_distance*/;
+			RotateRootPos_ += verticalA2B;
+		}
 
 		RotateRootPos_ = markerPos_ - preMark2Pos_distance;
-		
-		
-		
 
-	} 
+	}
 	
-	
+	// 
 	if (!isMove_) {
 		if (!isRootMove_) {
 
