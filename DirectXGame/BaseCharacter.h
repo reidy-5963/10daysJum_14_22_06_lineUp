@@ -24,6 +24,8 @@ public:
 	/// </summary>
 	virtual void Draw();
 
+	bool IsMove() { return isMove_; }
+
 	/// <summary>
 	/// 衝突処理
 	/// </summary>
@@ -59,6 +61,10 @@ protected:
 	// テクスチャ
 	uint32_t charaTex_ = 0u;
 	// 位置
+	Vector2 pos_{}; 
+	
+	// 動くときのフラグ
+	bool isMove_ = false;
 	Vector2 pos_{};
 
 	float radius_;
