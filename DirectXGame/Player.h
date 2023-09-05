@@ -59,6 +59,10 @@ private: // メンバ変数
 	Vector2 markerPos_{};
 	Vector2 preMarkerPos_{};
 
+	Vector2 RotateRootPos_[4];
+	float root_t_ = 0.0f;
+	bool isRootMove_ = false;
+
 	// 前フレーム時の位置
 	Vector2 clickPos_{};
 

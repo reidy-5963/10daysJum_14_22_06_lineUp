@@ -1,5 +1,6 @@
 ﻿#pragma once
 #include "BaseCharacter.h"
+#include <list>
 
 /// <summary>
 /// しっぽ
@@ -24,22 +25,26 @@ public: // メンバ関数
 	/// </summary>
 	void Draw();
 
+	/// <summary>
+	/// 尻尾番号の取得
+	/// </summary>
+	/// <returns>尻尾番号</returns>
 	const int GetTailNo() { return tailNo_; }
 
+	/// <summary>
+	/// 位置の取得
+	/// </summary>
+	/// <returns>位置</returns>
 	const Vector2 *GetPosition() { return &pos_; }
 
+	/// <summary>
+	/// プレイヤーが動いているかのフラグ取得
+	/// </summary>
+	/// <param name="isMove">プレイヤーが動いているか</param>
 	void SetIsMove(bool isMove) { isPlayerMove_ = isMove; }
 
-	void SetVelosity(Vector2 velo) { velo_ = velo;
-	}
-
-	//const float* GetT() { return t_; }
-	//void SetT(const float* t) { t_ = t; }
-
 private: // メンバ変数
-	const int setPrePosTime = 10;
-	int prePosTimer = setPrePosTime;
-
+	// 
 	Vector2 prePos_;
 	// 親の位置
 	const Vector2* parentPos_;

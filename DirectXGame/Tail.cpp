@@ -1,6 +1,7 @@
 ﻿#include "Tail.h"
 #include "MyMath.h"
 #include "ImGuiManager.h"
+#include <cmath>
 
 /// <summary>
 /// 初期化処理
@@ -28,13 +29,13 @@ void Tail::Initialize(uint32_t texture,const Vector2* parent, int tailNo) {
 }
 
 void Tail::Update() {
-	// もし
+	// もしプレイヤーが動いていたら
 	if (isPlayerMove_) {
 		isMove_ = true;
 	}
 	// もし動いているとき
 	if (isMove_) {
-		// 媒介変数tが0.0f ~ 1.0f
+		// 媒介変数t(0.0f ~ 1.0f)
 		if (t_ > 1.0f) {
 			t_ = 1.0f;
 			isMove_ = false;
@@ -58,14 +59,16 @@ void Tail::Update() {
 
 	}
 
+	Vector2 move = velo_ - prePos_;
+
 	// 位置の更新処理
 	sprite_->SetPosition(pos_);
+	sprite_->SetRotation(std::atan2(move.y, move.x));
 
 	ImGui::Begin("debug");
 	ImGui::Text("%f, %f", prePos_.x, prePos_.y);
 	ImGui::Text("%f, %f", parentPos_->x, parentPos_->y);
 	ImGui::Text("%f", t_);
-
 	ImGui::End();
 
 }
