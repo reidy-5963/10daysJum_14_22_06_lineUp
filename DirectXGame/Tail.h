@@ -100,6 +100,9 @@ public: // セッター
 	/// </summary>
 	/// <param name="player">プレイヤー</param>
 	void SetPlayer(Player* player) { player_ = player; }
+
+	void SetBulletRad(float radian) { offsetRadian = radian;
+	}
 #pragma endregion
 
 private: // メンバ変数
@@ -133,5 +136,5 @@ private: // メンバ変数
 	// プレイヤー
 	Player* player_;
 
-	float offsetRadian = 0.4f;
+	float offsetRadian = 2.0f;
 };

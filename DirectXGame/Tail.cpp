@@ -98,7 +98,7 @@ void Tail::Fire() {
 
 			// 実際に加算する値
 			float fireBulletRad = std::atan2(direction_.y, direction_.x);
-
+			float minrad = fireBulletRad - offsetRadian / 2;
 			float tamanoaida = offsetRadian / float(tailNo_ + 2);
 
 			for (int i = 0; i < tailNo_ + 1; i++) {
@@ -107,7 +107,7 @@ void Tail::Fire() {
 				// 尻尾の進行方向から弾の撃つ向きを計算
 
 				Matrix3x3 rotateMat =
-				    MyMath::MakeRotateMatrix(fireBulletRad - (float(i) * tamanoaida));
+				    MyMath::MakeRotateMatrix(minrad + (float(i) * tamanoaida));
 				// 実際に動く値で平行移動行列を生成
 				Matrix3x3 moveMat = MyMath::MakeTranslateMatrix(move);
 				// 回転行列と平行移動行列を合成

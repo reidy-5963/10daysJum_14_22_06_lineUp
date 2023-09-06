@@ -175,6 +175,7 @@ void Player::Update() {
 
 	// 尻尾の更新処理
 	for (Tail* tail : tails_) {
+		tail->SetBulletRad(radian);
 		tail->Update();
 	}
 
@@ -195,7 +196,7 @@ void Player::Update() {
 #ifdef _DEBUG
 	ImGui::Begin("debug");
 	ImGui::Text("%f", root_t_);
-
+	ImGui::DragFloat("radian", &radian, 0.1f, 2.0f);
 	ImGui::End();
 #endif // DEBUG
     
