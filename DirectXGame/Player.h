@@ -146,5 +146,5 @@ private: // メンバ変数
 	// 尻尾の数
 	const int kMaxTail_ = 6;
 
-	float radian = 0.1f;
+	float radian = 1.0f;
 };
