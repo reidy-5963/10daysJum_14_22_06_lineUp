@@ -15,6 +15,7 @@
 #include "BaseScene.h"
 #include "Player.h"
 #include "Enemy.h"
+#include "BossEnemy.h"
 
 
 /// <summary>
@@ -71,5 +72,8 @@ private: // メンバ変数
 	int kEnemyLimit = 8;
 	int kRespownTimer = 180;
 	int respownCount = kRespownTimer;
+
+	// ボス
+	std::unique_ptr<BossEnemy> boss_ = nullptr;
 
 };

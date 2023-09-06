@@ -23,6 +23,12 @@ void GameScene::Initialize() {
 	player_ = std::make_unique<Player>();
 	// プレイヤーの初期化処理
 	player_->Initialize();
+
+	// ボス生成
+	//boss_ = std::make_unique<BossEnemy>();
+	// 初期化
+	//boss_->Initialize();
+
 }
 
 void GameScene::Update() {
@@ -46,6 +52,9 @@ void GameScene::Update() {
 
 	// 当たり判定
 	CheckAllCollision();
+
+	// ボスの更新処理
+	//boss_->Update();
 
 }
 
@@ -95,6 +104,9 @@ void GameScene::Draw() {
 
 	// プレイヤーの描画処理
 	player_->Draw();
+
+	// ボスの描画
+	//boss_->Draw();
 
 	// スプライト描画後処理
 	Sprite::PostDraw();
