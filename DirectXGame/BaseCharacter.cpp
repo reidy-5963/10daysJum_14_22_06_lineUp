@@ -1,6 +1,7 @@
 #include "BaseCharacter.h"
+#include "Scroll.h"
 
-/// <summary>
+    /// <summary>
 /// 初期化処理
 /// </summary>
 void BaseCharacter::Initialize() {}
@@ -8,7 +9,11 @@ void BaseCharacter::Initialize() {}
 /// <summary>
 /// 更新処理
 /// </summary>
-void BaseCharacter::Update() {}
+void BaseCharacter::Update() { 
+	Scroll* scroll = Scroll::GetInstance();
+
+	sprite_->SetPosition(pos_ - scroll->GetAddScroll());
+}
 
 /// <summary>
 /// 描画処理

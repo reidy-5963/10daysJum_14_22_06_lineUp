@@ -24,6 +24,10 @@ void GameScene::Initialize() {
 	// プレイヤーの初期化処理
 	player_->Initialize();
 
+	scroll_ = Scroll::GetInstance(); 
+	scroll_->Initialize();
+	scroll_->SetTarget(&player_->GetPosition());
+	scroll_->SetEdgePos({WinApp::kWindowWidth / 2, WinApp::kWindowHeight / 2});
 	// ボス生成
 	//boss_ = std::make_unique<BossEnemy>();
 	// 初期化
@@ -32,6 +36,8 @@ void GameScene::Initialize() {
 }
 
 void GameScene::Update() {
+	scroll_->Update();
+
 	// 消去処理
 	enemys_.remove_if([](Enemy* enemy) {
 		if (enemy->GetIsDead()) {

@@ -19,7 +19,7 @@ void PlayerBullet::Update() {
 
 	sprite_->SetSize({16.0f, 16.0f});
 
-	sprite_->SetPosition(pos_);
+	BaseBullet::Update();
 }
 
 void PlayerBullet::Draw() { 

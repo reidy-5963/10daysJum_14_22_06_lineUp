@@ -8,6 +8,7 @@
 /// 弾のベースクラス
 /// </summary>
 class BaseBullet {
+public: // メンバ変数
 	/// <summary>
 	/// 初期化処理
 	/// </summary>

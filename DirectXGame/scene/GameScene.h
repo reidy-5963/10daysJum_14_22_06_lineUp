@@ -16,7 +16,7 @@
 #include "Player.h"
 #include "Enemy.h"
 #include "BossEnemy.h"
-
+#include "Scroll.h"
 
 /// <summary>
 /// ゲームシーン
@@ -76,4 +76,5 @@ private: // メンバ変数
 	// ボス
 	std::unique_ptr<BossEnemy> boss_ = nullptr;
 
+	Scroll* scroll_;
 };

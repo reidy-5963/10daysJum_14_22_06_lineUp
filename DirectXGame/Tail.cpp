@@ -46,7 +46,7 @@ void Tail::Update() {
 	DirectionUpdate();
 	
 	// 位置の更新処理
-	sprite_->SetPosition(pos_);
+	BaseCharacter::Update();
 	sprite_->SetRotation(std::atan2(direction_.y, direction_.x));
 	
 	// 弾の発射処理

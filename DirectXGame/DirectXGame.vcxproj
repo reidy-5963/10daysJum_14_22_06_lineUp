@@ -120,6 +120,7 @@
     <ClCompile Include="PlayerBullet.cpp" />
     <ClCompile Include="SceneManager.cpp" />
     <ClCompile Include="scene\GameScene.cpp" />
+    <ClCompile Include="Scroll.cpp" />
     <ClCompile Include="Tail.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -162,6 +163,7 @@
     <ClInclude Include="PlayerBullet.h" />
     <ClInclude Include="SceneManager.h" />
     <ClInclude Include="scene\GameScene.h" />
+    <ClInclude Include="Scroll.h" />
     <ClInclude Include="Tail.h" />
   </ItemGroup>
   <ItemGroup>

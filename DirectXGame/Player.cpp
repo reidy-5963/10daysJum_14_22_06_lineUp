@@ -6,6 +6,7 @@
 #include <cassert>
 #include <complex>
 #include <cmath>
+#include "Scroll.h"
 
 /// <summary>
 /// コンストラクタ
@@ -199,16 +200,17 @@ void Player::Update() {
 	ImGui::DragFloat("radian", &radian, 0.1f, 2.0f);
 	ImGui::End();
 #endif // DEBUG
-    
-	// 自機の位置を反映させる
-	sprite_->SetPosition(pos_);
+	BaseCharacter::Update(); 
+	
 	// 向きの計算
 	Vector2 move = bezierEndPos_ - bezierStartPos_;
 	// 自機の回転を反映させる
 	sprite_->SetRotation(std::atan2(move.y, move.x));
 	
+	
+	Scroll* scroll = Scroll::GetInstance();
 	// マーカーの位置を反映させる
-	markerSprite_->SetPosition(markerPos_);
+	markerSprite_->SetPosition(markerPos_ - scroll->GetAddScroll());
 }
 
 void Player::KeyMove() { // 移動距離
@@ -302,6 +304,9 @@ void Player::CursorUpdate() {
 	// クライアントエリア座標に変換する
 	HWND hwnd = WinApp::GetInstance()->GetHwnd();
 	ScreenToClient(hwnd, &mousePos);
+	Scroll* scroll = Scroll::GetInstance();
+	mousePos.x = mousePos.x + LONG(scroll->GetAddScroll().x);
+	mousePos.y = mousePos.y + LONG(scroll->GetAddScroll().y);
 }
 
 void Player::CountT(float& t, const float endT, bool& flag, const bool setFlag, float offset) {

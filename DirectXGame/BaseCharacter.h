@@ -53,7 +53,7 @@ public:
 	/// 座標のGetter
 	/// </summary>
 	/// <returns></returns>
-	Vector2 GetPosition() { return pos_; }
+	Vector2 &GetPosition() { return pos_; }
 
 	/// <summary>
 	/// 半径のSetter

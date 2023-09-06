@@ -20,7 +20,7 @@ void Enemy::Update()
 { 
 
 	// 座標設定
-	sprite_->SetPosition(pos_);
+	BaseCharacter::Update();
 }
 
 void Enemy::Draw() 
