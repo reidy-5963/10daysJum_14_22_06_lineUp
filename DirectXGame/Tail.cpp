@@ -160,7 +160,7 @@ void Tail::MoveUpdate() {
 
 Vector2 Tail::BulletDirectionInitialize(Vector2 move) {
 	// 実際に加算する値
-	Vector2 move = {0.0f, -1.0f};
+	Vector2 result = {0.0f, -1.0f};
 	// 進行方向をもとに回転行列の生成
 	Matrix3x3 rotateMat = MyMath::MakeRotateMatrix(std::atan2(direction_.y, direction_.x));
 	// 実際に動く値で平行移動行列を生成
@@ -168,7 +168,7 @@ Vector2 Tail::BulletDirectionInitialize(Vector2 move) {
 	// 回転行列と平行移動行列を合成
 	moveMat = MyMath::Multiply(moveMat, rotateMat);
 	// 合成した行列から移動成分のみ取得
-	move = {moveMat.m[2][0], moveMat.m[2][1]};
+	result = {moveMat.m[2][0], moveMat.m[2][1]};
 
-	return move;
+	return result;
 }

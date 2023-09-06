@@ -45,11 +45,17 @@ public: // メンバ関数
 	/// </summary>
 	void OnCollision() override;
 
-public: // メンバ関数
+public: // 追加関数
 	/// <summary>
 	/// 尻尾の追加
 	/// </summary>
 	void AddTails();
+
+	/// <summary>
+	/// 尻尾の追加
+	/// </summary>
+	void DeleteTails();
+
 
 	/// <summary>
 	/// 弾の追加
@@ -57,6 +63,7 @@ public: // メンバ関数
 	/// <param name="bullet">追加する弾</param>
 	void AddBullets(PlayerBullet* bullet);
 
+public: // ゲッター
 	/// <summary>
 	/// 弾テクスチャの取得
 	/// </summary>

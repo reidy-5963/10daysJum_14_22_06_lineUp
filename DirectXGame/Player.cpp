@@ -180,12 +180,16 @@ void Player::Update() {
 	Vector2 move = bezierEndPos_ - bezierStartPos_;
 	sprite_->SetRotation(std::atan2(move.y, move.x));
 
-	if (input_->TriggerKey(DIK_SPACE)) {
+	if (input_->TriggerKey(DIK_1) && tails_.size() < 7) {
 		AddTails();
 	}
 
-	for (Tail* tail : tails_) {
+	if (input_->TriggerKey(DIK_2) &&tails_.size() > 0) {
+		DeleteTails();
+	}
 
+
+	for (Tail* tail : tails_) {
 		tail->Update();
 	}
 
@@ -239,6 +243,7 @@ void Player::KeyMove() { // 移動距離
 /// 描画処理
 /// </summary>
 void Player::Draw() {
+	// 弾の描画
 	for (PlayerBullet* bullet : bullets_) {
 		bullet->Draw();
 	}
@@ -255,19 +260,35 @@ void Player::Draw() {
 }
 
 void Player::AddTails() {
+	// 新しい尻尾の生成
 	Tail* newTail = new Tail();
-
+	
+	// そうでなければ
 	if (tails_.size() != 0) {
+		// 一個前の尻尾の位置を親として初期化
 		newTail->Initialize(
 		    tailTexture_, tails_.back()->GetPosition(), (tails_.back()->GetTailNo() + 1));
-	} else {
+	} 	
+	// もし最初の尻尾なら
+	else {
+		// プレイヤーの位置を親として初期化
 		newTail->Initialize(tailTexture_, &pos_, 0);
 	}
 	
+	// プレイヤーのポインタを設定
 	newTail->SetPlayer(this);
+	
+	// リストに追加
 	tails_.push_back(newTail);
 }
 
-void Player::AddBullets(PlayerBullet* bullet) { bullets_.push_back(bullet); }
+void Player::DeleteTails() { 
+	tails_.pop_back(); 
+}
+
+void Player::AddBullets(PlayerBullet* bullet) { 
+	// 弾をリストに追加
+	bullets_.push_back(bullet); 
+}
 
 void Player::OnCollision() { AddTails(); }
