@@ -132,4 +132,6 @@ private: // メンバ変数
 
 	// プレイヤー
 	Player* player_;
+
+	float offsetRadian = 0.4f;
 };
