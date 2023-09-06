@@ -70,11 +70,6 @@ void Tail::Fire() {
 	// タイマーカウント
 	BulletTimerCount();
 
-	//
-
-
-	//
-
 	// もしフラグが有効なら
 	if (isFire_) {
 		if (tailNo_ == 0) {
