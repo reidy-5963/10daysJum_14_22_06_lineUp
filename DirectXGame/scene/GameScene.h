@@ -77,4 +77,8 @@ private: // メンバ変数
 	std::unique_ptr<BossEnemy> boss_ = nullptr;
 
 	Scroll* scroll_;
+
+	std::unique_ptr<Sprite> back;
+	uint32_t backTex;
+	Vector2 backPos = {0.0f, 0.0f};
 };

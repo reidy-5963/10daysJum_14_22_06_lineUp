@@ -21,7 +21,7 @@ void Scroll::Update() {
 	}
 	//
 	if (target_->y >= float(WinApp::kWindowHeight) * float(heightMax) + edgePos_.y) {
-		addScroll.x = float(WinApp::kWindowHeight) * float(heightMax);
+		addScroll.y = float(WinApp::kWindowHeight) * float(heightMax);
 	} else if (target_->y >= edgePos_.y) {
 		addScroll.y = target_->y - edgePos_.y;
 	}

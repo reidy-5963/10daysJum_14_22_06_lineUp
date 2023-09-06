@@ -5,6 +5,7 @@
 #include <cmath>
 #include <time.h>
 #include <stdlib.h>
+#include "Scroll.h"
 
 GameScene::GameScene() {}
 
@@ -32,7 +33,13 @@ void GameScene::Initialize() {
 	//boss_ = std::make_unique<BossEnemy>();
 	// 初期化
 	//boss_->Initialize();
+	backTex = TextureManager::Load("testBackTex.png");
+	back.reset(Sprite::Create(backTex, {0.0f, 0.0f}, {1.0f, 1.0f, 1.0f, 1.0f}, {0.0f, 0.0f}));
+	Vector2 size = back->GetSize();
+	back->SetSize({size.x * 1.5f, size.y * 1.5f});
 
+
+	
 }
 
 void GameScene::Update() {
@@ -61,7 +68,9 @@ void GameScene::Update() {
 
 	// ボスの更新処理
 	//boss_->Update();
+	Scroll* scroll = Scroll::GetInstance();
 
+	back->SetPosition(backPos - scroll->GetAddScroll());
 }
 
 void GameScene::Draw() {
@@ -76,7 +85,7 @@ void GameScene::Draw() {
 	/// <summary>
 	/// ここに背景スプライトの描画処理を追加できる
 	/// </summary>
-
+	back->Draw();
 	// スプライト描画後処理
 	Sprite::PostDraw();
 	// 深度バッファクリア
