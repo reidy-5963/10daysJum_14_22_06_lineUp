@@ -32,11 +32,27 @@ public: // メンバ関数
 	/// </summary>
 	void Fire();
 
+	/// <summary>
+	/// 弾間隔のカウンター
+	/// </summary>
 	void BulletTimerCount();
 
+	/// <summary>
+	/// 進行方向の更新処理
+	/// </summary>
 	void DirectionUpdate();
 
+	/// <summary>
+	/// 尻尾の動きの更新処理
+	/// </summary>
 	void MoveUpdate();
+
+	/// <summary>
+	/// 弾を打ち出す向きを求める
+	/// </summary>
+	/// <param name="move">上を-y, 右を+xとして進む値</param>
+	/// <returns>弾を打ち出す向き</returns>
+	Vector2 BulletDirectionInitialize(Vector2 move);
 
 public: // ゲッター
 #pragma region ゲッター
@@ -87,24 +103,33 @@ public: // セッター
 #pragma endregion
 
 private: // メンバ変数
-	// 
-	Vector2 prePos_;
 	// 親の位置
 	const Vector2* parentPos_;
+	// 線形補間するときの終わり位置
 	Vector2 lerpEndPos_;
 
+	// 動き出す前にいた位置
+	Vector2 prePos_;
+
+	// 尻尾の進行方向
 	Vector2 direction_{};
+	
 	// 何番目の尻尾か
 	int tailNo_ = -1;
 
+	// 動くときのための線形補完
 	float t_;
+
+	// プレイヤー(頭)がうごいているかフラグ
 	bool isPlayerMove_ = false;
 	
 	// 弾発射フラグ
 	bool isFire_ = false;
 
+	// 弾を打ち出す間隔のタイマー
 	const int kBulletTime = 60;
 	int bulletTimer_ = kBulletTime;
 
+	// プレイヤー
 	Player* player_;
 };
