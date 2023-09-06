@@ -14,8 +14,8 @@ void PlayerBullet::Initialize(uint32_t texture, const Vector2& pos, Vector2 velo
 
 void PlayerBullet::Update() { 
 	
-	pos_.x += velocity_.x * 5.0f;
-	pos_.y += velocity_.y * 5.0f;
+	pos_.x += velocity_.x * 20.0f;
+	pos_.y += velocity_.y * 20.0f;
 
 	sprite_->SetSize({16.0f, 16.0f});
 

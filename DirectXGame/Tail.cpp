@@ -95,7 +95,19 @@ void Tail::Fire() {
 	if (isFire_) {
 		// 尻尾の進む向きから弾を打ち出す向きを計算
 		Vector2 tailDirection = GetDirection();
-		Vector2 bulletDirection{tailDirection.x, tailDirection.y};
+		Vector2 bulletDirection{};
+		if (tailDirection.x > 0 && tailDirection.y > 0) {
+			bulletDirection = {tailDirection.x, -tailDirection.y};
+		} 
+		else if (tailDirection.x > 0 && tailDirection.y < 0) {
+			bulletDirection = {-tailDirection.x, tailDirection.y};
+		} 
+		else if (tailDirection.x < 0 && tailDirection.y > 0) {
+			bulletDirection = {-tailDirection.x, tailDirection.y};
+		} 
+		else if (tailDirection.x < 0 && tailDirection.y < 0) {
+			bulletDirection = {tailDirection.x, -tailDirection.y};
+		}
 		
 		PlayerBullet* newBullet = new PlayerBullet();
 		newBullet->Initialize(player_->GetBulletTex(), *GetPosition(), bulletDirection);

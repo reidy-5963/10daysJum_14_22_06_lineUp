@@ -198,6 +198,26 @@ Matrix4x4 MyMath::MakeTranslateMatrix(const Vector3 translate) {
 
 	return result;
 }
+Matrix3x3 MyMath::MakeTranslateMatrix(const Vector2 translate) { 
+	
+	
+	Matrix3x3 result{};
+
+	for (int i = 0; i < 3; i++) {
+		for (int j = 0; j < 3; j++) {
+			result.m[i][j] = 0;
+		}
+	}
+
+	result.m[0][0] = 1;
+	result.m[1][1] = 1;
+	result.m[2][2] = 1;
+
+	result.m[2][0] = translate.x;
+	result.m[2][1] = translate.y;
+
+	return result;
+}
 Matrix4x4 MyMath::MakeScaleMatrix(const Vector3 scale) {
 	Matrix4x4 result{};
 
@@ -212,6 +232,21 @@ Matrix4x4 MyMath::MakeScaleMatrix(const Vector3 scale) {
 	result.m[3][3] = 1;
 
 	return result;
+}
+Matrix3x3 MyMath::MakeScaleMatrix(const Vector2 scale) { 
+	Matrix3x3 result{};
+
+	for (int i = 0; i < 3; i++) {
+		for (int j = 0; j < 3; j++) {
+			result.m[i][j] = 0;
+		}
+	}
+	result.m[0][0] = scale.x;
+	result.m[1][1] = scale.y;
+	result.m[2][2] = 1;
+
+	return result;
+
 }
 Matrix4x4 MyMath::MakeRotateXMatrix(float radian) {
 	Matrix4x4 result{ };
@@ -249,6 +284,17 @@ Matrix4x4 MyMath::MakeRotateZMatrix(float radian) {
 	result.m[2][2] = 1;
 	result.m[3][3] = 1;
 
+
+	return result;
+}
+Matrix3x3 MyMath::MakeRotateMatrix(float radian) {
+	Matrix3x3 result{};
+
+	result.m[0][0] = std::cos(radian);
+	result.m[1][0] = -(std::sin(radian));
+	result.m[0][1] = std::sin(radian);
+	result.m[1][1] = std::cos(radian);
+	result.m[2][2] = 1;
 
 	return result;
 }

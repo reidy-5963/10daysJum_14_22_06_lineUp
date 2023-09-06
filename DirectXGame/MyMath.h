@@ -5,6 +5,7 @@
 #include "Vector3.h"
 #include "Vector4.h"
 #include "Matrix4x4.h"
+#include "Matrix3x3.h"
 
 
 /// <summary>
@@ -146,11 +147,24 @@ public:
 	static Matrix4x4 MakeTranslateMatrix(const Vector3 translate);
 
 	/// <summary>
+	/// 平行移動行列の作成
+	/// </summary>
+	/// <param name="translate">ベクトル</param>
+	/// <returns></returns>
+	static Matrix3x3 MakeTranslateMatrix(const Vector2 translate);
+
+	/// <summary>
 	/// 拡大縮小行列の作成
 	/// </summary>
 	/// <param name="scale">ベクトル</param>
 	/// <returns></returns>
 	static Matrix4x4 MakeScaleMatrix(const Vector3 scale);
+	/// <summary>
+	/// 拡大縮小行列の作成
+	/// </summary>
+	/// <param name="scale">ベクトル</param>
+	/// <returns></returns>
+	static Matrix3x3 MakeScaleMatrix(const Vector2 scale);
 
 	/// <summary>
 	/// X軸回転行列の作成
@@ -172,6 +186,12 @@ public:
 	/// <param name="radian">zラジアン</param>
 	/// <returns></returns>
 	static Matrix4x4 MakeRotateZMatrix(float radian);
+	/// <summary>
+	/// 回転行列の作成
+	/// </summary>
+	/// <param name="radian">zラジアン</param>
+	/// <returns></returns>
+	static Matrix3x3 MakeRotateMatrix(float radian);
 
 	/// <summary>
 	/// アフィン変換
