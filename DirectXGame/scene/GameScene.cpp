@@ -1,5 +1,6 @@
 #include "GameScene.h"
 #include "TextureManager.h"
+#include "ImGuiManager.h"
 #include <cassert>
 #include <cmath>
 #include <time.h>
@@ -34,19 +35,7 @@ void GameScene::Update() {
 		return false;
 	});
 
-	// 生成（仮
-	respownCount--;
-	if (respownCount == 0) {
-		Enemy* newEnemy = new Enemy();
-		newEnemy->Initialize();
-		Vector2 res = {
-		    float(rand() % 1280 + newEnemy->GetRadius()),
-		    float(rand() % 720 + newEnemy->GetRadius())};
-		newEnemy->SetPosition(res);
-		enemys_.push_back(newEnemy);
-		respownCount = kRespownTimer;
-	}
-
+	EnemyManager();
 
 	// プレイヤーの更新処理
 	player_->Update();
@@ -120,6 +109,7 @@ void GameScene::CheckAllCollision()
 
 	const std::list<PlayerBullet*>& playerBullet = player_->GetBullets();
 
+	// プレイヤーと敵の衝突判定
 	targetA = player_->GetPosition();
 	for (Enemy* enemy : enemys_) {
 		targetB = enemy->GetPosition();
@@ -135,7 +125,7 @@ void GameScene::CheckAllCollision()
 		}
 	}
 
-
+	// プレイヤーの弾と敵の衝突判定
 	for (PlayerBullet* playerBullet_ : playerBullet) {
 		targetA = playerBullet_->GetPosition();
 		for (Enemy* enemy : enemys_) {
@@ -154,4 +144,24 @@ void GameScene::CheckAllCollision()
 
 	}
 
+}
+
+void GameScene::EnemyManager() { 
+	ImGui::Begin("EnemySetting");
+	ImGui::DragInt("Limit", &kEnemyLimit, 1, 0, 20);
+	ImGui::DragInt("Respown", &kRespownTimer, 1, 0, 300);
+	ImGui::End();
+
+		// 生成（仮
+	respownCount--;
+	if (respownCount == 0 && enemys_.size() < kEnemyLimit) {
+		Enemy* newEnemy = new Enemy();
+		newEnemy->Initialize();
+		Vector2 res = {
+		    float(rand() % 1280 + newEnemy->GetRadius()),
+		    float(rand() % 720 + newEnemy->GetRadius())};
+		newEnemy->SetPosition(res);
+		enemys_.push_back(newEnemy);
+		respownCount = kRespownTimer;
+	}
 }

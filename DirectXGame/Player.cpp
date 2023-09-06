@@ -189,7 +189,7 @@ void Player::Update() {
 		tail->Update();
 	}
 
-
+	// 弾の消去
 	bullets_.remove_if([](PlayerBullet* bullet) {
 		if (bullet->GetIsDead()) {
 			delete bullet;

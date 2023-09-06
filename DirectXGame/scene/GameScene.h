@@ -51,6 +51,8 @@ public: // メンバ関数
 
 	void CheckAllCollision();
 
+	void EnemyManager();
+
 private: // メンバ変数
 	DirectXCommon* dxCommon_ = nullptr;
 	Input* input_ = nullptr;
@@ -66,7 +68,8 @@ private: // メンバ変数
 	// エネミー
 	std::list<Enemy*> enemys_;
 
-	const int kRespownTimer = 180;
+	int kEnemyLimit = 8;
+	int kRespownTimer = 180;
 	int respownCount = kRespownTimer;
 
 };
