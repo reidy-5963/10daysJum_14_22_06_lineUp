@@ -180,11 +180,11 @@ void Player::Update() {
 	Vector2 move = bezierEndPos_ - bezierStartPos_;
 	sprite_->SetRotation(std::atan2(move.y, move.x));
 
-	if (input_->TriggerKey(DIK_1) && tails_.size() < 7) {
+	if (input_->TriggerKey(DIK_1)) {
 		AddTails();
 	}
 
-	if (input_->TriggerKey(DIK_2) &&tails_.size() > 0) {
+	if (input_->TriggerKey(DIK_2)) {
 		DeleteTails();
 	}
 
@@ -260,30 +260,35 @@ void Player::Draw() {
 }
 
 void Player::AddTails() {
-	// 新しい尻尾の生成
-	Tail* newTail = new Tail();
-	
-	// そうでなければ
-	if (tails_.size() != 0) {
-		// 一個前の尻尾の位置を親として初期化
-		newTail->Initialize(
-		    tailTexture_, tails_.back()->GetPosition(), (tails_.back()->GetTailNo() + 1));
-	} 	
-	// もし最初の尻尾なら
-	else {
-		// プレイヤーの位置を親として初期化
-		newTail->Initialize(tailTexture_, &pos_, 0);
+	if (tails_.size() < kMaxTail_) {
+		// 新しい尻尾の生成
+		Tail* newTail = new Tail();
+
+		// そうでなければ
+		if (tails_.size() != 0) {
+			// 一個前の尻尾の位置を親として初期化
+			newTail->Initialize(
+			    tailTexture_, tails_.back()->GetPosition(), (tails_.back()->GetTailNo() + 1));
+		}
+		// もし最初の尻尾なら
+		else {
+			// プレイヤーの位置を親として初期化
+			newTail->Initialize(tailTexture_, &pos_, 0);
+		}
+
+		// プレイヤーのポインタを設定
+		newTail->SetPlayer(this);
+
+		// リストに追加
+		tails_.push_back(newTail);
+
 	}
-	
-	// プレイヤーのポインタを設定
-	newTail->SetPlayer(this);
-	
-	// リストに追加
-	tails_.push_back(newTail);
 }
 
 void Player::DeleteTails() { 
-	tails_.pop_back(); 
+	if (tails_.size() > 0) {
+		tails_.pop_back();
+	}
 }
 
 void Player::AddBullets(PlayerBullet* bullet) { 

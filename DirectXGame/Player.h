@@ -131,4 +131,6 @@ private: // メンバ変数
 	std::list<Tail*> tails_;
 	// 尻尾テクスチャ
 	uint32_t tailTexture_ = 0u;
+
+	const int kMaxTail_ = 6;
 };
