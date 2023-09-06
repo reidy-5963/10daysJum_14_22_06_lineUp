@@ -64,7 +64,9 @@ void Tail::Update() {
 
 	}
 
-	direction_ = lerpEndPos_ - prePos_;
+	direction_.x = parentPos_->x - pos_.x;
+	direction_.y = parentPos_->y - pos_.y;
+
 	direction_ = MyMath::Normalize(direction_);
 	// 位置の更新処理
 	sprite_->SetPosition(pos_);
