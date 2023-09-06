@@ -27,6 +27,9 @@ public: // メンバ関数
 	/// </summary>
 	void Draw();
 
+	/// <summary>
+	/// 弾の発射処理
+	/// </summary>
 	void Fire();
 
 	/// <summary>
@@ -41,21 +44,36 @@ public: // メンバ関数
 	/// <returns>位置</returns>
 	const Vector2 *GetPosition() { return &pos_; }
 	
+	/// <summary>
+	/// 攻撃フラグの取得
+	/// </summary>
+	/// <returns>攻撃フラグ</returns>
 	bool IsFire() { return isFire_; }
 
+	/// <summary>
+	///  尻尾の進行方向の取得
+	/// </summary>
+	/// <returns>尻尾の進行方向</returns>
 	Vector2 GetDirection() { return direction_; }
 
  
 	/// <summary>
-	/// プレイヤーが動いているかのフラグ取得
+	/// プレイヤーが動いているかのフラグ設定
 	/// </summary>
 	/// <param name="isMove">プレイヤーが動いているか</param>
 	void SetIsMove(bool isMove) { isPlayerMove_ = isMove; }
 
+	/// <summary>
+	/// 攻撃フラグの設定
+	/// </summary>
+	/// <param name="isFire">攻撃フラグ</param>
 	void SetIsFire(bool isFire) { isFire_ = isFire; }
 
+	/// <summary>
+	/// プレイヤーの設定
+	/// </summary>
+	/// <param name="player">プレイヤー</param>
 	void SetPlayer(Player* player) { player_ = player; }
-
 
 private: // メンバ変数
 	// 

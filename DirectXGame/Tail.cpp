@@ -80,9 +80,9 @@ void Tail::Update() {
 	Fire();
 }
 
-void Tail::Draw() { 
+void Tail::Draw() {
 	//
-	sprite_->Draw(); 
+	sprite_->Draw();
 }
 
 void Tail::Fire() {
@@ -95,44 +95,48 @@ void Tail::Fire() {
 
 
 	if (isFire_) {
-		// 尻尾の進む向きから弾を打ち出す向きを計算
-		Vector2 tailDirection = GetDirection();
-		Vector2 bulletDirection{};
-		if (tailDirection.x > 0 && tailDirection.y > 0) {
-			bulletDirection = {tailDirection.x, -tailDirection.y};
-		} 
-		else if (tailDirection.x > 0 && tailDirection.y < 0) {
-			bulletDirection = {-tailDirection.x, tailDirection.y};
-		} 
-		else if (tailDirection.x < 0 && tailDirection.y > 0) {
-			bulletDirection = {-tailDirection.x, tailDirection.y};
-		} 
-		else if (tailDirection.x < 0 && tailDirection.y < 0) {
-			bulletDirection = {tailDirection.x, -tailDirection.y};
-		}
+		//** 尻尾の進む向きから弾を打ち出す向きを計算 **//
+
+		// 実際に加算する値
 		Vector2 move = {0.0f, -1.0f};
+		// 進行方向をもとに回転行列の生成
 		Matrix3x3 rotateMat = MyMath::MakeRotateMatrix(std::atan2(direction_.y, direction_.x));
+		// 実際に動く値で平行移動行列を生成
 		Matrix3x3 moveMat = MyMath::MakeTranslateMatrix(move);
+		// 回転行列と平行移動行列を合成
 		moveMat = MyMath::Multiply(moveMat, rotateMat);
+		// 合成した行列から移動成分のみ取得
 		move = {moveMat.m[2][0], moveMat.m[2][1]};
-		
+
+		//*****************************************//
+
+		// 弾の生成
 		PlayerBullet* newBullet = new PlayerBullet();
+		// 弾の初期化処理
 		newBullet->Initialize(player_->GetBulletTex(), *GetPosition(), move);
+		// 弾をリストに追加
 		player_->AddBullets(newBullet);
-		
+		// フラグを無効に
 		isFire_ = false;
 	}
+	// もしフラグが無効なら
 	else if (!isFire_) {
-
+		// 尻尾とマーカーの当たり判定
 		Vector2 Tail2Marker_distance;
+		// 尻尾からマーカーまでのベクトル
 		Tail2Marker_distance.x = player_->GetMarkerPos().x - pos_.x;
 		Tail2Marker_distance.y = player_->GetMarkerPos().y - pos_.y;
+
+		// 当たり判定の計算
 		float distance =
 		    std::sqrtf(std::powf(Tail2Marker_distance.x, 2) + std::powf(Tail2Marker_distance.y, 2));
 		float radius = (32 + GetRadius());
 
+		// もし尻尾とマーカーが当たっていれば
 		if (distance <= radius && bulletTimer_ <= 0) {
+			//攻撃フラグを有効
 			SetIsFire(true);
+			// タイマーセット
 			bulletTimer_ = kBulletTime;
 
 		}

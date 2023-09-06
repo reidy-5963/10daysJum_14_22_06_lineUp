@@ -45,11 +45,28 @@ public: // メンバ関数
 	/// </summary>
 	void OnCollision() override;
 
-public:
-
+public: // メンバ関数
+	/// <summary>
+	/// 尻尾の追加
+	/// </summary>
 	void AddTails();
+
+	/// <summary>
+	/// 弾の追加
+	/// </summary>
+	/// <param name="bullet">追加する弾</param>
 	void AddBullets(PlayerBullet* bullet);
+
+	/// <summary>
+	/// 弾テクスチャの取得
+	/// </summary>
+	/// <returns>弾テクスチャ</returns>
 	uint32_t GetBulletTex() { return bulletTexture_; }
+
+	/// <summary>
+	/// マーカーの位置の取得
+	/// </summary>
+	/// <returns></returns>
 	Vector2 GetMarkerPos() { return markerPos_; }
 
 	/// <summary>
@@ -63,14 +80,26 @@ private: // メンバ変数
 	Input* input_ = nullptr;
 	// マウス位置
 	POINT mousePos;
-	
-	// マーカー(前フレーム分も取得)
-	Vector2 markerPos_{};
-	Vector2 preMarkerPos_{};
 
+#pragma region マーカー
+	// マーカーのスプライト
+	std::unique_ptr<Sprite> markerSprite_ = nullptr;
+	// マーカーのテクスチャ
+	uint32_t markerTex_ = 0u;
+	// マーカーの位置
+	Vector2 markerPos_{};
+	// (前クリックした時のマーカーの位置)
+	Vector2 preMarkerPos_{};
+#pragma endregion
+
+#pragma region 通常時の動き用
+	// 回転するための4つ目の点
 	Vector2 RotateRootPos_;
+	// 回転用の線形補完
 	float root_t_ = 0.0f;
+	// 回転用のフラグ
 	bool isRootMove_ = false;
+#pragma endregion 
 
 	// 前フレーム時の位置
 	Vector2 clickPlayerPos_{};
@@ -78,26 +107,21 @@ private: // メンバ変数
 	// 前フレーム時の位置
 	Vector2 prePos_{};
 
-	// 
+	// 動くときの線形補完
 	float move_t_ = 0.0f;
 
-	// 
+	// ベジエで動くときのスタート位置
 	Vector2 bezierStartPos_{};
-	// 
+	// ベジエで動くときの終わり位置// 
 	Vector2 bezierEndPos_{};
 
-	//
+	// 弾
 	std::list<PlayerBullet*> bullets_;
-	
-	std::list<Tail*> tails_;
-
-	const int setBulletTime = 60;
-	int bulletTimer_ = setBulletTime;
-	bool isFire = false;
-
-	uint32_t tailTexture_ = 0u;
+	// 弾テクスチャ
 	uint32_t bulletTexture_ = 0u;
 
-	uint32_t markerTex_ = 0u;
-	std::unique_ptr<Sprite> markerSprite_ = nullptr;
+	// 尻尾
+	std::list<Tail*> tails_;
+	// 尻尾テクスチャ
+	uint32_t tailTexture_ = 0u;
 };
