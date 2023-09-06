@@ -108,9 +108,14 @@ void Tail::Fire() {
 		else if (tailDirection.x < 0 && tailDirection.y < 0) {
 			bulletDirection = {tailDirection.x, -tailDirection.y};
 		}
+		Vector2 move = {0.0f, -1.0f};
+		Matrix3x3 rotateMat = MyMath::MakeRotateMatrix(std::atan2(direction_.y, direction_.x));
+		Matrix3x3 moveMat = MyMath::MakeTranslateMatrix(move);
+		moveMat = MyMath::Multiply(moveMat, rotateMat);
+		move = {moveMat.m[2][0], moveMat.m[2][1]};
 		
 		PlayerBullet* newBullet = new PlayerBullet();
-		newBullet->Initialize(player_->GetBulletTex(), *GetPosition(), bulletDirection);
+		newBullet->Initialize(player_->GetBulletTex(), *GetPosition(), move);
 		player_->AddBullets(newBullet);
 		
 		isFire_ = false;

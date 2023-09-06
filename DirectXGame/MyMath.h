@@ -92,6 +92,14 @@ public:
 	/// <param name="matrix">行列</param>
 	/// <returns></returns>
 	static Vector3 TransformCoord(Vector3 vector, Matrix4x4 matrix);
+	
+	/// <summary>
+	/// 座標変換
+	/// </summary>
+	/// <param name="vector">ベクトル</param>
+	/// <param name="matrix">行列</param>
+	/// <returns></returns>
+	static Vector2 TransformCoord(Vector2 vector, Matrix3x3 matrix);
 
 
 	/// <summary>
@@ -138,6 +146,14 @@ public:
 	/// <param name="m2">行列2</param>
 	/// <returns></returns>
 	static Matrix4x4 Multiply(const Matrix4x4& m1, const Matrix4x4& m2);
+	
+	/// <summary>
+	/// 行列同士の乗算
+	/// </summary>
+	/// <param name="m1">行列1</param>
+	/// <param name="m2">行列2</param>
+	/// <returns></returns>
+	static Matrix3x3 Multiply(const Matrix3x3& m1, const Matrix3x3& m2);
 
 	/// <summary>
 	/// 平行移動行列の作成
@@ -201,6 +217,16 @@ public:
 	/// <param name="translate">トランスレート</param>
 	/// <returns></returns>
 	static Matrix4x4 MakeAffineMatrix(const Vector3 scale, const Vector3 rotate, const Vector3 translate);
+
+	/// <summary>
+	/// アフィン変換
+	/// </summary>
+	/// <param name="scale">スケール</param>
+	/// <param name="rotate">ローテ―ト</param>
+	/// <param name="translate">トランスレート</param>
+	/// <returns></returns>
+	static Matrix3x3
+	    MakeAffineMatrix(const Vector2 scale, const float rotate, const Vector2 translate);
 
 	/// <summary>
 	/// 透視投影行列

@@ -93,6 +93,16 @@ Vector3 MyMath::TransformCoord(Vector3 vector, Matrix4x4 matrix) {
 	result.z /= w;
 	return result;
 }
+Vector2 MyMath::TransformCoord(Vector2 vector, Matrix3x3 matrix) {
+	Vector2 result{};
+	result.x = vector.x * matrix.m[0][0] + vector.y * matrix.m[1][0] + 1.0f * matrix.m[2][0];
+	result.y = vector.x * matrix.m[0][1] + vector.y * matrix.m[1][1] + 1.0f * matrix.m[2][1];
+	float w = vector.x * matrix.m[0][2] + vector.y * matrix.m[1][2] + 1.0f * matrix.m[2][2];
+	assert(w != 0.0f);
+	result.x /= w;
+	result.y /= w;
+	return result;
+}
 Vector3 MyMath::Project(const Vector3& v1, const Vector3& v2) {
 	Vector3 result{};
 
@@ -176,6 +186,20 @@ Matrix4x4 MyMath::Multiply(const Matrix4x4& m1, const Matrix4x4& m2) {
 	result.m[3][2] = m1.m[3][0] * m2.m[0][2] + m1.m[3][1] * m2.m[1][2] + m1.m[3][2] * m2.m[2][2] + m1.m[3][3] * m2.m[3][2];
 	result.m[3][3] = m1.m[3][0] * m2.m[0][3] + m1.m[3][1] * m2.m[1][3] + m1.m[3][2] * m2.m[2][3] + m1.m[3][3] * m2.m[3][3];*/
 	return result;
+}
+Matrix3x3 MyMath::Multiply(const Matrix3x3& m1, const Matrix3x3& m2) { 
+	Matrix3x3 result{};
+	for (int row = 0; row < 3; row++) {
+		for (int column = 0; column < 3; column++) {
+			result.m[row][column] = m1.m[row][0] * m2.m[0][column] +
+			                        m1.m[row][1] * m2.m[1][column] +
+			                        m1.m[row][2] * m2.m[2][column];
+		}
+	}
+
+	
+	return result; 
+
 }
 Matrix4x4 MyMath::MakeTranslateMatrix(const Vector3 translate) {
 	Matrix4x4 result{};
@@ -329,6 +353,18 @@ Matrix4x4 MyMath::MakeAffineMatrix(const Vector3 scale, const Vector3 rotate, co
 	result.m[3][1] = translate.y;
 	result.m[3][2] = translate.z;
 	result.m[3][3] = 1;
+
+	return result;
+}
+Matrix3x3
+    MyMath::MakeAffineMatrix(const Vector2 scale, const float rotate, const Vector2 translate) {
+	Matrix3x3 result{};
+
+	Matrix3x3 scaleMat = MakeScaleMatrix(scale);
+	Matrix3x3 rotateMat = MakeRotateMatrix(rotate);
+	Matrix3x3 translateMat = MakeTranslateMatrix(translate);
+
+	result = Multiply(Multiply(scaleMat, rotateMat), translateMat);
 
 	return result;
 }
