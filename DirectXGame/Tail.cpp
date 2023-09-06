@@ -1,9 +1,8 @@
 ﻿#include "Tail.h"
-#include "MyMath.h"
 #include "ImGuiManager.h"
-#include <cmath>
+#include "MyMath.h"
 #include "Player.h"
-
+#include <cmath>
 
 /// <summary>
 /// 初期化処理
@@ -11,9 +10,9 @@
 /// <param name="texture">テクスチャ</param>
 /// <param name="parent">親になるスプライトの位置</param>
 /// <param name="tailNo">尻尾番号</param>
-void Tail::Initialize(uint32_t texture,const Vector2* parent, int tailNo) {
+void Tail::Initialize(uint32_t texture, const Vector2* parent, int tailNo) {
 
-	// 親の座標	
+	// 親の座標
 	parentPos_ = parent;
 
 	// 尻尾番号
@@ -27,8 +26,8 @@ void Tail::Initialize(uint32_t texture,const Vector2* parent, int tailNo) {
 	pos_.y = parentPos_->y;
 
 	// 親の位置に初期化
-	prePos_ = pos_; 
-	
+	prePos_ = pos_;
+
 	// 線形補完の完了地点を親の位置に
 	lerpEndPos_.x = parentPos_->x;
 	lerpEndPos_.y = parentPos_->y;
@@ -39,61 +38,39 @@ void Tail::Update() {
 	if (isPlayerMove_) {
 		isMove_ = true;
 	}
-	// もし動いているとき
-	if (isMove_) {
-		// 媒介変数t(0.0f ~ 1.0f)
-		if (t_ > 1.0f) {
-			t_ = 1.0f;
-			isMove_ = false;
-		} else {
-			t_ += 0.1f;
-		}
+	
+	// 尻尾の動き更新処理
+	MoveUpdate();
 
-		// 線形補完
-		pos_ = MyMath::lerp(t_, prePos_, lerpEndPos_);
-	}
-	// もし動いていないとき
-	if (!isMove_) {
-		// 動いてなかったときの位置を取得
-		prePos_ = pos_;
-		// 媒介変数tの初期化
-		t_ = 0.0f;
-		// 線形補完の完了地点を親の位置に
-		lerpEndPos_.x = parentPos_->x;
-		lerpEndPos_.y = parentPos_->y;
-
-	}
-
-	direction_.x = parentPos_->x - pos_.x;
-	direction_.y = parentPos_->y - pos_.y;
-
-	direction_ = MyMath::Normalize(direction_);
+	// 進行方向の更新処理
+	DirectionUpdate();
+	
 	// 位置の更新処理
 	sprite_->SetPosition(pos_);
 	sprite_->SetRotation(std::atan2(direction_.y, direction_.x));
+	
+	// 弾の発射処理
+	Fire();
 
+#ifdef _DEBUG
 	ImGui::Begin("debug");
 	ImGui::Text("%f, %f", prePos_.x, prePos_.y);
 	ImGui::Text("%f, %f", parentPos_->x, parentPos_->y);
 	ImGui::Text("%d", bulletTimer_);
 	ImGui::End();
-	Fire();
+#endif
 }
 
 void Tail::Draw() {
-	//
+	// 尻尾の描画
 	sprite_->Draw();
 }
 
 void Tail::Fire() {
-	if (bulletTimer_ < 0) {
-		bulletTimer_ = 0;
-	} else {
-		bulletTimer_--;
-	}
+	// タイマーカウント
+	BulletTimerCount();
 
-
-
+	// もしフラグが有効なら
 	if (isFire_) {
 		//** 尻尾の進む向きから弾を打ち出す向きを計算 **//
 
@@ -134,12 +111,54 @@ void Tail::Fire() {
 
 		// もし尻尾とマーカーが当たっていれば
 		if (distance <= radius && bulletTimer_ <= 0) {
-			//攻撃フラグを有効
+			// 攻撃フラグを有効
 			SetIsFire(true);
 			// タイマーセット
 			bulletTimer_ = kBulletTime;
+		}
+	}
+}
 
+void Tail::BulletTimerCount() {
+	// 0より小さければ0に固定. そうでなければ減り続けてる
+	if (bulletTimer_ < 0) {
+		bulletTimer_ = 0;
+	} else {
+		bulletTimer_--;
+	}
+}
+
+void Tail::DirectionUpdate() {
+	// 進行方向を自分の位置->親の位置に
+	direction_.x = parentPos_->x - pos_.x;
+	direction_.y = parentPos_->y - pos_.y;
+
+	// 単位化
+	direction_ = MyMath::Normalize(direction_);
+}
+
+void Tail::MoveUpdate() {
+	// もし動いているとき
+	if (isMove_) {
+		// 媒介変数t(0.0f ~ 1.0f)
+		if (t_ > 1.0f) {
+			t_ = 1.0f;
+			isMove_ = false;
+		} else {
+			t_ += 0.1f;
 		}
 
+		// 線形補完
+		pos_ = MyMath::lerp(t_, prePos_, lerpEndPos_);
+	}
+	// もし動いていないとき
+	if (!isMove_) {
+		// 動いてなかったときの位置を取得
+		prePos_ = pos_;
+		// 媒介変数tの初期化
+		t_ = 0.0f;
+		// 線形補完の完了地点を親の位置に
+		lerpEndPos_.x = parentPos_->x;
+		lerpEndPos_.y = parentPos_->y;
 	}
 }

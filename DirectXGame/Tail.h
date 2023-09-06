@@ -32,6 +32,14 @@ public: // メンバ関数
 	/// </summary>
 	void Fire();
 
+	void BulletTimerCount();
+
+	void DirectionUpdate();
+
+	void MoveUpdate();
+
+public: // ゲッター
+#pragma region ゲッター
 	/// <summary>
 	/// 尻尾番号の取得
 	/// </summary>
@@ -55,8 +63,10 @@ public: // メンバ関数
 	/// </summary>
 	/// <returns>尻尾の進行方向</returns>
 	Vector2 GetDirection() { return direction_; }
+#pragma endregion
 
- 
+public: // セッター
+#pragma region セッター
 	/// <summary>
 	/// プレイヤーが動いているかのフラグ設定
 	/// </summary>
@@ -74,6 +84,7 @@ public: // メンバ関数
 	/// </summary>
 	/// <param name="player">プレイヤー</param>
 	void SetPlayer(Player* player) { player_ = player; }
+#pragma endregion
 
 private: // メンバ変数
 	// 
