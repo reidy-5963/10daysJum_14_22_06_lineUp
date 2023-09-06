@@ -24,6 +24,15 @@ void Player::Initialize() {
 	// 入力系
 	input_ = Input::GetInstance();
 
+	// 初期位置(仮)
+	pos_ = {760, 320};
+	clickPlayerPos_ = pos_;
+	markerPos_ = pos_;
+	preMarkerPos_ = markerPos_;
+
+	radius_ = 32.0f;
+
+
 	// キャラのテクスチャ読み込み
 	charaTex_ = TextureManager::Load("Player.png");
 	// キャラのテクスチャ読み込み
@@ -32,33 +41,38 @@ void Player::Initialize() {
 	bulletTexture_ = TextureManager::Load("Bullet.png");
 
 	// スプライトの生成
-	sprite_.reset(Sprite::Create(charaTex_, {720, 360}, {1.0f, 1.0f, 1.0f, 1.0f}, {0.5f, 0.5f}));
+	sprite_.reset(Sprite::Create(charaTex_, pos_, {1.0f, 1.0f, 1.0f, 1.0f}, {0.5f, 0.5f}));
 
 	// マーカーのテクスチャ読み込み
 	markerTex_ = TextureManager::Load("Marker.png");
 
 	// マーカーのスプライトの生成
 	markerSprite_.reset(
-	    Sprite::Create(markerTex_, {720, 360}, {1.0f, 1.0f, 1.0f, 1.0f}, {0.5f, 0.5f}));
+	    Sprite::Create(markerTex_, markerPos_, {1.0f, 1.0f, 1.0f, 1.0f}, {0.5f, 0.5f}));
 
-	// 初期位置(仮)
-	pos_ = {760, 320};
-	clickPlayerPos_ = pos_;
-	markerPos_ = pos_;
-	preMarkerPos_ = markerPos_;
-
-	radius_ = 32.0f;
 }
 
 /// <summary>
 /// 更新処理
 /// </summary>
 void Player::Update() {
-	// カーソルの位置の取得
-	GetCursorPos(&mousePos);
-	// クライアントエリア座標に変換する
-	HWND hwnd = WinApp::GetInstance()->GetHwnd();
-	ScreenToClient(hwnd, &mousePos);
+	// ひとまずの尻尾追加
+	if (input_->TriggerKey(DIK_1)) {
+		AddTails();
+	}
+
+	// ひとまずの尻尾削除
+	if (input_->TriggerKey(DIK_2)) {
+		DeleteTails();
+	}
+
+
+////////////////////////////////////////////////////
+
+
+	// カーソルの位置取得
+	CursorUpdate();
+
 	// もし左クリックしたら
 	if (input_->IsTriggerMouse(0)) {
 		// 前フレームのマーカー位置を取得
@@ -72,10 +86,12 @@ void Player::Update() {
 		// 線形補間の初期化
 		move_t_ = 0.0f;
 
-		//
+		// 移動フラグの初期化
 		isMove_ = true;
+		// 線形補間用tの初期化
 		root_t_ = 0.0f;
 
+		// クリックしたときのプレイヤーの位置->前回押した位置のマーカー
 		Vector2 preMark2Pos_distance;
 		preMark2Pos_distance = preMarkerPos_ - clickPlayerPos_;
 
@@ -92,11 +108,12 @@ void Player::Update() {
 			RotateRootPos_ += verticalA2B;
 		}
 
+		// 四ツ目の点を求める
 		RotateRootPos_ = markerPos_ - preMark2Pos_distance;
 
 	}
 	
-	// 
+	// もしマーカーまで移動しきったら
 	if (!isMove_) {
 		if (!isRootMove_) {
 
@@ -110,14 +127,7 @@ void Player::Update() {
 
 			// 実際にプレイヤーの位置を計算
 			pos_ = MyMath::lerp(root_t_, bezierStartPos_, bezierEndPos_);
-			
-			if (root_t_ > 1.0f) {
-				root_t_ = 0.0f;
-				isRootMove_ = true;
-			} else {
-				root_t_ += 0.01f;
-			}
-
+			CountT(root_t_, 0.0f, isRootMove_, true, 0.01f);
 		}
 		//
 		else if (isRootMove_) { 
@@ -131,14 +141,7 @@ void Player::Update() {
 			pos_ = MyMath::lerp(root_t_, bezierStartPos_, bezierEndPos_);
 
 			prePos_ = pos_;
-
-			if (root_t_ > 1.0f) {
-				root_t_ = 0.0f;
-				isRootMove_ = false;
-
-			} else {
-				root_t_ += 0.01f;
-			}
+			CountT(root_t_, 0.0f, isRootMove_, false, 0.01f);
 		}
 
 
@@ -147,17 +150,14 @@ void Player::Update() {
 		}
 
 	} 
-	//
+	// そうでないなら
 	else if (isMove_) {
 		root_t_ = 0.0f;
 		isRootMove_ = false;
 
 		// 1.0になるまで加算
-		if ((move_t_ += 0.01f) >= 1.0f) {
-			move_t_ = 1.0f;
-			isMove_ = false;
-		}
-
+		CountT(move_t_,1.0f, isMove_, false, 0.01f);
+		
 		// ベジエ曲線のスタート位置計算
 		bezierStartPos_ = MyMath::lerp(move_t_, clickPlayerPos_, preMarkerPos_);
 
@@ -173,22 +173,7 @@ void Player::Update() {
 		}
 	}
 
-	// スプライトに位置を反映させる
-	sprite_->SetPosition(pos_);
-
-	// 向きの計算
-	Vector2 move = bezierEndPos_ - bezierStartPos_;
-	sprite_->SetRotation(std::atan2(move.y, move.x));
-
-	if (input_->TriggerKey(DIK_1)) {
-		AddTails();
-	}
-
-	if (input_->TriggerKey(DIK_2)) {
-		DeleteTails();
-	}
-
-
+	// 尻尾の更新処理
 	for (Tail* tail : tails_) {
 		tail->Update();
 	}
@@ -202,14 +187,26 @@ void Player::Update() {
 		return false;
 	});
 
+	// 弾の更新処理
 	for (PlayerBullet* bullet : bullets_) {
 		bullet->Update();
 	}
+
+#ifdef _DEBUG
 	ImGui::Begin("debug");
 	ImGui::Text("%f", root_t_);
 
 	ImGui::End();
-
+#endif // DEBUG
+    
+	// 自機の位置を反映させる
+	sprite_->SetPosition(pos_);
+	// 向きの計算
+	Vector2 move = bezierEndPos_ - bezierStartPos_;
+	// 自機の回転を反映させる
+	sprite_->SetRotation(std::atan2(move.y, move.x));
+	
+	// マーカーの位置を反映させる
 	markerSprite_->SetPosition(markerPos_);
 }
 
@@ -297,3 +294,20 @@ void Player::AddBullets(PlayerBullet* bullet) {
 }
 
 void Player::OnCollision() { AddTails(); }
+
+void Player::CursorUpdate() {
+	// カーソルの位置の取得
+	GetCursorPos(&mousePos);
+	// クライアントエリア座標に変換する
+	HWND hwnd = WinApp::GetInstance()->GetHwnd();
+	ScreenToClient(hwnd, &mousePos);
+}
+
+void Player::CountT(float& t, const float endT, bool& flag, const bool setFlag, float offset) {
+	if (t > 1.0f) {
+		t = endT;
+		flag = setFlag;
+	} else {
+		t += offset;
+	}
+}

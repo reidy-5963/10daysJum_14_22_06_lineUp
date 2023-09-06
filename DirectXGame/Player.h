@@ -44,6 +44,17 @@ public: // メンバ関数
 	/// 衝突処理
 	/// </summary>
 	void OnCollision() override;
+	void CursorUpdate();
+
+	/// <summary>
+	/// 線形補間用のtのカウント
+	/// </summary>
+	/// <param name="t">t</param>
+	/// <param name="endT">1.0fになったあとの値の初期化</param>
+	/// <param name="flag">フラグ</param>
+	/// <param name="setFlag">true or false</param>
+	/// <param name="offset">増えてく値</param>
+	void CountT(float& t,const float endT, bool& flag, const bool setFlag, float offset);
 
 public: // 追加関数
 	/// <summary>
@@ -132,5 +143,6 @@ private: // メンバ変数
 	// 尻尾テクスチャ
 	uint32_t tailTexture_ = 0u;
 
+	// 尻尾の数
 	const int kMaxTail_ = 6;
 };
