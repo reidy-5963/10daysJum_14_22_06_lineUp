@@ -56,6 +56,9 @@ public: // メンバ関数
 	/// <param name="offset">増えてく値</param>
 	void CountT(float& t,const float endT, bool& flag, const bool setFlag, float offset);
 
+
+	void MarkerControl();
+
 public: // 追加関数
 	/// <summary>
 	/// 尻尾の追加

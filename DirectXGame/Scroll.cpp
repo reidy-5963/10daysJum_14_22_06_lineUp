@@ -17,7 +17,7 @@ void Scroll::Update() {
 
 }
 
-void Scroll::lorpUpdate() {
+void Scroll::loopUpdate() {
 	if (isScreenOut_ == UNKNOWN) {
 		if (target_->x >= float(WinApp::kWindowWidth)) {
 			addScroll.x -= float(WinApp::kWindowWidth);

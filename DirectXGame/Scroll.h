@@ -34,10 +34,12 @@ public:
 	int IsScreenOut() { return isScreenOut_; }
 
 	void SetIsScreenOut(int isScreenOut) { isScreenOut_ = isScreenOut; }
-
-	void lorpUpdate();
+	
+	void loopUpdate();
 
 	void WorldUpdate2x2();
+
+	Vector2 GetEdgePos() { return edgePos_; }
 
 private:
 	Scroll() = default;

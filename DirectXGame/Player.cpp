@@ -77,9 +77,28 @@ void Player::Update() {
 		// 前フレームのマーカー位置を取得
 		preMarkerPos_ = markerPos_;
 
+		if (mousePos.x < 0) {
+			mousePos.x = 0;
+		} else if (mousePos.x > WinApp::kWindowWidth) {
+			mousePos.x = WinApp::kWindowWidth;
+		}
+		if (mousePos.y < 0) {
+			mousePos.y = 0;
+		} else if (mousePos.y > WinApp::kWindowHeight) {
+			mousePos.y = WinApp::kWindowHeight;
+		}
+
+
 		// マーカーの位置を現在のマウス位置に設定
 		markerPos_.x = float(mousePos.x);
 		markerPos_.y = float(mousePos.y);
+		
+		
+		MarkerControl();
+
+
+
+
 		// クリックしたときの位置を取得
 		clickPlayerPos_ = pos_;
 		// 線形補間の初期化
@@ -206,9 +225,8 @@ void Player::Update() {
 	Vector2 move = bezierEndPos_ - bezierStartPos_;
 	// 自機の回転を反映させる
 	sprite_->SetRotation(std::atan2(move.y, move.x));
-	
-	
 	Scroll* scroll = Scroll::GetInstance();
+
 	// マーカーの位置を反映させる
 	markerSprite_->SetPosition(markerPos_ - scroll->GetAddScroll());
 }
@@ -315,5 +333,29 @@ void Player::CountT(float& t, const float endT, bool& flag, const bool setFlag, 
 		flag = setFlag;
 	} else {
 		t += offset;
+	}
+}
+
+void Player::MarkerControl() {
+
+
+	Scroll* scroll = Scroll::GetInstance();
+	//Vector2 ;
+	if (markerPos_.x < 0 + scroll->GetEdgePos().x / 2) {
+		markerPos_.x = scroll->GetEdgePos().x / 2 + scroll->GetAddScroll().x;
+	}
+
+	else if (markerPos_.x > WinApp::kWindowWidth * 2 - scroll->GetEdgePos().x / 2) {
+		markerPos_.x =
+		    WinApp::kWindowWidth * 2 - scroll->GetEdgePos().x / 2;
+	}
+
+	if (markerPos_.y < 0 + scroll->GetEdgePos().y / 2) {
+		markerPos_.y = scroll->GetEdgePos().y / 2 + scroll->GetAddScroll().y;
+	} 
+
+	else if (markerPos_.y > WinApp::kWindowHeight * 2 - scroll->GetEdgePos().y / 2) {
+		markerPos_.y =
+		    WinApp::kWindowHeight * 2 - scroll->GetEdgePos().y / 2;
 	}
 }
