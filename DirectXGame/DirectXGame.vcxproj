@@ -223,6 +223,14 @@
   <ItemGroup>
     <None Include="Resources\shaders\Sprite.hlsli" />
   </ItemGroup>
+  <ItemGroup>
+    <Image Include="Resources\Bullet.png" />
+    <Image Include="Resources\Cannon.png" />
+    <Image Include="Resources\Enemy.png" />
+    <Image Include="Resources\Marker.png" />
+    <Image Include="Resources\Player.png" />
+    <Image Include="Resources\testBackTex.png" />
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>
