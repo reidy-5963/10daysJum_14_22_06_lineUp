@@ -17,6 +17,3 @@ void BaseBullet::Update() {
 
 void BaseBullet::Draw() {}
 void BaseBullet::OnCollision() {}
-// クラスの枠つくっただけやね
-// さっき触れ始めた
-//うん☆

@@ -3,6 +3,65 @@
 #include <assert.h>
 #include <algorithm>
 
+
+#pragma region Operator OverLoad
+
+inline Vector2 operator+(const Vector2& v1, const Vector2& v2) {
+	Vector2 temp;
+	temp.x = v1.x + v2.x;
+	temp.y = v1.y + v2.y;
+	return temp;
+}
+inline Vector2 operator-(const Vector2& v1, const Vector2& v2) {
+	Vector2 temp;
+	temp.x = v1.x - v2.x;
+	temp.y = v1.y - v2.y;
+	return temp;
+}
+inline Vector2 operator*(const Vector2& v, float scalar) {
+	Vector2 temp;
+	temp.x = v.x * scalar;
+	temp.y = v.y * scalar;
+	return temp;
+}
+inline Vector2 operator*(float scalar, const Vector2& v) {
+	Vector2 temp;
+	temp.x = v.x * scalar;
+	temp.y = v.y * scalar;
+	return temp;
+}
+
+inline Vector2& operator+=(Vector2& v1, const Vector2& v2) {
+	v1 = v1 + v2;
+	return v1;
+}
+
+inline Vector2& operator-=(Vector2& v1, const Vector2& v2) {
+	v1 = v1 - v2;
+	return v1;
+}
+
+inline Vector2& operator*=(Vector2& v, float scalar) {
+	v = v * scalar;
+	return v;
+}
+
+#pragma endregion
+
+
+float MyMath::Dot(const Vector2& v1, const Vector2& v2) {
+	float result;
+	result = v1.x * v2.x + v1.y * v2.y;
+
+	return result;
+}
+float MyMath::Cross(const Vector2& v1, const Vector2& v2) {
+	float result{};
+	result = v1.x * v2.y - v1.y * v2.x;
+
+	return result;
+}
+
 float MyMath::Dot(const Vector3& v1, const Vector3& v2) {
 	float result;
 	result = v1.x * v2.x + v1.y * v2.y + v1.z * v2.z;
@@ -1069,9 +1128,20 @@ float MyMath::Mymin(float a, float b) {
 //	return false;
 //}
 
+Vector2 MyMath::CatmullRom(
+    const Vector2& p0, const Vector2& p1, const Vector2& p2, const Vector2& p3, float t) {
+	Vector2 pt = (1 / 2.0f) * ((Vector2(-p0.x, -p0.y) + 3 * p1 - 3 * p2 + p3) * powf(t, 3) +
+	                           (2 * p0 - 5 * p1 + 4 * p2 - p3) * powf(t, 2) +
+	                           (Vector2(-p0.x, -p0.y) + p2) * t + 2 * p1);
+	return pt;
+}
+
+
+
 //
 float MyMath::lerp(float t, float start, float end) { 
-	return (1.0f - t) * start + t * end; }
+	return (1.0f - t) * start + t * end;
+}
 
 Vector2 MyMath::lerp(float t, Vector2 start, Vector2 end) { 
 	return Vector2((1.0f - t) * start.x + t * end.x, (1.0f - t) * start.y + t * end.y);

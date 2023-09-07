@@ -1,6 +1,6 @@
 #pragma once
 #include "Sprite.h"
-#include "Vector2.h"
+#include "MyMath.h"
 #include <memory>
 #include "Input.h"
 

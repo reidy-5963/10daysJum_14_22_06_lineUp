@@ -7,12 +7,28 @@
 #include "Matrix4x4.h"
 #include "Matrix3x3.h"
 
+inline extern Vector2 operator+(const Vector2& v1, const Vector2& v2);
+inline extern Vector2 operator-(const Vector2& v1, const Vector2& v2);
+inline extern Vector2 operator*(const Vector2& v, float scalar);
+inline extern Vector2 operator*(float scalar, const Vector2& v);
+inline extern Vector2& operator+=(Vector2& v1, const Vector2& v2);
+inline extern Vector2& operator-=(Vector2& v1, const Vector2& v2);
+inline extern Vector2& operator*=(Vector2& v, float scalar);
 
 /// <summary>
 /// 数学の関数系
 /// </summary>
 class MyMath {
 public:
+	static float Dot(const Vector2& v1, const Vector2& v2);
+	/// <summary>
+	/// ベクトル同士の外積
+	/// </summary>
+	/// <param name="v1">ベクトル1</param>
+	/// <param name="v2">ベクトル2</param>
+	/// <returns></returns>
+	static float Cross(const Vector2& v1, const Vector2& v2);
+
 	/// <summary>
 	/// ベクトル同士の内積
 	/// </summary>
@@ -397,6 +413,10 @@ public:
 	/// <param name="ray">半直線</param>
 	/// <returns></returns>
 	//static bool IsCollision(const AABB& aabb, const Ray& ray);
+
+
+	static Vector2 CatmullRom(
+	    const Vector2& p0, const Vector2& p1, const Vector2& p2, const Vector2& p3, float t);
 
 	static float lerp(float t, float start, float end);
 

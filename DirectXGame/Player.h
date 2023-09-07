@@ -54,10 +54,11 @@ public: // メンバ関数
 	/// <param name="flag">フラグ</param>
 	/// <param name="setFlag">true or false</param>
 	/// <param name="offset">増えてく値</param>
-	void CountT(float& t,const float endT, bool& flag, const bool setFlag, float offset);
-
+	void CountT(float& t, const float endT, bool& flag, const bool setFlag, float offset);
 
 	void MarkerControl();
+
+	void LeftClickUpdate();
 
 public: // 追加関数
 	/// <summary>
@@ -69,7 +70,6 @@ public: // 追加関数
 	/// 尻尾の追加
 	/// </summary>
 	void DeleteTails();
-
 
 	/// <summary>
 	/// 弾の追加
@@ -96,7 +96,7 @@ public: // ゲッター
 	/// <returns></returns>
 	const std::list<PlayerBullet*>& GetBullets() { return bullets_; }
 
-private: // メンバ変数	
+private: // メンバ変数
 	// 入力
 	Input* input_ = nullptr;
 	// マウス位置
@@ -120,7 +120,7 @@ private: // メンバ変数
 	float root_t_ = 0.0f;
 	// 回転用のフラグ
 	bool isRootMove_ = false;
-#pragma endregion 
+#pragma endregion
 
 	// 前フレーム時の位置
 	Vector2 clickPlayerPos_{};
@@ -133,7 +133,7 @@ private: // メンバ変数
 
 	// ベジエで動くときのスタート位置
 	Vector2 bezierStartPos_{};
-	// ベジエで動くときの終わり位置// 
+	// ベジエで動くときの終わり位置//
 	Vector2 bezierEndPos_{};
 
 	// 弾
@@ -145,11 +145,32 @@ private: // メンバ変数
 
 	// 尻尾
 	std::list<Tail*> tails_;
+
 	// 尻尾テクスチャ
 	uint32_t tailTexture_ = 0u;
 
 	// 尻尾の数
 	const int kMaxTail_ = 6;
 
-	float radian = 1.0f;
+	//
+	float BulletRadian = 0.1f;
+	Vector2 markerAddRadian[2];
+	Vector2 PlayerAddRadian[2];
+	float radianOffset = 1.0f;
+
+	bool isMtM1 = false;
+	bool isM1tM2 = false;
+	bool isM2tP = false;
+	bool isPtP1 = false;
+	bool isP1tP2 = false;
+	bool isP2tM = false;
+
+	// test
+	std::unique_ptr<Sprite> m1 = nullptr;
+	std::unique_ptr<Sprite> m2 = nullptr;
+	std::unique_ptr<Sprite> p1 = nullptr;
+	std::unique_ptr<Sprite> p2 = nullptr;
+	std::unique_ptr<Sprite> origin_ = nullptr;
+	Vector2 originPos_{};
+	//
 };
