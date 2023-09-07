@@ -138,6 +138,8 @@ private: // メンバ変数
 	// 弾テクスチャ
 	uint32_t bulletTexture_ = 0u;
 
+	const float kDeadOffset = 740.0f;
+
 	// 尻尾
 	std::list<Tail*> tails_;
 	// 尻尾テクスチャ
