@@ -67,6 +67,7 @@ void Player::Initialize() {
 /// 更新処理
 /// </summary>
 void Player::Update() {
+	Scroll* scroll = Scroll::GetInstance();
 
 #ifdef _DEBUG 
 //////////////////////////////////////////////////// 
@@ -81,6 +82,11 @@ void Player::Update() {
 	}
 
 ////////////////////////////////////////////////////
+	p1->SetPosition(PlayerAddRadian[0] - scroll->GetAddScroll());
+	p2->SetPosition(PlayerAddRadian[1] - scroll->GetAddScroll());
+	m2->SetPosition(markerAddRadian[1] - scroll->GetAddScroll());
+	m1->SetPosition(markerAddRadian[0] - scroll->GetAddScroll());
+	origin_->SetPosition(originPos_ - scroll->GetAddScroll());
 
 	ImGui::Begin("debug");
 	ImGui::Text("%f", root_t_);
@@ -97,6 +103,7 @@ void Player::Update() {
 		LeftClickUpdate();
 		prePos_ = pos_;
 	}
+
 	// もしマーカーまで移動しきったら
 	if (!isMove_) {
 
@@ -104,56 +111,63 @@ void Player::Update() {
 
 			pos_ = MyMath::CatmullRom(
 			    PlayerAddRadian[1], markerPos_, markerAddRadian[0], markerAddRadian[1], root_t_);
-			
+			direction_ = markerAddRadian[0] - markerPos_;
 			if (root_t_ >= 1.0f) {
 				isMtM1 = false;
 			}
-			CountT(root_t_, 0.0f, isM1tM2, true, rootTOffset);
+			MyMath::CountT(root_t_, 0.0f, isM1tM2, true, rootTOffset);
 		}
 		//
 		if (isM1tM2) {
 			pos_ = MyMath::CatmullRom(
 			    markerPos_, markerAddRadian[0], markerAddRadian[1], clickPlayerPos_, root_t_);
+			direction_ = markerAddRadian[1] - markerAddRadian[0];
 			if (root_t_ >= 1.0f) {
 				isM1tM2 = false;
 			}
-			CountT(root_t_, 0.0f, isM2tP, true, rootTOffset);
+			MyMath::CountT(root_t_, 0.0f, isM2tP, true, rootTOffset);
 		}
 		//
 		if (isM2tP) {
 			pos_ = MyMath::CatmullRom(
 			    markerAddRadian[0], markerAddRadian[1], clickPlayerPos_, PlayerAddRadian[0],
 			    root_t_);
+			direction_ = clickPlayerPos_ - markerAddRadian[0];
 			if (root_t_ >= 1.0f) {
 				isM2tP = false;
 			}
-			CountT(root_t_, 0.0f, isPtP1, true, rootTOffset);
+			MyMath::CountT(root_t_, 0.0f, isPtP1, true, rootTOffset);
 		}
 		//
 		if (isPtP1) {
 			pos_ = MyMath::CatmullRom(
 			    markerAddRadian[1], clickPlayerPos_, PlayerAddRadian[0], PlayerAddRadian[1],
 			    root_t_);
+			direction_ = PlayerAddRadian[0] - clickPlayerPos_;
 			if (root_t_ >= 1.0f) {
 				isPtP1 = false;
 			}
-			CountT(root_t_, 0.0f, isP1tP2, true, rootTOffset);
+			MyMath::CountT(root_t_, 0.0f, isP1tP2, true, rootTOffset);
 		}	
+
 		if (isP1tP2) {
 			pos_ = MyMath::CatmullRom(
 			    clickPlayerPos_, PlayerAddRadian[0], PlayerAddRadian[1], markerPos_, root_t_);
+			direction_ = PlayerAddRadian[1] - PlayerAddRadian[0];
 			if (root_t_ >= 1.0f) {
 				isP1tP2 = false;
 			}
-			CountT(root_t_, 0.0f, isP2tM, true, rootTOffset);
+			MyMath::CountT(root_t_, 0.0f, isP2tM, true, rootTOffset);
 		}
+
 		if (isP2tM) {
 			pos_ = MyMath::CatmullRom(
 			    PlayerAddRadian[0], PlayerAddRadian[1], markerPos_, markerAddRadian[0], root_t_);
+			direction_ = markerPos_ - PlayerAddRadian[1];
 			if (root_t_ >= 1.0f) {
 				isP2tM = false;
 			}
-			CountT(root_t_, 0.0f, isMtM1, true, rootTOffset);
+			MyMath::CountT(root_t_, 0.0f, isMtM1, true, rootTOffset);
 		}
 		
 		////// ベジエ曲線のスタート位置計算
@@ -196,7 +210,7 @@ void Player::Update() {
 		isRootMove_ = false;
 
 		// 1.0になるまで加算
-		CountT(move_t_,1.0f, isMove_, false, 0.01f);
+		MyMath::CountT(move_t_, 1.0f, isMove_, false, 0.01f);
 		if (!isMove_) {
 			isMtM1 = true;
 		}
@@ -206,7 +220,7 @@ void Player::Update() {
 
 		// ベジエ曲線の終わり位置計算
 		bezierEndPos_ = MyMath::lerp(move_t_, preMarkerPos_, markerPos_);
-
+		direction_ = bezierEndPos_ - bezierStartPos_;
 
 		// 実際にプレイヤーの位置を計算
 		pos_ = MyMath::lerp(move_t_, bezierStartPos_, bezierEndPos_);
@@ -220,49 +234,19 @@ void Player::Update() {
 		tail->SetBulletRad(BulletRadian);
 		tail->Update();
 	}
+	
+	DeleteBullet();
 
-	// 弾の消去
-	bullets_.remove_if([](PlayerBullet* bullet) {
-		if (bullet->GetIsDead()) {
-			delete bullet;
-			return true;
-		}
-		return false;
-	});
-
-	// 弾の更新処理
-	for (PlayerBullet* bullet : bullets_) {
-		bullet->Update();
-
-		ImGui::Begin("bullet");
-		ImGui::Text("%d", bullet->GetIsDead());
-		ImGui::End();
-
-		if (pos_.x + kDeadOffset < bullet->GetPosition().x ||
-		    pos_.x - kDeadOffset > bullet->GetPosition().x ||
-		    pos_.y + kDeadOffset < bullet->GetPosition().y ||
-		    pos_.y - kDeadOffset > bullet->GetPosition().y) {
-			bullet->SetIsDead(true);
-		}
-	}
+	BulletUpdate();
 
 	BaseCharacter::Update(); 
 	
-
-
-	// 向きの計算
-	Vector2 move = prePos_ - pos_;
 	// 自機の回転を反映させる
-	sprite_->SetRotation(std::atan2(-move.y, -move.x));
-	Scroll* scroll = Scroll::GetInstance();
+	sprite_->SetRotation(std::atan2(direction_.y, direction_.x));
 
 	// マーカーの位置を反映させる
 	markerSprite_->SetPosition(markerPos_ - scroll->GetAddScroll());
-	p1->SetPosition(PlayerAddRadian[0] - scroll->GetAddScroll());
-	p2->SetPosition(PlayerAddRadian[1] - scroll->GetAddScroll());
-	m2->SetPosition(markerAddRadian[1] - scroll->GetAddScroll());
-	m1->SetPosition(markerAddRadian[0] - scroll->GetAddScroll());
-	origin_->SetPosition(originPos_ - scroll->GetAddScroll());
+
 }
 
 void Player::KeyMove() { // 移動距離
@@ -367,14 +351,24 @@ void Player::CursorUpdate() {
 	mousePos.y = mousePos.y + LONG(scroll->GetAddScroll().y);
 }
 
-void Player::CountT(float& t, const float endT, bool& flag, const bool setFlag, float offset) {
-	if (t > 1.0f) {
-		t = endT;
-		flag = setFlag;
-	} else {
-		t += offset;
+void Player::BulletUpdate() {
+	// 弾の更新処理
+	for (PlayerBullet* bullet : bullets_) {
+		bullet->Update();
+
+		ImGui::Begin("bullet");
+		ImGui::Text("%d", bullet->GetIsDead());
+		ImGui::End();
+
+		if (pos_.x + kDeadOffset < bullet->GetPosition().x ||
+		    pos_.x - kDeadOffset > bullet->GetPosition().x ||
+		    pos_.y + kDeadOffset < bullet->GetPosition().y ||
+		    pos_.y - kDeadOffset > bullet->GetPosition().y) {
+			bullet->SetIsDead(true);
+		}
 	}
 }
+
 
 void Player::MarkerControl() {
 
@@ -495,4 +489,15 @@ void Player::LeftClickUpdate() {
 
 	// 四ツ目の点を求める
 	//RotateRootPos_ = markerPos_ - preMark2Pos_distance;
+}
+
+void Player::DeleteBullet() {
+	// 弾の消去
+	bullets_.remove_if([](PlayerBullet* bullet) {
+		if (bullet->GetIsDead()) {
+			delete bullet;
+			return true;
+		}
+		return false;
+	});
 }

@@ -44,21 +44,25 @@ public: // メンバ関数
 	/// 衝突処理
 	/// </summary>
 	void OnCollision() override;
-	void CursorUpdate();
 
 	/// <summary>
-	/// 線形補間用のtのカウント
+	/// 
 	/// </summary>
-	/// <param name="t">t</param>
-	/// <param name="endT">1.0fになったあとの値の初期化</param>
-	/// <param name="flag">フラグ</param>
-	/// <param name="setFlag">true or false</param>
-	/// <param name="offset">増えてく値</param>
-	void CountT(float& t, const float endT, bool& flag, const bool setFlag, float offset);
+	void CursorUpdate();
 
+	void BulletUpdate();
+
+	/// <summary>
+	/// 
+	/// </summary>
 	void MarkerControl();
 
+	/// <summary>
+	/// 
+	/// </summary>
 	void LeftClickUpdate();
+
+	void DeleteBullet();
 
 public: // 追加や削除の関数
 	/// <summary>
@@ -103,7 +107,7 @@ private: // メンバ変数
 	Input* input_ = nullptr;
 	// マウス位置
 	POINT mousePos;
-
+	Vector2 direction_{};
 #pragma region マーカー
 	// マーカーのスプライト
 	std::unique_ptr<Sprite> markerSprite_ = nullptr;
@@ -135,16 +139,21 @@ private: // メンバ変数
 
 	// ベジエで動くときのスタート位置
 	Vector2 bezierStartPos_{};
+
 	// ベジエで動くときの終わり位置//
 	Vector2 bezierEndPos_{};
 
+#pragma region 弾
 	// 弾
 	std::list<PlayerBullet*> bullets_;
 	// 弾テクスチャ
 	uint32_t bulletTexture_ = 0u;
-
+	// 弾の距離制限
 	const float kDeadOffset = 740.0f;
 
+#pragma endregion
+
+#pragma region 尻尾
 	// 尻尾
 	std::list<Tail*> tails_;
 
@@ -154,6 +163,9 @@ private: // メンバ変数
 	// 尻尾の数
 	const int kMaxTail_ = 6;
 
+#pragma endregion
+
+#pragma region 通常状態の回転用
 	//
 	float BulletRadian = 0.1f;
 	Vector2 markerAddRadian[2];
@@ -167,6 +179,10 @@ private: // メンバ変数
 	bool isP1tP2 = false;
 	bool isP2tM = false;
 
+	float rootTOffset = 0.04f;
+#pragma endregion
+
+#ifdef _DEBUG
 	// test
 	std::unique_ptr<Sprite> m1 = nullptr;
 	std::unique_ptr<Sprite> m2 = nullptr;
@@ -176,5 +192,5 @@ private: // メンバ変数
 	Vector2 originPos_{};
 	//
 
-	float rootTOffset = 0.04f;
+#endif // _DEBUG
 };

@@ -303,6 +303,16 @@ public:
 #pragma endregion
 
 	/// <summary>
+	/// 線形補間用のtのカウント
+	/// </summary>
+	/// <param name="t">t</param>
+	/// <param name="endT">1.0fになったあとの値の初期化</param>
+	/// <param name="flag">フラグ</param>
+	/// <param name="setFlag">true or false</param>
+	/// <param name="offset">増えてく値</param>
+	static void CountT(float& t, const float endT, bool& flag, const bool setFlag, float offset);
+
+	/// <summary>
 	/// より大きい値を返す
 	/// </summary>
 	/// <param name="a"></param>

@@ -1087,6 +1087,14 @@ Matrix4x4 MyMath::MakeIdentity4x4() {
 
 #pragma endregion
 
+void MyMath::CountT(float& t, const float endT, bool& flag, const bool setFlag, float offset) {
+	if (t > 1.0f) {
+		t = endT;
+		flag = setFlag;
+	} else {
+		t += offset;
+	}
+}
 
 float MyMath::Mymax(float a, float b) {
 	if (a > b) {
