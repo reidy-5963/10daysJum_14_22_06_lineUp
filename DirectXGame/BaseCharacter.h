@@ -8,7 +8,7 @@
 /// ベースキャラクタークラス
 /// </summary>
 class BaseCharacter {
-public:
+public: // メンバ関数
 	/// <summary>
 	/// 初期化処理
 	/// </summary>
@@ -29,20 +29,19 @@ public:
 	/// </summary>
 	virtual void OnCollision();
 
-protected: 
+protected: // 継承限定メンバ変数
 	// スプライト
 	std::unique_ptr<Sprite> sprite_ = nullptr;
 	// テクスチャ
 	uint32_t charaTex_ = 0u;
 	// 位置
 	Vector2 pos_{}; 
-	
 	// 動くときのフラグ
 	bool isMove_ = false;
 	// 半径サイズ
 	float radius_;
 
-public:
+public: // セッター関数
 	/// <summary>
 	/// 座標のSetter
 	/// </summary>
@@ -67,5 +66,9 @@ public:
 	/// <returns></returns>
 	float GetRadius() { return radius_; }
 
+	/// <summary>
+	/// 動いているかのフラグを取得
+	/// </summary>
+	/// <returns></returns>
 	bool IsMove() { return isMove_; }
 };

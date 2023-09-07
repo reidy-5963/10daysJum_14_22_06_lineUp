@@ -3,15 +3,11 @@
 #include "MyMath.h"
 #include <memory>
 
-
 /// <summary>
 /// 弾のベースクラス
 /// </summary>
 class BaseBullet {
 public: // メンバ変数
-	/// <summary>
-	/// 初期化処理
-	/// </summary>
 	virtual void Initialize(uint32_t texture, const Vector2& pos, Vector2 velosity);
 
 	/// <summary>
@@ -32,6 +28,7 @@ public: // メンバ変数
 protected: // メンバ変数
 	// スプライト
 	std::unique_ptr<Sprite> sprite_;
+	// テクスチャ
 	uint32_t texture_;
 
 	// 位置
@@ -40,11 +37,12 @@ protected: // メンバ変数
 	// 速度
 	Vector2 velocity_;
 
+	// 弾の有効フラグ
 	bool isDead_;
-
+	// 半径サイズ
 	float radius_;
 
-public:
+public: // セッター関数
 	/// <summary>
 	/// 座標のSetter
 	/// </summary>

@@ -1,7 +1,8 @@
 #include "BaseCharacter.h"
 #include "Scroll.h"
 #include "WinApp.h"
-    /// <summary>
+
+/// <summary>
 /// 初期化処理
 /// </summary>
 void BaseCharacter::Initialize() {}
@@ -10,6 +11,7 @@ void BaseCharacter::Initialize() {}
 /// 更新処理
 /// </summary>
 void BaseCharacter::Update() { 
+	// スクロールのインスタンス取得
 	Scroll* scroll = Scroll::GetInstance();
 
 	//if (scroll->IsScreenOut() == Scroll::UP) {
@@ -26,7 +28,7 @@ void BaseCharacter::Update() {
 	//	scroll->SetIsScreenOut(Scroll::UNKNOWN);
 	//}
 
-
+	// スプライトの位置の更新処理
 	sprite_->SetPosition(pos_ - scroll->GetAddScroll());
 }
 
@@ -38,4 +40,7 @@ void BaseCharacter::Draw() {
 	sprite_->Draw();
 }
 
+/// <summary>
+/// 衝突処理
+/// </summary>
 void BaseCharacter::OnCollision() {}
