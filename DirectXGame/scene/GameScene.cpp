@@ -28,9 +28,9 @@ void GameScene::Initialize() {
 	scroll_->SetTarget(&player_->GetPosition());
 	scroll_->SetEdgePos({WinApp::kWindowWidth / 2, WinApp::kWindowHeight / 2});
 	// ボス生成
-	//boss_ = std::make_unique<BossEnemy>();
+	boss_ = std::make_unique<BossEnemy>();
 	// 初期化
-	//boss_->Initialize();
+	boss_->Initialize();
 
 	enemyManager_ = EnemyManager::GetInstance();
 	enemyManager_->Initialize();
@@ -47,6 +47,7 @@ void GameScene::Initialize() {
 void GameScene::Update() {
 	scroll_->Update();
 
+	enemyManager_->SetPlayer(player_->GetPosition());
 	enemyManager_->Update();
 
 	// プレイヤーの更新処理
@@ -56,7 +57,8 @@ void GameScene::Update() {
 	CheckAllCollision();
 
 	// ボスの更新処理
-	//boss_->Update();
+	boss_->SetPlayer(player_->GetPosition());
+	boss_->Update();
 	Scroll* scroll = Scroll::GetInstance();
 
 	back->SetPosition(backPos - scroll->GetAddScroll());
@@ -107,7 +109,7 @@ void GameScene::Draw() {
 	player_->Draw();
 
 	// ボスの描画
-	//boss_->Draw();
+	boss_->Draw();
 
 	// スプライト描画後処理
 	Sprite::PostDraw();

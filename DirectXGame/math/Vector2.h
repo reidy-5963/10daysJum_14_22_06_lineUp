@@ -15,10 +15,9 @@ struct Vector2 final {
 	}
 
 	const Vector2 operator+=(const Vector2& v1) {
-		Vector2 result{};
-		result.x = x + v1.x;
-		result.y = y + v1.y;
-		return result;
+		x += v1.x;
+		y += v1.y;
+		return *this;
 	}
 
 		const Vector2 operator-(const Vector2& v1) {
@@ -29,10 +28,9 @@ struct Vector2 final {
 	}
 
 	const Vector2 operator-=(const Vector2& v1) {
-		Vector2 result{};
-		result.x = x - v1.x;
-		result.y = y - v1.y;
-		return result;
+		x -= v1.x;
+		y -= v1.y;
+		return *this;
 	}
 
 	const Vector2 operator*(const Vector2& v1) {

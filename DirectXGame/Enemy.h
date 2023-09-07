@@ -3,7 +3,7 @@
 
 class Enemy : public BaseCharacter
 {
-public:
+public:	// 継承
 	/// <summary>
 	/// 初期化処理
 	/// </summary>
@@ -24,6 +24,8 @@ public:
 	/// </summary>
 	void OnCollision() override;
 
+public:	// 設定
+
 	/// <summary>
 	/// 死亡フラグのGetter
 	/// </summary>
@@ -35,6 +37,12 @@ public:
 	/// </summary>
 	/// <param name="tex"></param>
 	void SetTexture(uint32_t tex) { charaTex_ = tex; }
+
+	/// <summary>
+	/// 速さの設定
+	/// </summary>
+	/// <param name="velocity"></param>
+	void SetVelocity(Vector2 velocity) { velocity_ = velocity; }
 
 private:
 

@@ -12,10 +12,20 @@ void Enemy::Initialize()
 
 	radius_ = 32.0f;
 
+	velocity_ = {};
+
 }
 
 void Enemy::Update() 
 { 
+	ImGui::Begin("EnemyInfo");
+	ImGui::DragFloat2("pos", &pos_.x, 0.1f, 0, 2000.0f);
+	ImGui::SliderFloat2("speed", &velocity_.x, 0.0f, 30.0f);
+	ImGui::End();
+
+	// 座標移動
+	pos_ += velocity_;
+
 
 	// 座標設定
 	BaseCharacter::Update();
