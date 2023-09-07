@@ -75,4 +75,10 @@ public:
 	/// <returns></returns>
 	bool GetIsDead() { return isDead_; }
 
+	/// <summary>
+	/// フラグの設定
+	/// </summary>
+	/// <param name="dead"></param>
+	void SetIsDead(bool dead) { isDead_ = dead; }
+
 };

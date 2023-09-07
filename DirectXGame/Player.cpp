@@ -209,6 +209,17 @@ void Player::Update() {
 	// 弾の更新処理
 	for (PlayerBullet* bullet : bullets_) {
 		bullet->Update();
+
+		ImGui::Begin("bullet");
+		ImGui::Text("%d", bullet->GetIsDead());
+		ImGui::End();
+
+		if (pos_.x + kDeadOffset < bullet->GetPosition().x ||
+		    pos_.x - kDeadOffset > bullet->GetPosition().x ||
+		    pos_.y + kDeadOffset < bullet->GetPosition().y ||
+		    pos_.y - kDeadOffset > bullet->GetPosition().y) {
+			bullet->SetIsDead(true);
+		}
 	}
 
 #ifdef _DEBUG
