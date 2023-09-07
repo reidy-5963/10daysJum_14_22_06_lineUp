@@ -178,25 +178,32 @@ void Tail::MoveUpdate() {
 	// もし動いているとき
 	if (isMove_) {
 		// 媒介変数t(0.0f ~ 1.0f)
-		if (t_ > 1.0f) {
+		if (t_ >= 1.0f) {
 			t_ = 1.0f;
 			isMove_ = false;
 		} else {
-			t_ += 0.1f;
+			t_ += 0.2f;
 		}
 
 		// 線形補完
+		//pos_ = MyMath::CatmullRom(prePos_, pos_, lerpEndPos_, lerpEndPos_, t_);
+		if (!isMove_) {
+		
+		}
+
 		pos_ = MyMath::lerp(t_, prePos_, lerpEndPos_);
 	}
 	// もし動いていないとき
-	if (!isMove_) {
+	if (!isMove_) { 
+		// 線形補完の完了地点を親の位置に
+		lerpEndPos_.x = parentPos_->x;
+		lerpEndPos_.y = parentPos_->y;
+
 		// 動いてなかったときの位置を取得
 		prePos_ = pos_;
 		// 媒介変数tの初期化
 		t_ = 0.0f;
-		// 線形補完の完了地点を親の位置に
-		lerpEndPos_.x = parentPos_->x;
-		lerpEndPos_.y = parentPos_->y;
+		isMove_ = true;
 	}
 }
 

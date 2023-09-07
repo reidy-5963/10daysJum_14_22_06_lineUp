@@ -100,9 +100,8 @@ void Player::Update() {
 
 			if (root_t_ >= 1.0f) {
 				isMtM1 = false;
-				isM1tM2 = true;
 			}
-			CountT(root_t_, 0.0f, isRootMove_, true, 0.01f);
+			CountT(root_t_, 0.0f, isM1tM2, true, rootTOffset);
 		}
 		//
 		if (isM1tM2) {
@@ -110,9 +109,8 @@ void Player::Update() {
 			    markerPos_, markerAddRadian[0], markerAddRadian[1], clickPlayerPos_, root_t_);
 			if (root_t_ >= 1.0f) {
 				isM1tM2 = false;
-				isM2tP = true;
 			}
-			CountT(root_t_, 0.0f, isRootMove_, true, 0.01f);
+			CountT(root_t_, 0.0f, isM2tP, true, rootTOffset);
 		}
 		//
 		if (isM2tP) {
@@ -121,9 +119,8 @@ void Player::Update() {
 			    root_t_);
 			if (root_t_ >= 1.0f) {
 				isM2tP = false;
-				isPtP1 = true;
 			}
-			CountT(root_t_, 0.0f, isRootMove_, true, 0.01f);
+			CountT(root_t_, 0.0f, isPtP1, true, rootTOffset);
 		}
 		//
 		if (isPtP1) {
@@ -132,27 +129,24 @@ void Player::Update() {
 			    root_t_);
 			if (root_t_ >= 1.0f) {
 				isPtP1 = false;
-				isP1tP2 = true;
 			}
-			CountT(root_t_, 0.0f, isRootMove_, true, 0.01f);
+			CountT(root_t_, 0.0f, isP1tP2, true, rootTOffset);
 		}	
 		if (isP1tP2) {
 			pos_ = MyMath::CatmullRom(
 			    clickPlayerPos_, PlayerAddRadian[0], PlayerAddRadian[1], markerPos_, root_t_);
 			if (root_t_ >= 1.0f) {
 				isP1tP2 = false;
-				isP2tM = true;
 			}
-			CountT(root_t_, 0.0f, isRootMove_, true, 0.01f);
+			CountT(root_t_, 0.0f, isP2tM, true, rootTOffset);
 		}
 		if (isP2tM) {
 			pos_ = MyMath::CatmullRom(
 			    PlayerAddRadian[0], PlayerAddRadian[1], markerPos_, markerAddRadian[0], root_t_);
 			if (root_t_ >= 1.0f) {
 				isP2tM = false;
-				isMtM1 = true;
 			}
-			CountT(root_t_, 0.0f, isRootMove_, true, 0.01f);
+			CountT(root_t_, 0.0f, isMtM1, true, rootTOffset);
 		}
 		
 		////// ベジエ曲線のスタート位置計算

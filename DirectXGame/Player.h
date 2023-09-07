@@ -173,4 +173,6 @@ private: // メンバ変数
 	std::unique_ptr<Sprite> origin_ = nullptr;
 	Vector2 originPos_{};
 	//
+
+	float rootTOffset = 0.04f;
 };
