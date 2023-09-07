@@ -3,8 +3,6 @@
 #include "ImGuiManager.h"
 #include <cassert>
 #include <cmath>
-#include <time.h>
-#include <stdlib.h>
 #include "Scroll.h"
 
 GameScene::GameScene() {}
@@ -33,6 +31,10 @@ void GameScene::Initialize() {
 	//boss_ = std::make_unique<BossEnemy>();
 	// 初期化
 	//boss_->Initialize();
+
+	enemyManager_ = EnemyManager::GetInstance();
+	enemyManager_->Initialize();
+
 	backTex = TextureManager::Load("testBackTex.png");
 	back.reset(Sprite::Create(backTex, {0.0f, 0.0f}, {1.0f, 1.0f, 1.0f, 1.0f}, {0.0f, 0.0f}));
 	Vector2 size = back->GetSize();
@@ -45,23 +47,10 @@ void GameScene::Initialize() {
 void GameScene::Update() {
 	scroll_->Update();
 
-	// 消去処理
-	enemys_.remove_if([](Enemy* enemy) {
-		if (enemy->GetIsDead()) {
-			delete enemy;
-			return true;
-		}
-		return false;
-	});
-
-	EnemyManager();
+	enemyManager_->Update();
 
 	// プレイヤーの更新処理
 	player_->Update();
-	// エネミーの更新
-	for (Enemy* enemy : enemys_) {
-		enemy->Update();
-	}
 
 	// 当たり判定
 	CheckAllCollision();
@@ -112,10 +101,7 @@ void GameScene::Draw() {
 	/// ここに前景スプライトの描画処理を追加できる
 	/// </summary>
 
-	// エネミーの描画処理
-	for (Enemy* enemy : enemys_) {
-		enemy->Draw();
-	}
+	enemyManager_->Draw();
 
 	// プレイヤーの描画処理
 	player_->Draw();
@@ -135,10 +121,11 @@ void GameScene::CheckAllCollision()
 	Vector2 targetA, targetB;
 
 	const std::list<PlayerBullet*>& playerBullet = player_->GetBullets();
+	const std::list<Enemy*>& enemys = enemyManager_->GetEnemyLists();
 
 	// プレイヤーと敵の衝突判定
 	targetA = player_->GetPosition();
-	for (Enemy* enemy : enemys_) {
+	for (Enemy* enemy : enemys) {
 		targetB = enemy->GetPosition();
 		float distance =
 		    std::sqrtf(std::powf(targetA.x - targetB.x, 2) + std::powf(targetA.y - targetB.y, 2));
@@ -155,7 +142,7 @@ void GameScene::CheckAllCollision()
 	// プレイヤーの弾と敵の衝突判定
 	for (PlayerBullet* playerBullet_ : playerBullet) {
 		targetA = playerBullet_->GetPosition();
-		for (Enemy* enemy : enemys_) {
+		for (Enemy* enemy : enemys) {
 			targetB = enemy->GetPosition();
 			float distance = std::sqrtf(
 			    std::powf(targetA.x - targetB.x, 2) + std::powf(targetA.y - targetB.y, 2));
@@ -171,24 +158,4 @@ void GameScene::CheckAllCollision()
 
 	}
 
-}
-
-void GameScene::EnemyManager() { 
-	ImGui::Begin("EnemySetting");
-	ImGui::DragInt("Limit", &kEnemyLimit, 1, 0, 20);
-	ImGui::DragInt("Respown", &kRespownTimer, 1, 0, 300);
-	ImGui::End();
-
-		// 生成（仮
-	respownCount--;
-	if (respownCount == 0 && enemys_.size() < kEnemyLimit) {
-		Enemy* newEnemy = new Enemy();
-		newEnemy->Initialize();
-		Vector2 res = {
-		    float(rand() % 1280 + newEnemy->GetRadius()),
-		    float(rand() % 720 + newEnemy->GetRadius())};
-		newEnemy->SetPosition(res);
-		enemys_.push_back(newEnemy);
-		respownCount = kRespownTimer;
-	}
 }

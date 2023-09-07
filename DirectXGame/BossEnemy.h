@@ -24,4 +24,16 @@ public:
 	/// </summary>
 	void OnCollision() override;
 
+public:
+
+	void RushAttack();
+
+	void RushAttackSetup();
+
+	void GuidedAttack();
+
+	void GuidedAttackSetup();
+
+
+
 };

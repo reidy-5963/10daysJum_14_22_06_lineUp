@@ -30,7 +30,15 @@ public:
 	/// <returns></returns>
 	bool GetIsDead() { return isDead_; }
 
+	/// <summary>
+	/// テクスチャの設定
+	/// </summary>
+	/// <param name="tex"></param>
+	void SetTexture(uint32_t tex) { charaTex_ = tex; }
+
 private:
+
+	Vector2 velocity_ = {};
 
 	bool isDead_ = false;
 

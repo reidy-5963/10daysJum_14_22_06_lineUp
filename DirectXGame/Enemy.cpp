@@ -7,8 +7,6 @@ void Enemy::Initialize()
 {
 	pos_ = {300, 300};
 
-	charaTex_ = TextureManager::Load("Enemy.png");
-
 	sprite_.reset(
 	    Sprite::Create(charaTex_, {pos_.x, pos_.y}, {1.0f, 1.0f, 1.0f, 1.0f}, {0.5f, 0.5f}));
 
