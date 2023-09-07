@@ -77,7 +77,7 @@ void Player::Update() {
 		// 前フレームのマーカー位置を取得
 		preMarkerPos_ = markerPos_;
 
-		if (mousePos.x < 0) {
+		/*if (mousePos.x < 0) {
 			mousePos.x = 0;
 		} else if (mousePos.x > WinApp::kWindowWidth) {
 			mousePos.x = WinApp::kWindowWidth;
@@ -86,7 +86,7 @@ void Player::Update() {
 			mousePos.y = 0;
 		} else if (mousePos.y > WinApp::kWindowHeight) {
 			mousePos.y = WinApp::kWindowHeight;
-		}
+		}*/
 
 
 		// マーカーの位置を現在のマウス位置に設定
@@ -349,24 +349,21 @@ void Player::CountT(float& t, const float endT, bool& flag, const bool setFlag, 
 
 void Player::MarkerControl() {
 
-
 	Scroll* scroll = Scroll::GetInstance();
 	//Vector2 ;
 	if (markerPos_.x < 0 + scroll->GetEdgePos().x / 2) {
 		markerPos_.x = scroll->GetEdgePos().x / 2 + scroll->GetAddScroll().x;
 	}
 
-	else if (markerPos_.x > WinApp::kWindowWidth * 2 - scroll->GetEdgePos().x / 2) {
-		markerPos_.x =
-		    WinApp::kWindowWidth * 2 - scroll->GetEdgePos().x / 2;
+	else if (markerPos_.x > (WinApp::kWindowWidth * 2) + (scroll->GetEdgePos().x / 2) * 3) {
+		markerPos_.x = (WinApp::kWindowWidth * 2) + (scroll->GetEdgePos().x / 2) * 3;
 	}
 
 	if (markerPos_.y < 0 + scroll->GetEdgePos().y / 2) {
 		markerPos_.y = scroll->GetEdgePos().y / 2 + scroll->GetAddScroll().y;
 	} 
 
-	else if (markerPos_.y > WinApp::kWindowHeight * 2 - scroll->GetEdgePos().y / 2) {
-		markerPos_.y =
-		    WinApp::kWindowHeight * 2 - scroll->GetEdgePos().y / 2;
+	else if (markerPos_.y > (WinApp::kWindowHeight * 2) + (scroll->GetEdgePos().y / 2) * 3) {
+		markerPos_.y = (WinApp::kWindowHeight * 2) + (scroll->GetEdgePos().y / 2) * 3;
 	}
 }
