@@ -54,6 +54,14 @@ public:
 	/// <param name="matrix">行列</param>
 	/// <returns></returns>
 	static Vector2 TransformCoord(Vector2 vector, Matrix3x3 matrix);
+	
+	/// <summary>
+	/// 座標変換
+	/// </summary>
+	/// <param name="vector">ベクトル</param>
+	/// <param name="matrix">行列</param>
+	/// <returns></returns>
+	static Vector2 TransformNormal(const Vector2& v, const Matrix3x3& m);
 
 #pragma endregion
 

@@ -162,15 +162,19 @@ void GameScene::Draw() {
 /// 当たり判定
 /// </summary>
 void GameScene::CheckAllCollision() {
-	// リスト取得
+	// 変数の用意
 	Vector2 targetA, targetB;
-
+#pragma region
+#pragma endregion
 	// プレイヤーの弾リストを取得
 	const std::list<PlayerBullet*>& playerBullet = player_->GetBullets();
+	// プレイヤーの弾リストを取得
+	const std::list<Tail*>& tails = player_->GetTails();
 
-	// プレイヤーと敵の衝突判定
+	// プレイヤーの位置取得
 	targetA = player_->GetPosition();
 
+#pragma region 敵とプレイヤー
 	for (Enemy* enemy : enemys_) {
 		// エネミーの位置取得
 		targetB = enemy->GetPosition();
@@ -185,7 +189,29 @@ void GameScene::CheckAllCollision() {
 			player_->OnCollision();
 		}
 	}
+#pragma endregion
+#pragma region 敵と尻尾
+	for (Enemy* enemy : enemys_) {
+		// エネミーの位置取得
+		targetB = enemy->GetPosition();
+		for (Tail* tail : tails) {
+			// エネミーの位置取得
+			targetA = tail->GetPosition();
+			float distance = std::sqrtf(
+			    std::powf(targetA.x - targetB.x, 2) + std::powf(targetA.y - targetB.y, 2));
+			float radius = player_->GetRadius() + enemy->GetRadius();
+			// 交差判定
+			if (distance <= radius) {
+				// コールバック
+				enemy->OnCollision();
 
+				tail->OnCollision();
+			}
+		}
+	}
+#pragma endregion
+
+#pragma region プレイヤーの弾と敵
 	// プレイヤーの弾と敵の衝突判定
 	for (PlayerBullet* playerBullet_ : playerBullet) {
 		targetA = playerBullet_->GetPosition();
@@ -204,7 +230,7 @@ void GameScene::CheckAllCollision() {
 		}
 
 	}
-
+#pragma endregion
 }
 
 /// <summary>

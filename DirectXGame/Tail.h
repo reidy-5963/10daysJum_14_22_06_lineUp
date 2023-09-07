@@ -15,7 +15,7 @@ public: // メンバ関数
 	/// <param name="texture">テクスチャ</param>
 	/// <param name="parent">親になるスプライトの位置</param>
 	/// <param name="tailNo">尻尾番号</param>
-	void Initialize(uint32_t texture, const Vector2* parent, int tailNo);
+	void Initialize(uint32_t texture, const Vector2* parent, int tailNo, const bool* ParentBool);
 
 	/// <summary>
 	/// 更新処理	
@@ -26,6 +26,11 @@ public: // メンバ関数
 	/// 描画処理
 	/// </summary>
 	void Draw();
+
+	/// <summary>
+	/// 衝突処理
+	/// </summary>
+	void OnCollision() override;
 
 	/// <summary>
 	/// 弾の発射処理
@@ -66,19 +71,28 @@ public: // ゲッター
 	/// 位置の取得
 	/// </summary>
 	/// <returns>位置</returns>
-	const Vector2 *GetPosition() { return &pos_; }
+	const Vector2 &GetPosition() { return pos_; }
 	
 	/// <summary>
 	/// 攻撃フラグの取得
 	/// </summary>
 	/// <returns>攻撃フラグ</returns>
 	bool IsFire() { return isFire_; }
+	/// <summary>
+	/// 攻撃フラグの取得
+	/// </summary>
+	/// <returns>攻撃フラグ</returns>
+	bool *IsFirePtr() { return &isFire_; }
+
 
 	/// <summary>
 	///  尻尾の進行方向の取得
 	/// </summary>
 	/// <returns>尻尾の進行方向</returns>
 	Vector2 GetDirection() { return direction_; }
+
+	bool IsHitOut() { return isHitOut_; }
+
 #pragma endregion
 
 public: // セッター
@@ -101,13 +115,15 @@ public: // セッター
 	/// <param name="player">プレイヤー</param>
 	void SetPlayer(Player* player) { player_ = player; }
 
-	void SetBulletRad(float radian) { offsetRadian = radian;
-	}
+	void SetBulletRad(float radian) { offsetRadian = radian; }
+
+	void SetTailNo(int tailNo) { tailNo_ = tailNo; }
 #pragma endregion
 
 private: // メンバ変数
 	// 親の位置
 	const Vector2* parentPos_;
+	const bool* parentBool_;
 
 	// 線形補間するときの終わり位置
 	Vector2 lerpEndPos_;
@@ -138,4 +154,6 @@ private: // メンバ変数
 	Player* player_;
 
 	float offsetRadian = 1.0f;
+
+	bool isHitOut_ = false;
 };

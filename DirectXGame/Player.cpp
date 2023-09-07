@@ -319,12 +319,13 @@ void Player::AddTails() {
 		if (tails_.size() != 0) {
 			// 一個前の尻尾の位置を親として初期化
 			newTail->Initialize(
-			    tailTexture_, tails_.back()->GetPosition(), (tails_.back()->GetTailNo() + 1));
+			    tailTexture_, &tails_.back()->GetPosition(), (tails_.back()->GetTailNo() + 1),
+			    tails_.back()->IsFirePtr());
 		}
 		// もし最初の尻尾なら
 		else {
 			// プレイヤーの位置を親として初期化
-			newTail->Initialize(tailTexture_, &pos_, 0);
+			newTail->Initialize(tailTexture_, &pos_, 0, &isMove_);
 		}
 
 		// プレイヤーのポインタを設定
@@ -355,7 +356,7 @@ void Player::TailUpdate() {
 	}
 }
 
-void Player::OnCollision() { AddTails(); }
+void Player::OnCollision() { DeleteTails(); }
 
 void Player::CursorUpdate() {
 	// カーソルの位置の取得

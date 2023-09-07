@@ -102,6 +102,12 @@ public: // ゲッター
 	/// </summary>
 	/// <returns></returns>
 	const std::list<PlayerBullet*>& GetBullets() { return bullets_; }
+	
+	/// <summary>
+	/// 尻尾のリストの取得
+	/// </summary>
+	/// <returns></returns>
+	const std::list<Tail*>& GetTails() { return tails_; }
 #pragma endregion
 
 private: // メンバ変数
@@ -138,7 +144,7 @@ private: // メンバ変数
 
 	// 動くときの線形補完
 	float move_t_ = 0.0f;
-	float move_t_offset = 0.06f;
+	float move_t_offset = 0.01f;
 
 	// ベジエで動くときのスタート位置
 	Vector2 bezierStartPos_{};

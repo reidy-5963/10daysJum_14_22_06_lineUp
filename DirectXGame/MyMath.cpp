@@ -97,6 +97,14 @@ Vector2 MyMath::TransformCoord(Vector2 vector, Matrix3x3 matrix) {
 	return result;
 }
 
+Vector2 MyMath::TransformNormal(const Vector2& v, const Matrix3x3& m) {
+	Vector2 result{
+	    v.x * m.m[0][0] + v.y * m.m[1][0],
+	    v.x * m.m[0][1] + v.y * m.m[1][1],
+	};
+	return result;
+}
+
 #pragma endregion
 
 #pragma region Vector3
