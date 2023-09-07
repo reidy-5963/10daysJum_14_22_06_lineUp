@@ -391,20 +391,24 @@ void Player::MarkerControl() {
 	Scroll* scroll = Scroll::GetInstance();
 	
 	
-	if (markerPos_.x < 0 + markerLimit_) {
+	if (markerPos_.x < 0 + markerLimit_)
+	{
 		markerPos_.x = markerLimit_ + scroll->GetAddScroll().x;
 	}
 
-	else if (markerPos_.x > (WinApp::kWindowWidth * 2) + scroll->GetEdgePos().x + markerLimit_) {
-		markerPos_.x = (WinApp::kWindowWidth * 2) + scroll->GetEdgePos().x + markerLimit_;
+	else if (markerPos_.x > (WinApp::kWindowWidth * 2) + scroll->GetEdgePos().x + (scroll->GetEdgePos().x - markerLimit_)) 
+	{
+		markerPos_.x = (WinApp::kWindowWidth * 2) + scroll->GetEdgePos().x + (scroll->GetEdgePos().x - markerLimit_);
 	}
 
-	if (markerPos_.y < 0 + markerLimit_) {
+	if (markerPos_.y < 0 + markerLimit_) 
+	{
 		markerPos_.y = markerLimit_ + scroll->GetAddScroll().y;
 	} 
 
-	else if (markerPos_.y > (WinApp::kWindowHeight * 2) + scroll->GetEdgePos().y + markerLimit_) {
-		markerPos_.y = (WinApp::kWindowHeight * 2) + scroll->GetEdgePos().y + markerLimit_;
+	else if (markerPos_.y > (WinApp::kWindowHeight * 2) + scroll->GetEdgePos().y + (scroll->GetEdgePos().y - markerLimit_))
+	{
+		markerPos_.y = (WinApp::kWindowHeight * 2) + scroll->GetEdgePos().y + (scroll->GetEdgePos().y - markerLimit_);
 	}
 }
 

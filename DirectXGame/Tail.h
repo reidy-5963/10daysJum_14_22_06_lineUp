@@ -108,6 +108,7 @@ public: // セッター
 private: // メンバ変数
 	// 親の位置
 	const Vector2* parentPos_;
+
 	// 線形補間するときの終わり位置
 	Vector2 lerpEndPos_;
 
@@ -136,5 +137,5 @@ private: // メンバ変数
 	// プレイヤー
 	Player* player_;
 
-	float offsetRadian = 1.0f * 3.14f;
+	float offsetRadian = 1.0f;
 };
