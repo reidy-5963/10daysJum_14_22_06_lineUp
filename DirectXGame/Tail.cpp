@@ -18,9 +18,6 @@ void Tail::Initialize(uint32_t texture, const Vector2* parent, int tailNo) {
 	// 尻尾番号
 	tailNo_ = tailNo;
 
-	// スプライトの生成
-	sprite_.reset(Sprite::Create(texture, {720, 360}, {1.0f, 1.0f, 1.0f, 1.0f}, {0.5f, 0.5f}));
-
 	// 親の位置に初期化
 	pos_.x = parentPos_->x;
 	pos_.y = parentPos_->y;
@@ -31,6 +28,10 @@ void Tail::Initialize(uint32_t texture, const Vector2* parent, int tailNo) {
 	// 線形補完の完了地点を親の位置に
 	lerpEndPos_.x = parentPos_->x;
 	lerpEndPos_.y = parentPos_->y;
+
+	// スプライトの生成
+	sprite_.reset(Sprite::Create(texture, {-10.0f, -10.0f}, {1.0f, 1.0f, 1.0f, 1.0f}, {0.5f, 0.5f}));
+
 }
 
 void Tail::Update() {

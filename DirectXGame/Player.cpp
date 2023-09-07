@@ -101,18 +101,21 @@ void Player::Update() {
 	// もし左クリックしたら
 	if (input_->IsTriggerMouse(0)) {
 		LeftClickUpdate();
-		prePos_ = pos_;
 	}
+	prePos_ = pos_;
 
 	// もしマーカーまで移動しきったら
 	if (!isMove_) {
 
 		if (isMtM1) {
-
+			
 			pos_ = MyMath::CatmullRom(
 			    PlayerAddRadian[1], markerPos_, markerAddRadian[0], markerAddRadian[1], root_t_);
-			direction_ = markerAddRadian[0] - markerPos_;
+			direction_ = pos_ - prePos_;
+
 			if (root_t_ >= 1.0f) {
+				direction_ = markerAddRadian[0] - markerPos_;
+
 				isMtM1 = false;
 			}
 			MyMath::CountT(root_t_, 0.0f, isM1tM2, true, rootTOffset);
@@ -121,8 +124,9 @@ void Player::Update() {
 		if (isM1tM2) {
 			pos_ = MyMath::CatmullRom(
 			    markerPos_, markerAddRadian[0], markerAddRadian[1], clickPlayerPos_, root_t_);
-			direction_ = markerAddRadian[1] - markerAddRadian[0];
+			direction_ = pos_ - prePos_;
 			if (root_t_ >= 1.0f) {
+				direction_ = markerAddRadian[1] - markerAddRadian[0];
 				isM1tM2 = false;
 			}
 			MyMath::CountT(root_t_, 0.0f, isM2tP, true, rootTOffset);
@@ -132,8 +136,9 @@ void Player::Update() {
 			pos_ = MyMath::CatmullRom(
 			    markerAddRadian[0], markerAddRadian[1], clickPlayerPos_, PlayerAddRadian[0],
 			    root_t_);
-			direction_ = clickPlayerPos_ - markerAddRadian[0];
+			direction_ = pos_ - prePos_;
 			if (root_t_ >= 1.0f) {
+				direction_ = clickPlayerPos_ - markerAddRadian[0];
 				isM2tP = false;
 			}
 			MyMath::CountT(root_t_, 0.0f, isPtP1, true, rootTOffset);
@@ -143,8 +148,9 @@ void Player::Update() {
 			pos_ = MyMath::CatmullRom(
 			    markerAddRadian[1], clickPlayerPos_, PlayerAddRadian[0], PlayerAddRadian[1],
 			    root_t_);
-			direction_ = PlayerAddRadian[0] - clickPlayerPos_;
+			direction_ = pos_ - prePos_;
 			if (root_t_ >= 1.0f) {
+				direction_ = PlayerAddRadian[0] - clickPlayerPos_;
 				isPtP1 = false;
 			}
 			MyMath::CountT(root_t_, 0.0f, isP1tP2, true, rootTOffset);
@@ -153,8 +159,9 @@ void Player::Update() {
 		if (isP1tP2) {
 			pos_ = MyMath::CatmullRom(
 			    clickPlayerPos_, PlayerAddRadian[0], PlayerAddRadian[1], markerPos_, root_t_);
-			direction_ = PlayerAddRadian[1] - PlayerAddRadian[0];
+			direction_ = pos_ - prePos_;
 			if (root_t_ >= 1.0f) {
+				direction_ = PlayerAddRadian[1] - PlayerAddRadian[0];
 				isP1tP2 = false;
 			}
 			MyMath::CountT(root_t_, 0.0f, isP2tM, true, rootTOffset);
@@ -163,8 +170,9 @@ void Player::Update() {
 		if (isP2tM) {
 			pos_ = MyMath::CatmullRom(
 			    PlayerAddRadian[0], PlayerAddRadian[1], markerPos_, markerAddRadian[0], root_t_);
-			direction_ = markerPos_ - PlayerAddRadian[1];
+			direction_ = pos_ - prePos_;
 			if (root_t_ >= 1.0f) {
+				direction_ = markerPos_ - PlayerAddRadian[1];
 				isP2tM = false;
 			}
 			MyMath::CountT(root_t_, 0.0f, isMtM1, true, rootTOffset);
@@ -210,7 +218,7 @@ void Player::Update() {
 		isRootMove_ = false;
 
 		// 1.0になるまで加算
-		MyMath::CountT(move_t_, 1.0f, isMove_, false, 0.01f);
+		MyMath::CountT(move_t_, 1.0f, isMove_, false, move_t_offset);
 		if (!isMove_) {
 			isMtM1 = true;
 		}
@@ -229,16 +237,16 @@ void Player::Update() {
 		}
 	}
 
-	// 尻尾の更新処理
-	for (Tail* tail : tails_) {
-		tail->SetBulletRad(BulletRadian);
-		tail->Update();
-	}
-	
+	// 尻尾の更新
+	TailUpdate();
+
+	// 弾の削除処理
 	DeleteBullet();
 
+	// 弾の更新処理
 	BulletUpdate();
 
+	// ベースの更新処理
 	BaseCharacter::Update(); 
 	
 	// 自機の回転を反映させる
@@ -293,12 +301,13 @@ void Player::Draw() {
 
 	// スプライトの描画
 	BaseCharacter::Draw();
-
-	m1->Draw();
-	m2->Draw();
-	p1->Draw();
-	p2->Draw();
-	origin_->Draw();
+#ifdef _DEBUG
+	//m1->Draw();
+	//m2->Draw();
+	//p1->Draw();
+	//p2->Draw();
+	//origin_->Draw();
+#endif // _DEBUG
 }
 
 void Player::AddTails() {
@@ -336,6 +345,14 @@ void Player::DeleteTails() {
 void Player::AddBullets(PlayerBullet* bullet) { 
 	// 弾をリストに追加
 	bullets_.push_back(bullet); 
+}
+
+void Player::TailUpdate() {
+	// 尻尾の更新処理
+	for (Tail* tail : tails_) {
+		tail->SetBulletRad(BulletRadian);
+		tail->Update();
+	}
 }
 
 void Player::OnCollision() { AddTails(); }
