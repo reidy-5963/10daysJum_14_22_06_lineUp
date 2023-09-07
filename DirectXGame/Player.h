@@ -60,14 +60,14 @@ public: // メンバ関数
 
 	void LeftClickUpdate();
 
-public: // 追加関数
+public: // 追加や削除の関数
 	/// <summary>
 	/// 尻尾の追加
 	/// </summary>
 	void AddTails();
 
 	/// <summary>
-	/// 尻尾の追加
+	/// 尻尾の削除
 	/// </summary>
 	void DeleteTails();
 
@@ -78,6 +78,7 @@ public: // 追加関数
 	void AddBullets(PlayerBullet* bullet);
 
 public: // ゲッター
+#pragma region ゲっター
 	/// <summary>
 	/// 弾テクスチャの取得
 	/// </summary>
@@ -95,6 +96,7 @@ public: // ゲッター
 	/// </summary>
 	/// <returns></returns>
 	const std::list<PlayerBullet*>& GetBullets() { return bullets_; }
+#pragma endregion
 
 private: // メンバ変数
 	// 入力

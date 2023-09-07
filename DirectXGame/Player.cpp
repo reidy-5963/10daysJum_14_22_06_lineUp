@@ -30,7 +30,8 @@ void Player::Initialize() {
 	clickPlayerPos_ = pos_;
 	markerPos_ = pos_;
 	preMarkerPos_ = markerPos_;
-
+	 
+	// 当たり判定用に半径の設定
 	radius_ = 32.0f;
 
 
@@ -50,6 +51,8 @@ void Player::Initialize() {
 	// マーカーのスプライトの生成
 	markerSprite_.reset(
 	    Sprite::Create(markerTex_, markerPos_, {1.0f, 1.0f, 1.0f, 1.0f}, {0.5f, 0.5f}));
+	// 1本目の追加
+	AddTails();
 
 	//	
 	m1.reset(Sprite::Create(markerTex_, markerPos_, {1.0f, 0.0f, 0.0f, 1.0f}, {0.5f, 0.5f}));
@@ -64,6 +67,9 @@ void Player::Initialize() {
 /// 更新処理
 /// </summary>
 void Player::Update() {
+
+#ifdef _DEBUG 
+//////////////////////////////////////////////////// 
 	// ひとまずの尻尾追加
 	if (input_->TriggerKey(DIK_1)) {
 		AddTails();
@@ -76,6 +82,13 @@ void Player::Update() {
 
 ////////////////////////////////////////////////////
 
+	ImGui::Begin("debug");
+	ImGui::Text("%f", root_t_);
+	ImGui::DragFloat("radian", &BulletRadian, 0.1f, 2.0f);
+	ImGui::End();
+
+#endif
+
 	// カーソルの位置取得
 	CursorUpdate();
 
@@ -83,21 +96,15 @@ void Player::Update() {
 	if (input_->IsTriggerMouse(0)) {
 		LeftClickUpdate();
 		prePos_ = pos_;
-
 	}
-	Vector2 prePos = pos_;
 	// もしマーカーまで移動しきったら
 	if (!isMove_) {
-		ImGui::Begin("dede");
-		//ImGui::Text("%d, %d, %d, %d", isM2R ,isR2CP ,isCP2PM ,isPM2M);
-		ImGui::End();
-		//if (!isRootMove_) {
 
 		if (isMtM1) {
 
 			pos_ = MyMath::CatmullRom(
 			    PlayerAddRadian[1], markerPos_, markerAddRadian[0], markerAddRadian[1], root_t_);
-
+			
 			if (root_t_ >= 1.0f) {
 				isMtM1 = false;
 			}
@@ -239,18 +246,12 @@ void Player::Update() {
 		}
 	}
 
-#ifdef _DEBUG
-	ImGui::Begin("debug");
-	ImGui::Text("%f", root_t_);
-	ImGui::DragFloat("radian", &BulletRadian, 0.1f, 2.0f);
-	ImGui::End();
-#endif // DEBUG
 	BaseCharacter::Update(); 
 	
 
 
 	// 向きの計算
-	Vector2 move = prePos - pos_;
+	Vector2 move = prePos_ - pos_;
 	// 自機の回転を反映させる
 	sprite_->SetRotation(std::atan2(-move.y, -move.x));
 	Scroll* scroll = Scroll::GetInstance();
