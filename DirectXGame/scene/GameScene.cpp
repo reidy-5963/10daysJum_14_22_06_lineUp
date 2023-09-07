@@ -43,7 +43,6 @@ void GameScene::Initialize() {
 }
 
 void GameScene::Update() {
-	scroll_->Update();
 
 	// 消去処理
 	enemys_.remove_if([](Enemy* enemy) {
@@ -69,6 +68,7 @@ void GameScene::Update() {
 	// ボスの更新処理
 	//boss_->Update();
 	Scroll* scroll = Scroll::GetInstance();
+	scroll_->Update();
 
 	back->SetPosition(backPos - scroll->GetAddScroll());
 }

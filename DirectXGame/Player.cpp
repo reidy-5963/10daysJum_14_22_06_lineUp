@@ -67,9 +67,7 @@ void Player::Update() {
 		DeleteTails();
 	}
 
-
 ////////////////////////////////////////////////////
-
 
 	// カーソルの位置取得
 	CursorUpdate();
@@ -202,6 +200,8 @@ void Player::Update() {
 #endif // DEBUG
 	BaseCharacter::Update(); 
 	
+
+
 	// 向きの計算
 	Vector2 move = bezierEndPos_ - bezierStartPos_;
 	// 自機の回転を反映させる
