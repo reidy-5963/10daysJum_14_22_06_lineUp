@@ -7,10 +7,19 @@
 #include <stdlib.h>
 #include "Scroll.h"
 
+/// <summary>
+/// コンストクラタ
+/// </summary>
 GameScene::GameScene() {}
 
+/// <summary>
+/// デストラクタ
+/// </summary>
 GameScene::~GameScene() {}
 
+/// <summary>
+/// 初期化
+/// </summary>
 void GameScene::Initialize() {
 
 	dxCommon_ = DirectXCommon::GetInstance();
@@ -20,31 +29,44 @@ void GameScene::Initialize() {
 	unsigned int currentTime = (int)time(nullptr);
 	srand(currentTime);
 
+#pragma region プレイヤー
 	// プレイヤー生成
 	player_ = std::make_unique<Player>();
 	// プレイヤーの初期化処理
 	player_->Initialize();
+#pragma endregion
 
+#pragma region スクロール
 	scroll_ = Scroll::GetInstance(); 
 	scroll_->Initialize();
 	scroll_->SetTarget(&player_->GetPosition());
 	scroll_->SetEdgePos({WinApp::kWindowWidth / 2, WinApp::kWindowHeight / 2});
+#pragma endregion
+
+#pragma region ボス
 	// ボス生成
 	//boss_ = std::make_unique<BossEnemy>();
 	// 初期化
 	//boss_->Initialize();
+#pragma endregion
+
+#pragma region 背景
 	backTex = TextureManager::Load("testBackTex.png");
 	back.reset(Sprite::Create(backTex, {0.0f, 0.0f}, {1.0f, 1.0f, 1.0f, 1.0f}, {0.0f, 0.0f}));
 	Vector2 size = back->GetSize();
 	back->SetSize({size.x * 1.5f, size.y * 1.5f});
-
-
-	
+#pragma endregion
 }
 
-void GameScene::Update() {
+/// <summary>
+/// 毎フレーム処理
+/// </summary>
+void GameScene::Update() { 
+	// スクロールの更新処理
+	Scroll* scroll = Scroll::GetInstance();
+	scroll_->Update();
 
-	// 消去処理
+	// エネミーの消去処理
 	enemys_.remove_if([](Enemy* enemy) {
 		if (enemy->GetIsDead()) {
 			delete enemy;
@@ -53,10 +75,12 @@ void GameScene::Update() {
 		return false;
 	});
 
+	// エネミーの管理関数
 	EnemyManager();
 
 	// プレイヤーの更新処理
 	player_->Update();
+
 	// エネミーの更新
 	for (Enemy* enemy : enemys_) {
 		enemy->Update();
@@ -67,12 +91,14 @@ void GameScene::Update() {
 
 	// ボスの更新処理
 	//boss_->Update();
-	Scroll* scroll = Scroll::GetInstance();
-	scroll_->Update();
 
+	// 背景の更新処理
 	back->SetPosition(backPos - scroll->GetAddScroll());
 }
 
+/// <summary>
+/// 描画
+/// </summary>
 void GameScene::Draw() {
 
 	// コマンドリストの取得
@@ -85,7 +111,10 @@ void GameScene::Draw() {
 	/// <summary>
 	/// ここに背景スプライトの描画処理を追加できる
 	/// </summary>
+	
+	// 背景の描画
 	back->Draw();
+
 	// スプライト描画後処理
 	Sprite::PostDraw();
 	// 深度バッファクリア
@@ -129,16 +158,21 @@ void GameScene::Draw() {
 #pragma endregion
 }
 
-void GameScene::CheckAllCollision() 
-{
+/// <summary>
+/// 当たり判定
+/// </summary>
+void GameScene::CheckAllCollision() {
 	// リスト取得
 	Vector2 targetA, targetB;
 
+	// プレイヤーの弾リストを取得
 	const std::list<PlayerBullet*>& playerBullet = player_->GetBullets();
 
 	// プレイヤーと敵の衝突判定
 	targetA = player_->GetPosition();
+
 	for (Enemy* enemy : enemys_) {
+		// エネミーの位置取得
 		targetB = enemy->GetPosition();
 		float distance =
 		    std::sqrtf(std::powf(targetA.x - targetB.x, 2) + std::powf(targetA.y - targetB.y, 2));
@@ -173,6 +207,9 @@ void GameScene::CheckAllCollision()
 
 }
 
+/// <summary>
+/// 敵管理
+/// </summary>
 void GameScene::EnemyManager() { 
 	ImGui::Begin("EnemySetting");
 	ImGui::DragInt("Limit", &kEnemyLimit, 1, 0, 20);
