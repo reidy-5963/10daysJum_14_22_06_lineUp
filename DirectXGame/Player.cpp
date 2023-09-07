@@ -386,25 +386,25 @@ void Player::BulletUpdate() {
 	}
 }
 
-
 void Player::MarkerControl() {
-
+	// スクロールのインスタンス取得
 	Scroll* scroll = Scroll::GetInstance();
-	//Vector2 ;
-	if (markerPos_.x < 0 + scroll->GetEdgePos().x / 2) {
-		markerPos_.x = scroll->GetEdgePos().x / 2 + scroll->GetAddScroll().x;
+	
+	
+	if (markerPos_.x < 0 + markerLimit_) {
+		markerPos_.x = markerLimit_ + scroll->GetAddScroll().x;
 	}
 
-	else if (markerPos_.x > (WinApp::kWindowWidth * 2) + (scroll->GetEdgePos().x / 2) * 3) {
-		markerPos_.x = (WinApp::kWindowWidth * 2) + (scroll->GetEdgePos().x / 2) * 3;
+	else if (markerPos_.x > (WinApp::kWindowWidth * 2) + scroll->GetEdgePos().x + markerLimit_) {
+		markerPos_.x = (WinApp::kWindowWidth * 2) + scroll->GetEdgePos().x + markerLimit_;
 	}
 
-	if (markerPos_.y < 0 + scroll->GetEdgePos().y / 2) {
-		markerPos_.y = scroll->GetEdgePos().y / 2 + scroll->GetAddScroll().y;
+	if (markerPos_.y < 0 + markerLimit_) {
+		markerPos_.y = markerLimit_ + scroll->GetAddScroll().y;
 	} 
 
-	else if (markerPos_.y > (WinApp::kWindowHeight * 2) + (scroll->GetEdgePos().y / 2) * 3) {
-		markerPos_.y = (WinApp::kWindowHeight * 2) + (scroll->GetEdgePos().y / 2) * 3;
+	else if (markerPos_.y > (WinApp::kWindowHeight * 2) + scroll->GetEdgePos().y + markerLimit_) {
+		markerPos_.y = (WinApp::kWindowHeight * 2) + scroll->GetEdgePos().y + markerLimit_;
 	}
 }
 

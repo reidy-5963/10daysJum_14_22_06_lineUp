@@ -146,6 +146,8 @@ private: // メンバ変数
 	// ベジエで動くときの終わり位置//
 	Vector2 bezierEndPos_{};
 
+	float markerLimit_ = 100.0f;
+
 #pragma region 弾
 	// 弾
 	std::list<PlayerBullet*> bullets_;
