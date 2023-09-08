@@ -25,6 +25,7 @@ public: // メンバ変数
 	/// </summary>
 	virtual void OnCollision();
 
+
 protected: // メンバ変数
 	// スプライト
 	std::unique_ptr<Sprite> sprite_;
@@ -35,10 +36,13 @@ protected: // メンバ変数
 	Vector2 pos_;
 
 	// 速度
-	Vector2 velocity_;
+	Vector2 direction_;
 
+	// 弾の速さ
+	float bulletSpeed = 20.0f;
 	// 弾の有効フラグ
 	bool isDead_;
+
 	// 半径サイズ
 	float radius_;
 
@@ -49,17 +53,28 @@ public: // セッター関数
 	/// <param name="pos"></param>
 	void SetPosition(Vector2& pos) { pos_ = pos; }
 
-	/// <summary>
-	/// 座標のGetter
-	/// </summary>
-	/// <returns></returns>
-	Vector2 GetPosition() { return pos_; }
 
 	/// <summary>
 	/// 半径のSetter
 	/// </summary>
 	/// <param name="rad"></param>
 	void SetRadius(float rad) { radius_ = rad; }
+
+
+	/// <summary>
+	/// フラグの設定
+	/// </summary>
+	/// <param name="dead"></param>
+	void SetIsDead(bool dead) { isDead_ = dead; }
+
+	void SetBulletSpeed(float speed) { bulletSpeed = speed; }
+
+public: // ゲッター関数	
+	/// <summary>
+	/// 座標のGetter
+	/// </summary>
+	/// <returns></returns>
+	Vector2 GetPosition() { return pos_; }
 
 	/// <summary>
 	/// 半径のGetter
@@ -71,12 +86,7 @@ public: // セッター関数
 	/// フラグの取得
 	/// </summary>
 	/// <returns></returns>
-	bool GetIsDead() { return isDead_; }
+	bool GetIsDead() { return isDead_; } 
 
-	/// <summary>
-	/// フラグの設定
-	/// </summary>
-	/// <param name="dead"></param>
-	void SetIsDead(bool dead) { isDead_ = dead; }
-
+	float GetBulletSpeed() { return bulletSpeed; }
 };

@@ -14,22 +14,10 @@ void BaseCharacter::Update() {
 	// スクロールのインスタンス取得
 	Scroll* scroll = Scroll::GetInstance();
 
-	//if (scroll->IsScreenOut() == Scroll::UP) {
-	//	pos_.y -= WinApp::kWindowHeight;
-	//	scroll->SetIsScreenOut(Scroll::UNKNOWN);
-	//} else if (scroll->IsScreenOut() == Scroll::DOWN) {
-	//	pos_.y += WinApp::kWindowHeight;
-	//	scroll->SetIsScreenOut(Scroll::UNKNOWN);
-	//} else if (scroll->IsScreenOut() == Scroll::LEFT) {
-	//	pos_.x -= WinApp::kWindowWidth;
-	//	scroll->SetIsScreenOut(Scroll::UNKNOWN);
-	//} else if (scroll->IsScreenOut() == Scroll::RIGHT) {
-	//	pos_.x += WinApp::kWindowWidth;
-	//	scroll->SetIsScreenOut(Scroll::UNKNOWN);
-	//}
+	Vector2 ScreenPos = pos_ - scroll->GetAddScroll();
 
 	// スプライトの位置の更新処理
-	sprite_->SetPosition(pos_ - scroll->GetAddScroll());
+	sprite_->SetPosition(ScreenPos);
 }
 
 /// <summary>

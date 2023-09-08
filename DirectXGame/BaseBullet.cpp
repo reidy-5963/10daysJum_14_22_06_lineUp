@@ -11,7 +11,7 @@ void BaseBullet::Initialize(uint32_t texture, const Vector2& pos, Vector2 velosi
 	// 初期化
 	texture_ = texture;
 	pos_ = pos;
-	velocity_ = velosity;
+	direction_ = velosity;
 }
 
 /// <summary>
@@ -37,3 +37,4 @@ void BaseBullet::Draw() {
 /// 衝突処理
 /// </summary>
 void BaseBullet::OnCollision() {}
+

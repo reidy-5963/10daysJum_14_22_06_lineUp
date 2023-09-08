@@ -109,6 +109,55 @@ Vector2 MyMath::TransformNormal(const Vector2& v, const Matrix3x3& m) {
 
 #pragma region Vector3
 
+#pragma region Operator OverLoad
+
+inline Vector3 operator+(const Vector3& v1, const Vector3& v2) {
+	Vector3 temp;
+	temp.x = v1.x + v2.x;
+	temp.y = v1.y + v2.y;
+	temp.z = v1.z + v2.z;
+
+	return temp;
+}
+inline Vector3 operator-(const Vector3& v1, const Vector3& v2) {
+	Vector3 temp;
+	temp.x = v1.x - v2.x;
+	temp.y = v1.y - v2.y;
+	temp.z = v1.z - v2.z;
+	return temp;
+}
+inline Vector3 operator*(const Vector3& v, float scalar) {
+	Vector3 temp;
+	temp.x = v.x * scalar;
+	temp.y = v.y * scalar;
+	temp.z = v.z * scalar;
+	return temp;
+}
+inline Vector3 operator*(float scalar, const Vector3& v) {
+	Vector3 temp;
+	temp.x = v.x * scalar;
+	temp.y = v.y * scalar;
+	temp.z = v.z * scalar;
+	return temp;
+}
+
+inline Vector3& operator+=(Vector3& v1, const Vector3& v2) {
+	v1 = v1 + v2;
+	return v1;
+}
+
+inline Vector3& operator-=(Vector3& v1, const Vector3& v2) {
+	v1 = v1 - v2;
+	return v1;
+}
+
+inline Vector3& operator*=(Vector3& v, float scalar) {
+	v = v * scalar;
+	return v;
+}
+
+#pragma endregion
+
 float MyMath::Dot(const Vector3& v1, const Vector3& v2) {
 	float result;
 	result = v1.x * v2.x + v1.y * v2.y + v1.z * v2.z;
@@ -687,9 +736,171 @@ Matrix4x4 MyMath::MakeIdentity4x4() {
 
 #pragma endregion
 
+#pragma region 便利系
+
+void MyMath::CountT(float& t, const float endT, bool& flag, const bool setFlag, float offset) {
+	if (t >= 1.0f) {
+		t = endT;
+		flag = setFlag;
+	} else {
+		t += offset;
+	}
+}
+
+float MyMath::Mymax(float a, float b) {
+	if (a > b) {
+		return a;
+	}
+	else if (a < b) {
+		return b;
+	}
+	return a;
+}
+
+float MyMath::Mymin(float a, float b) {
+	if (a < b) {
+		return a;
+	}
+	else if (a > b) {
+		return b;
+	}
+	return a;
+}
+float MyMath::gcd(float a, float b) {
+	//
+	if (a == 0 || b == 0) {
+		return 0;
+	}
+
+	while (a != b) {
+		if (a < b) {
+			b -= a;
+		} else {
+			a -= b;
+		}
+	}
+	return a;
+}
+
+#pragma endregion
+
+#pragma region catmullrom
+
+Vector2 MyMath::CatmullRom(
+    const Vector2& p0, const Vector2& p1, const Vector2& p2, const Vector2& p3, float t) {
+	Vector2 pt = (1 / 2.0f) * ((Vector2(-p0.x, -p0.y) + 3 * p1 - 3 * p2 + p3) * powf(t, 3) +
+	                           (2 * p0 - 5 * p1 + 4 * p2 - p3) * powf(t, 2) +
+	                           (Vector2(-p0.x, -p0.y) + p2) * t + 2 * p1);
+	return pt;
+}
+#pragma endregion
+
+#pragma region lerp
+
+
+//
+float MyMath::lerp(float t, float start, float end) { 
+	return (1.0f - t) * start + t * end;
+}
+
+Vector2 MyMath::lerp(float t, Vector2 start, Vector2 end) { 
+	return Vector2(
+		(1.0f - t) * start.x + t * end.x, 
+		(1.0f - t) * start.y + t * end.y);
+}
+
+Vector3 MyMath::lerp(float t, Vector3 start, Vector3 end) {
+	return Vector3(
+	    (1.0f - t) * start.x + t * end.x, 
+		(1.0f - t) * start.y + t * end.y,
+	    (1.0f - t) * start.z + t * end.z);
+}
+#pragma endregion
+
+#pragma region float Easing
+
+float MyMath::EaseInQuadF(float t, float start, float end) {
+	float easeT = t * t;
+	return (1.0f - easeT) * start + easeT * end;
+}
+
+float MyMath::EaseOutQuadF(float t, float start, float end) {
+	float easeT = 1.0f - powf(1.0f - t, 2.0f);
+	return (1.0f - easeT) * start + easeT * end;
+}
+
+float MyMath::EaseInOutQuadF(float t, float start, float end) {
+	float easeT = t > 0.5f ? 2.0f * t * t
+	                         : 1.0f - powf(-2.0f * t + 2.0f, 2.0f) / 2.0f;
+
+	return (1.0f - easeT) * start + easeT * end;
+}
+
+float MyMath::EaseInCubicF(float t, float start, float end) {
+	float easeT = t * t * t;
+	return (1.0f - easeT) * start + easeT * end;
+}
+
+float MyMath::EaseOutCubicF(float t, float start, float end) {
+	float easeT = 1.0f - powf(1.0f - t, 3.0f);
+	return (1.0f - easeT) * start + easeT * end;
+}
+
+float MyMath::EaseInOutCubicF(float t, float start, float end) {
+	float easeT = t > 0.5f ? 4.0f *t *t * t
+	                                : 1.0f - powf(-2.0f * t + 2, 3.0f) / 2.0f;
+
+	return (1.0f - easeT) * start + easeT * end;
+}
+#pragma endregion
+
+#pragma region Vector2 Easing
+Vector2 MyMath::EaseInQuadF(float t, Vector2 start, Vector2 end) {
+	float easeT = t * t;
+	return Vector2(
+	    (1.0f - easeT) * start.x + easeT * end.x, 
+		(1.0f - easeT) * start.y + easeT * end.y);
+}
+Vector2 MyMath::EaseOutQuadF(float t, Vector2 start, Vector2 end) {
+	float easeT = 1.0f - powf(1.0f - t, 2.0f);
+	return Vector2(
+		(1.0f - easeT) * start.x + easeT * end.x, 
+		(1.0f - easeT) * start.y + easeT * end.y);
+}
+Vector2 MyMath::EaseInOutQuadF(float t, Vector2 start, Vector2 end) {
+	float easeT = t > 0.5f ? 2.0f * t * t : 1.0f - powf(-2.0f * t + 2.0f, 2.0f) / 2.0f;
+
+	return Vector2(
+		(1.0f - easeT) * start.x + easeT * end.x,
+		(1.0f - easeT) * start.y + easeT * end.y);
+}
+
+Vector2 MyMath::EaseInCubicF(float t, Vector2 start, Vector2 end) {
+	float easeT = t * t * t;
+	return Vector2(
+	    (1.0f - easeT) * start.x + easeT * end.x,
+		(1.0f - easeT) * start.y + easeT * end.y);
+}
+Vector2 MyMath::EaseOutCubicF(float t, Vector2 start, Vector2 end) {
+	float easeT = 1.0f - powf(1.0f - t, 3.0f);
+	return Vector2(
+		(1.0f - easeT) * start.x + easeT * end.x,
+		(1.0f - easeT) * start.y + easeT * end.y);
+}
+Vector2 MyMath::EaseInOutCubicF(float t, Vector2 start, Vector2 end) {
+	float easeT = t > 0.5f ? 4.0f * t * t * t : 1.0f - powf(-2.0f * t + 2, 3.0f) / 2.0f;
+
+	return Vector2(
+	    (1.0f - easeT) * start.x + easeT * end.x,
+		(1.0f - easeT) * start.y + easeT * end.y);
+}
+
+
+#pragma endregion
+
 #pragma region 使わないやつ
 
-//float MyMath::Clamp(float num, float max, float min) {
+// float MyMath::Clamp(float num, float max, float min) {
 //	if (num > max) {
 //		return max;
 //	}
@@ -699,12 +910,12 @@ Matrix4x4 MyMath::MakeIdentity4x4() {
 //	else {
 //		return num;
 //	}
-//}
+// }
 
 // Vector3 MyMath::ClosestPoint(const Vector3& point, const Segment& segment) {
 //	float t = Dot(Subtract(point, segment.origin), segment.diff) /
-//std::powf(Length(segment.diff), 2.0f); 	Vector3 result = Add(segment.origin, Multiply(t,
-//segment.diff));
+// std::powf(Length(segment.diff), 2.0f); 	Vector3 result = Add(segment.origin, Multiply(t,
+// segment.diff));
 //
 //	t = std::clamp(t, 1.0f, 0.0f);
 //
@@ -1094,109 +1305,6 @@ Matrix4x4 MyMath::MakeIdentity4x4() {
 //}
 
 #pragma endregion
-
-void MyMath::CountT(float& t, const float endT, bool& flag, const bool setFlag, float offset) {
-	if (t >= 1.0f) {
-		t = endT;
-		flag = setFlag;
-	} else {
-		t += offset;
-	}
-}
-
-float MyMath::Mymax(float a, float b) {
-	if (a > b) {
-		return a;
-	}
-	else if (a < b) {
-		return b;
-	}
-	return a;
-}
-
-float MyMath::Mymin(float a, float b) {
-	if (a < b) {
-		return a;
-	}
-	else if (a > b) {
-		return b;
-	}
-	return a;
-}
-
-
-
-Vector2 MyMath::CatmullRom(
-    const Vector2& p0, const Vector2& p1, const Vector2& p2, const Vector2& p3, float t) {
-	Vector2 pt = (1 / 2.0f) * ((Vector2(-p0.x, -p0.y) + 3 * p1 - 3 * p2 + p3) * powf(t, 3) +
-	                           (2 * p0 - 5 * p1 + 4 * p2 - p3) * powf(t, 2) +
-	                           (Vector2(-p0.x, -p0.y) + p2) * t + 2 * p1);
-	return pt;
-}
-
-
-
-//
-float MyMath::lerp(float t, float start, float end) { 
-	return (1.0f - t) * start + t * end;
-}
-
-Vector2 MyMath::lerp(float t, Vector2 start, Vector2 end) { 
-	return Vector2((1.0f - t) * start.x + t * end.x, (1.0f - t) * start.y + t * end.y);
-}
-
-float MyMath::EaseInQuadF(float t, float start, float end) {
-	float easeT = t * t;
-	return (1.0f - easeT) * start + easeT * end;
-}
-
-float MyMath::EaseOutQuadF(float t, float start, float end) {
-	float easeT = 1.0f - powf(1.0f - t, 2.0f);
-	return (1.0f - easeT) * start + easeT * end;
-}
-
-float MyMath::EaseInOutQuadF(float t, float start, float end) {
-	float easeT = t > 0.5f ? 2.0f * t * t
-	                         : 1.0f - powf(-2.0f * t + 2.0f, 2.0f) / 2.0f;
-
-	return (1.0f - easeT) * start + easeT * end;
-}
-
-float MyMath::EaseInCubicF(float t, float start, float end) {
-	float easeT = t * t * t;
-	return (1.0f - easeT) * start + easeT * end;
-}
-
-float MyMath::EaseOutCubicF(float t, float start, float end) {
-	float easeT = 1.0f - powf(1.0f - t, 3.0f);
-	return (1.0f - easeT) * start + easeT * end;
-}
-
-float MyMath::EaseInOutCubicF(float t, float start, float end) {
-	float easeT = t > 0.5f ? 4.0f *t *t * t
-	                                : 1.0f - powf(-2.0f * t + 2, 3.0f) / 2.0f;
-
-	return (1.0f - easeT) * start + easeT * end;
-}
-float MyMath::gcd(float a, float b) {
-	//
-	if (a == 0 || b == 0) {
-		return 0;
-	}
-
-
-	while (a != b) {
-		if (a < b) {
-			b -= a;
-		} else {
-			a -= b;
-		}
-	}
-	return a;
-}
-
-
-
 
 
 

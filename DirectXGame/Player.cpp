@@ -393,6 +393,7 @@ void Player::InitializeGrobalVariables() {
 	gloVars->AddItem(groupName, "MarkerLimit_", markerLimit_);
 	gloVars->AddItem(groupName, "RootRotate_t_offset", rootRotate_t_offset);
 	gloVars->AddItem(groupName, "Bullet_shot_Radian", BulletRadian);
+	gloVars->AddItem(groupName, "bulletSpeed_", bulletSpeed_);
 }
 
 void Player::ApplyGrobalVariables() { 
@@ -405,6 +406,7 @@ void Player::ApplyGrobalVariables() {
 	markerLimit_ = gloVars->GetFloatValue(groupName, "MarkerLimit_");
 	rootRotate_t_offset = gloVars->GetFloatValue(groupName, "RootRotate_t_offset");
 	BulletRadian = gloVars->GetFloatValue(groupName, "Bullet_shot_Radian");
+	bulletSpeed_ = gloVars->GetFloatValue(groupName, "bulletSpeed_");
 }
 
 void Player::GetCursor() {

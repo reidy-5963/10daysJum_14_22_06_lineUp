@@ -17,7 +17,17 @@
 	inline extern Vector2& operator*=(Vector2& v, float scalar);
 #pragma endregion
 
-/// <summary>
+#pragma region Vector3 Operator
+    inline extern Vector3 operator+(const Vector3& v1, const Vector3& v2);
+    inline extern Vector3 operator-(const Vector3& v1, const Vector3& v2);
+    inline extern Vector3 operator*(const Vector3& v, float scalar);
+    inline extern Vector3 operator*(float scalar, const Vector3& v);
+    inline extern Vector3& operator+=(Vector3& v1, const Vector3& v2);
+    inline extern Vector3& operator-=(Vector3& v1, const Vector3& v2);
+    inline extern Vector3& operator*=(Vector3& v, float scalar);
+#pragma endregion
+
+    /// <summary>
 /// 数学の関数系
 /// </summary>
 class MyMath {
@@ -310,6 +320,7 @@ public:
 
 #pragma endregion
 
+#pragma region 便利系
 	/// <summary>
 	/// 線形補間用のtのカウント
 	/// </summary>
@@ -337,23 +348,52 @@ public:
 	/// <returns></returns>
 	static float Mymin(float a, float b);
 
+	static float gcd(float a, float b);
+
+#pragma endregion
+
+#pragma region catmullrom
 	static Vector2 CatmullRom(
 	    const Vector2& p0, const Vector2& p1, const Vector2& p2, const Vector2& p3, float t);
+#pragma endregion
 
+#pragma region lerp
 	static float lerp(float t, float start, float end);
 
 	static Vector2 lerp(float t, Vector2 start, Vector2 end);
 
+	static Vector3 lerp(float t, Vector3 start, Vector3 end);
+
+
+#pragma endregion
+
+#pragma region float Easing
 	static float EaseInQuadF(float t, float start, float end);
+	
 	static float EaseOutQuadF(float t, float start, float end);
+	
 	static float EaseInOutQuadF(float t, float start, float end);
 
-
 	static float EaseInCubicF(float t, float start, float end);
+	
 	static float EaseOutCubicF(float t, float start, float end);
+	
 	static float EaseInOutCubicF(float t, float start, float end);
+#pragma endregion
 
-	static float gcd(float a, float b);
+#pragma region Vector2 Easing
+	static Vector2 EaseInQuadF(float t, Vector2 start, Vector2 end);
+
+	static Vector2 EaseOutQuadF(float t, Vector2 start, Vector2 end);
+
+	static Vector2 EaseInOutQuadF(float t, Vector2 start, Vector2 end);
+
+	static Vector2 EaseInCubicF(float t, Vector2 start, Vector2 end);
+
+	static Vector2 EaseOutCubicF(float t, Vector2 start, Vector2 end);
+
+	static Vector2 EaseInOutCubicF(float t, Vector2 start, Vector2 end);
+#pragma endregion
 
 #pragma region 使わないやつ
 	/// <summary>

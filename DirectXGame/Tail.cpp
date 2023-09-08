@@ -114,6 +114,7 @@ void Tail::Fire() {
 			PlayerBullet* newBullet = new PlayerBullet();
 			// 弾の初期化処理
 			newBullet->Initialize(player_->GetBulletTex(), GetPosition(), move);
+			newBullet->SetBulletSpeed(player_->GetBulletSpeed());
 			// 弾をリストに追加
 			player_->AddBullets(newBullet);
 			// フラグを無効に
@@ -148,6 +149,7 @@ void Tail::Fire() {
 				PlayerBullet* newBullet = new PlayerBullet();
 				// 弾の初期化処理
 				newBullet->Initialize(player_->GetBulletTex(), GetPosition(), move);
+				newBullet->SetBulletSpeed(player_->GetBulletSpeed());
 				// 弾をリストに追加
 				player_->AddBullets(newBullet);
 			}
