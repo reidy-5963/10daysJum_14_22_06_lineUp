@@ -372,8 +372,8 @@ void Player::MarkerUpdate() {
 		}
 		//
 		else if (ismarkerMove_) {
-			markerPos_.x = MyMath::EaseInQuadF(markerMove_t, preMarkerPos_.x, clickPos_.x);
-			markerPos_.y = MyMath::EaseInQuadF(markerMove_t, preMarkerPos_.y, clickPos_.y);
+			markerPos_ = MyMath::EaseInQuadF(markerMove_t, preMarkerPos_, clickPos_);
+
 	
 			MyMath::CountT(markerMove_t, 1.0f, ismarkerMove_, false, 0.1f);
 		}
