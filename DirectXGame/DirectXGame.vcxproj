@@ -122,6 +122,7 @@
     <ClCompile Include="SceneManager.cpp" />
     <ClCompile Include="scene\GameScene.cpp" />
     <ClCompile Include="Scroll.cpp" />
+    <ClCompile Include="SpriteEx.cpp" />
     <ClCompile Include="Tail.cpp" />
   </ItemGroup>
   <ItemGroup>
