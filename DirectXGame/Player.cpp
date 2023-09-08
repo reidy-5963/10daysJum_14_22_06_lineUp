@@ -7,6 +7,8 @@
 #include <cassert>
 #include <cmath>
 #include <complex>
+#include "GlobalVariables.h"
+
 
 /// <summary>
 /// コンストラクタ
@@ -60,12 +62,14 @@ void Player::Initialize() {
 	p2.reset(Sprite::Create(markerTex_, markerPos_, {0.0f, 0.0f, 0.0f, 1.0f}, {0.5f, 0.5f}));
 	origin_.reset(Sprite::Create(markerTex_, markerPos_, {0.5f, 0.5f, 0.5f, 1.0f}, {0.5f, 0.5f}));
 	//
+	InitializeGrobalVariables();
 }
 
 /// <summary>
 /// 更新処理
 /// </summary>
 void Player::Update() {
+	ApplyGrobalVariables();
 	Scroll* scroll = Scroll::GetInstance();
 
 #ifdef _DEBUG
@@ -117,7 +121,7 @@ void Player::Update() {
 
 				isMtM1 = false;
 			}
-			MyMath::CountT(root_t_, 0.0f, isM1tM2, true, rootTOffset);
+			MyMath::CountT(root_t_, 0.0f, isM1tM2, true, rootRotate_t_offset);
 		}
 		//
 		if (isM1tM2) {
@@ -128,7 +132,7 @@ void Player::Update() {
 				direction_ = M2AddRadian[2] - M2AddRadian[1];
 				isM1tM2 = false;
 			}
-			MyMath::CountT(root_t_, 0.0f, isM2tP, true, rootTOffset);
+			MyMath::CountT(root_t_, 0.0f, isM2tP, true, rootRotate_t_offset);
 		}
 		//
 		if (isM2tP) {
@@ -139,7 +143,7 @@ void Player::Update() {
 				direction_ = W2AddRadian[0] - M2AddRadian[1];
 				isM2tP = false;
 			}
-			MyMath::CountT(root_t_, 0.0f, isPtP1, true, rootTOffset);
+			MyMath::CountT(root_t_, 0.0f, isPtP1, true, rootRotate_t_offset);
 		}
 		//
 		if (isPtP1) {
@@ -150,7 +154,7 @@ void Player::Update() {
 				direction_ = W2AddRadian[1] - W2AddRadian[0];
 				isPtP1 = false;
 			}
-			MyMath::CountT(root_t_, 0.0f, isP1tP2, true, rootTOffset);
+			MyMath::CountT(root_t_, 0.0f, isP1tP2, true, rootRotate_t_offset);
 		}
 
 		if (isP1tP2) {
@@ -161,7 +165,7 @@ void Player::Update() {
 				direction_ = W2AddRadian[2] - W2AddRadian[1];
 				isP1tP2 = false;
 			}
-			MyMath::CountT(root_t_, 0.0f, isP2tM, true, rootTOffset);
+			MyMath::CountT(root_t_, 0.0f, isP2tM, true, rootRotate_t_offset);
 		}
 
 		if (isP2tM) {
@@ -172,7 +176,7 @@ void Player::Update() {
 				// direction_ = M2AddRadian[0] - W2AddRadian[2];
 				isP2tM = false;
 			}
-			MyMath::CountT(root_t_, 0.0f, isMtM1, true, rootTOffset);
+			MyMath::CountT(root_t_, 0.0f, isMtM1, true, rootRotate_t_offset);
 		}
 
 		////// ベジエ曲線のスタート位置計算
@@ -353,6 +357,30 @@ void Player::TailUpdate() {
 
 void Player::OnCollision() { DeleteTails(); }
 
+void Player::InitializeGrobalVariables() {
+	// グローバル変数系のシングルトンインスタンスを取得
+	GlobalVariables* gloVars = GlobalVariables::GetInstance();
+	// グループ名の設定
+	const char* groupName = "Player";
+
+	// 作ったグループにそれぞれアイテムを追加
+	gloVars->CreateGroup(groupName);
+	gloVars->AddItem(groupName, "Move_t_offset", move_t_offset);
+	gloVars->AddItem(groupName, "MarkerLimit_", markerLimit_);
+	gloVars->AddItem(groupName, "RootRotate_t_offset", rootRotate_t_offset);
+}
+
+void Player::ApplyGrobalVariables() { 
+	// グローバル変数系のシングルトンインスタンスを取得
+	GlobalVariables* gloVars = GlobalVariables::GetInstance();
+	// グループ名の設定
+	const char* groupName = "Player";
+	// 作ったグループにあるアイテムから値を取得
+	move_t_offset = gloVars->GetFloatValue(groupName, "Move_t_offset");
+	markerLimit_ = gloVars->GetFloatValue(groupName, "MarkerLimit_");
+	rootRotate_t_offset = gloVars->GetFloatValue(groupName, "RootRotate_t_offset");
+}
+
 void Player::CursorUpdate() {
 	// カーソルの位置の取得
 	GetCursorPos(&mousePos);
@@ -528,7 +556,7 @@ void Player::RootRotateMove2() {
 
 	//
 	if (cross > 0) {
-		Matrix3x3 Mark2PlaRotateMat = MyMath::MakeRotateMatrix((3.14f * 0.5f));
+		Matrix3x3 Mark2PlaRotateMat = MyMath::MakeRotateMatrix((3.14f * 0.25f));
 		Matrix3x3 Mark2PlaMat = MyMath::MakeTranslateMatrix(Mark2Pla);
 		Mark2PlaMat = MyMath::Multiply(Mark2PlaMat, Mark2PlaRotateMat);
 		Vector2 Mark2W = {Mark2PlaMat.m[2][0], Mark2PlaMat.m[2][1]};
@@ -570,7 +598,7 @@ void Player::RootRotateMove2() {
 
 	if (cross <= 0) {
 
-		Matrix3x3 Mark2PlaRotateMat = MyMath::MakeRotateMatrix(-(3.14f * 0.5f));
+		Matrix3x3 Mark2PlaRotateMat = MyMath::MakeRotateMatrix(-(3.14f * 0.25f));
 		Matrix3x3 Mark2PlaMat = MyMath::MakeTranslateMatrix(Mark2Pla);
 		Mark2PlaMat = MyMath::Multiply(Mark2PlaMat, Mark2PlaRotateMat);
 		Vector2 Mark2W = {Mark2PlaMat.m[2][0], Mark2PlaMat.m[2][1]};

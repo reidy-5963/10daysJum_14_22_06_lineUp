@@ -44,3 +44,7 @@ void BaseCharacter::Draw() {
 /// 衝突処理
 /// </summary>
 void BaseCharacter::OnCollision() {}
+
+void BaseCharacter::InitializeGrobalVariables() {}
+
+void BaseCharacter::ApplyGrobalVariables() {}

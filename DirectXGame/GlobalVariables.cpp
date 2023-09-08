@@ -71,6 +71,9 @@ void GlobalVariables::SetValue(
 /// 毎フレーム処理
 /// </summary>
 void GlobalVariables::Update() {
+#ifdef  _DEBUG
+
+
 	if (!ImGui::Begin("Global Variales", nullptr, ImGuiWindowFlags_MenuBar)) {
 		ImGui::End();
 		return;
@@ -132,6 +135,7 @@ void GlobalVariables::Update() {
 
 	ImGui::EndMenuBar();
 	ImGui::End();
+#endif //  _DEBUG
 }
 
 /// <summary>

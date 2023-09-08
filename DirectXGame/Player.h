@@ -44,6 +44,10 @@ public: // メンバ関数
 	/// 衝突処理
 	/// </summary>
 	void OnCollision() override;
+	
+	void InitializeGrobalVariables() override;
+
+	void ApplyGrobalVariables() override;
 
 	/// <summary>
 	/// カーソルの更新処理
@@ -206,7 +210,7 @@ private: // メンバ変数
 	bool isP1tP2 = false;
 	bool isP2tM = false;
 
-	float rootTOffset = 0.04f;
+	float rootRotate_t_offset = 0.04f;
 #pragma endregion
 
 #ifdef _DEBUG

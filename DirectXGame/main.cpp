@@ -7,6 +7,7 @@
 #include "PrimitiveDrawer.h"
 #include "TextureManager.h"
 #include "WinApp.h"
+#include "GlobalVariables.h"
 
 // Windowsアプリでのエントリーポイント(main関数)
 int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
@@ -57,6 +58,8 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	primitiveDrawer = PrimitiveDrawer::GetInstance();
 	primitiveDrawer->Initialize();
 #pragma endregion
+	// グローバル変数の読み込み
+	GlobalVariables::GetInstance()->LoadFiles();
 
 	// ゲームシーンの初期化
 	sceneManager = new SceneManager();
@@ -71,7 +74,11 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		// ImGui受付開始
 		imguiManager->Begin();
 		// 入力関連の毎フレーム処理
-		input->Update();
+		input->Update(); 
+		
+		// グローバル変数の更新処理
+		GlobalVariables::GetInstance()->Update();		
+
 		// ゲームシーンの毎フレーム処理
 		sceneManager->Update();
 		// 軸表示の更新

@@ -29,6 +29,10 @@ public: // メンバ関数
 	/// </summary>
 	virtual void OnCollision();
 
+	virtual void InitializeGrobalVariables();
+
+	virtual void ApplyGrobalVariables();
+
 protected: // 継承限定メンバ変数
 	// スプライト
 	std::unique_ptr<Sprite> sprite_ = nullptr;
