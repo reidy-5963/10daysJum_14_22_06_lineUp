@@ -64,6 +64,9 @@ public: // メンバ関数
 
 	void DeleteBullet();
 
+	void RootRotateMove1();
+	void RootRotateMove2();
+
 public: // 追加や削除の関数
 	/// <summary>
 	/// 尻尾の追加
@@ -82,6 +85,8 @@ public: // 追加や削除の関数
 	void AddBullets(PlayerBullet* bullet);
 
 	void TailUpdate();
+
+	void LeftRotate2();
 
 public: // ゲッター
 #pragma region ゲっター
@@ -179,8 +184,9 @@ private: // メンバ変数
 #pragma region 通常状態の回転用
 	//
 	float BulletRadian = 0.1f;
-	Vector2 markerAddRadian[2];
-	Vector2 PlayerAddRadian[2];
+	Vector2 M2AddRadian[3];
+	Vector2 W2AddRadian[3];
+
 	float radianOffset = 1.0f;
 
 	bool isMtM1 = false;

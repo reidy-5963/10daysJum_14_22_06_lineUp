@@ -82,10 +82,10 @@ void Player::Update() {
 	}
 
 ////////////////////////////////////////////////////
-	p1->SetPosition(PlayerAddRadian[0] - scroll->GetAddScroll());
-	p2->SetPosition(PlayerAddRadian[1] - scroll->GetAddScroll());
-	m2->SetPosition(markerAddRadian[1] - scroll->GetAddScroll());
-	m1->SetPosition(markerAddRadian[0] - scroll->GetAddScroll());
+	p1->SetPosition(W2AddRadian[1] - scroll->GetAddScroll());
+	p2->SetPosition(W2AddRadian[2] - scroll->GetAddScroll());
+	m2->SetPosition(M2AddRadian[2] - scroll->GetAddScroll());
+	m1->SetPosition(M2AddRadian[1] - scroll->GetAddScroll());
 	origin_->SetPosition(originPos_ - scroll->GetAddScroll());
 
 	ImGui::Begin("debug");
@@ -110,11 +110,11 @@ void Player::Update() {
 		if (isMtM1) {
 			
 			pos_ = MyMath::CatmullRom(
-			    PlayerAddRadian[1], markerPos_, markerAddRadian[0], markerAddRadian[1], root_t_);
+			    W2AddRadian[2], M2AddRadian[0], M2AddRadian[1], M2AddRadian[2], root_t_);
 			direction_ = pos_ - prePos_;
 
 			if (root_t_ >= 1.0f) {
-				direction_ = markerAddRadian[0] - markerPos_;
+				direction_ = M2AddRadian[1] - M2AddRadian[0];
 
 				isMtM1 = false;
 			}
@@ -123,10 +123,10 @@ void Player::Update() {
 		//
 		if (isM1tM2) {
 			pos_ = MyMath::CatmullRom(
-			    markerPos_, markerAddRadian[0], markerAddRadian[1], clickPlayerPos_, root_t_);
+			    M2AddRadian[0], M2AddRadian[1], M2AddRadian[2], W2AddRadian[0], root_t_);
 			direction_ = pos_ - prePos_;
 			if (root_t_ >= 1.0f) {
-				direction_ = markerAddRadian[1] - markerAddRadian[0];
+				direction_ = M2AddRadian[2] - M2AddRadian[1];
 				isM1tM2 = false;
 			}
 			MyMath::CountT(root_t_, 0.0f, isM2tP, true, rootTOffset);
@@ -134,11 +134,11 @@ void Player::Update() {
 		//
 		if (isM2tP) {
 			pos_ = MyMath::CatmullRom(
-			    markerAddRadian[0], markerAddRadian[1], clickPlayerPos_, PlayerAddRadian[0],
+			    M2AddRadian[1], M2AddRadian[2], W2AddRadian[0], W2AddRadian[1],
 			    root_t_);
 			direction_ = pos_ - prePos_;
 			if (root_t_ >= 1.0f) {
-				direction_ = clickPlayerPos_ - markerAddRadian[0];
+				direction_ = W2AddRadian[0] - M2AddRadian[1];
 				isM2tP = false;
 			}
 			MyMath::CountT(root_t_, 0.0f, isPtP1, true, rootTOffset);
@@ -146,11 +146,11 @@ void Player::Update() {
 		//
 		if (isPtP1) {
 			pos_ = MyMath::CatmullRom(
-			    markerAddRadian[1], clickPlayerPos_, PlayerAddRadian[0], PlayerAddRadian[1],
+			    M2AddRadian[2], W2AddRadian[0], W2AddRadian[1], W2AddRadian[2],
 			    root_t_);
 			direction_ = pos_ - prePos_;
 			if (root_t_ >= 1.0f) {
-				direction_ = PlayerAddRadian[0] - clickPlayerPos_;
+				direction_ = W2AddRadian[1] - W2AddRadian[0];
 				isPtP1 = false;
 			}
 			MyMath::CountT(root_t_, 0.0f, isP1tP2, true, rootTOffset);
@@ -158,10 +158,10 @@ void Player::Update() {
 
 		if (isP1tP2) {
 			pos_ = MyMath::CatmullRom(
-			    clickPlayerPos_, PlayerAddRadian[0], PlayerAddRadian[1], markerPos_, root_t_);
+			    W2AddRadian[0], W2AddRadian[1], W2AddRadian[2], M2AddRadian[0], root_t_);
 			direction_ = pos_ - prePos_;
 			if (root_t_ >= 1.0f) {
-				direction_ = PlayerAddRadian[1] - PlayerAddRadian[0];
+				direction_ = W2AddRadian[2] - W2AddRadian[1];
 				isP1tP2 = false;
 			}
 			MyMath::CountT(root_t_, 0.0f, isP2tM, true, rootTOffset);
@@ -169,10 +169,10 @@ void Player::Update() {
 
 		if (isP2tM) {
 			pos_ = MyMath::CatmullRom(
-			    PlayerAddRadian[0], PlayerAddRadian[1], markerPos_, markerAddRadian[0], root_t_);
+			    W2AddRadian[1], W2AddRadian[2], M2AddRadian[0], M2AddRadian[1], root_t_);
 			direction_ = pos_ - prePos_;
 			if (root_t_ >= 1.0f) {
-				direction_ = markerPos_ - PlayerAddRadian[1];
+				direction_ = M2AddRadian[0] - W2AddRadian[2];
 				isP2tM = false;
 			}
 			MyMath::CountT(root_t_, 0.0f, isMtM1, true, rootTOffset);
@@ -302,11 +302,11 @@ void Player::Draw() {
 	// スプライトの描画
 	BaseCharacter::Draw();
 #ifdef _DEBUG
-	//m1->Draw();
-	//m2->Draw();
-	//p1->Draw();
-	//p2->Draw();
-	//origin_->Draw();
+	m1->Draw();
+	m2->Draw();
+	p1->Draw();
+	p2->Draw();
+	origin_->Draw();
 #endif // _DEBUG
 }
 
@@ -355,6 +355,8 @@ void Player::TailUpdate() {
 		tail->Update();
 	}
 }
+
+void Player::LeftRotate2() {}
 
 void Player::OnCollision() { DeleteTails(); }
 
@@ -433,9 +435,6 @@ void Player::LeftClickUpdate() {
 	// 線形補間用tの初期化
 	root_t_ = 0.0f;
 
-	// クリックしたときのプレイヤーの位置->前回押した位置のマーカー
-	Vector2 preMark2Pos_distance;
-	preMark2Pos_distance = preMarkerPos_ - clickPlayerPos_;
 
 	{ // （仮）
 		Vector2 A2B = clickPlayerPos_ - markerPos_;
@@ -450,64 +449,7 @@ void Player::LeftClickUpdate() {
 		RotateRootPos_ += verticalA2B;
 	}
 
-	Vector2 RootMoveRadius = markerPos_ - pos_;
-	RootMoveRadius.x = RootMoveRadius.x / 2;
-	RootMoveRadius.y = RootMoveRadius.y / 2;
-
-	originPos_ = pos_ + RootMoveRadius;
-	Vector2 O2PVector = pos_ - originPos_;
-
-	Matrix3x3 moveMat = MyMath::MakeTranslateMatrix(O2PVector);
-
-	float cross = MyMath::Cross(RootMoveRadius, preMark2Pos_distance);
-	if (cross >= 0) {
-		Matrix3x3 P1rotateMat = MyMath::MakeRotateMatrix(-radianOffset);
-		P1rotateMat = MyMath::Multiply(moveMat, P1rotateMat);
-
-		PlayerAddRadian[0] = {
-		    originPos_.x + P1rotateMat.m[2][0], originPos_.y + P1rotateMat.m[2][1]};
-
-		Matrix3x3 P2rotateMat = MyMath::MakeRotateMatrix(-radianOffset * 2);
-		P1rotateMat = MyMath::Multiply(moveMat, P2rotateMat);
-		PlayerAddRadian[1] = {
-		    originPos_.x + P1rotateMat.m[2][0], originPos_.y + P1rotateMat.m[2][1]};
-
-		Matrix3x3 M2rotateMat = MyMath::MakeRotateMatrix(radianOffset);
-		P1rotateMat = MyMath::Multiply(moveMat, M2rotateMat);
-		markerAddRadian[1] = {
-		    originPos_.x + P1rotateMat.m[2][0], originPos_.y + P1rotateMat.m[2][1]};
-
-		Matrix3x3 M1rotateMat = MyMath::MakeRotateMatrix(radianOffset * 2);
-		P1rotateMat = MyMath::Multiply(moveMat, M1rotateMat);
-		markerAddRadian[0] = {
-		    originPos_.x + P1rotateMat.m[2][0], originPos_.y + P1rotateMat.m[2][1]};
-
-
-	}
-	else if (cross < 0) {
-		Matrix3x3 P1rotateMat = MyMath::MakeRotateMatrix(radianOffset);
-		P1rotateMat = MyMath::Multiply(moveMat, P1rotateMat);
-
-		PlayerAddRadian[0] = {
-		    originPos_.x + P1rotateMat.m[2][0], originPos_.y + P1rotateMat.m[2][1]};
-
-		Matrix3x3 P2rotateMat = MyMath::MakeRotateMatrix(radianOffset * 2);
-		P1rotateMat = MyMath::Multiply(moveMat, P2rotateMat);
-		PlayerAddRadian[1] = {
-		    originPos_.x + P1rotateMat.m[2][0], originPos_.y + P1rotateMat.m[2][1]};
-
-		Matrix3x3 M2rotateMat = MyMath::MakeRotateMatrix(-radianOffset);
-		P1rotateMat = MyMath::Multiply(moveMat, M2rotateMat);
-		markerAddRadian[1] = {
-		    originPos_.x + P1rotateMat.m[2][0], originPos_.y + P1rotateMat.m[2][1]};
-
-		Matrix3x3 M1rotateMat = MyMath::MakeRotateMatrix(-radianOffset * 2);
-		P1rotateMat = MyMath::Multiply(moveMat, M1rotateMat);
-		markerAddRadian[0] = {
-		    originPos_.x + P1rotateMat.m[2][0], originPos_.y + P1rotateMat.m[2][1]};
-
-	}
-
+	RootRotateMove2();
 
 	// 四ツ目の点を求める
 	//RotateRootPos_ = markerPos_ - preMark2Pos_distance;
@@ -522,4 +464,168 @@ void Player::DeleteBullet() {
 		}
 		return false;
 	});
+}
+
+void Player::RootRotateMove1() {
+	// クリックしたときのプレイヤーの位置->前回押した位置のマーカー
+	Vector2 preMark2Pos_distance;
+	preMark2Pos_distance = preMarkerPos_ - clickPlayerPos_;
+
+	Vector2 RootMoveRadius = markerPos_ - pos_;
+	RootMoveRadius.x = RootMoveRadius.x / 2;
+	RootMoveRadius.y = RootMoveRadius.y / 2;
+
+	originPos_ = pos_ + RootMoveRadius;
+	Vector2 O2PVector = pos_ - originPos_;
+
+	Matrix3x3 moveMat = MyMath::MakeTranslateMatrix(O2PVector);
+
+	float cross = MyMath::Cross(RootMoveRadius, preMark2Pos_distance);
+	if (cross >= 0) {
+		Matrix3x3 P1rotateMat = MyMath::MakeRotateMatrix(-radianOffset);
+		P1rotateMat = MyMath::Multiply(moveMat, P1rotateMat);
+		W2AddRadian[0] = clickPlayerPos_;
+
+		W2AddRadian[1] = {
+		    originPos_.x + P1rotateMat.m[2][0], originPos_.y + P1rotateMat.m[2][1]};
+
+		Matrix3x3 P2rotateMat = MyMath::MakeRotateMatrix(-radianOffset * 2);
+		P1rotateMat = MyMath::Multiply(moveMat, P2rotateMat);
+		W2AddRadian[2] = {
+		    originPos_.x + P1rotateMat.m[2][0], originPos_.y + P1rotateMat.m[2][1]};
+
+		Matrix3x3 M2rotateMat = MyMath::MakeRotateMatrix(radianOffset);
+		P1rotateMat = MyMath::Multiply(moveMat, M2rotateMat);
+		M2AddRadian[2] = {
+		    originPos_.x + P1rotateMat.m[2][0], originPos_.y + P1rotateMat.m[2][1]};
+
+		Matrix3x3 M1rotateMat = MyMath::MakeRotateMatrix(radianOffset * 2);
+		P1rotateMat = MyMath::Multiply(moveMat, M1rotateMat);
+		M2AddRadian[1] = {
+		    originPos_.x + P1rotateMat.m[2][0], originPos_.y + P1rotateMat.m[2][1]};
+		M2AddRadian[0] = markerPos_;
+
+	} 
+	//
+	else if (cross < 0) {
+		Matrix3x3 P1rotateMat = MyMath::MakeRotateMatrix(radianOffset);
+		P1rotateMat = MyMath::Multiply(moveMat, P1rotateMat);
+		W2AddRadian[0] = clickPlayerPos_;
+		
+		W2AddRadian[1] = {
+		    originPos_.x + P1rotateMat.m[2][0], originPos_.y + P1rotateMat.m[2][1]};
+
+		Matrix3x3 P2rotateMat = MyMath::MakeRotateMatrix(radianOffset * 2);
+		P1rotateMat = MyMath::Multiply(moveMat, P2rotateMat);
+		W2AddRadian[2] = {
+		    originPos_.x + P1rotateMat.m[2][0], originPos_.y + P1rotateMat.m[2][1]};
+
+		Matrix3x3 M2rotateMat = MyMath::MakeRotateMatrix(-radianOffset);
+		P1rotateMat = MyMath::Multiply(moveMat, M2rotateMat);
+		M2AddRadian[2] = {
+		    originPos_.x + P1rotateMat.m[2][0], originPos_.y + P1rotateMat.m[2][1]};
+
+		Matrix3x3 M1rotateMat = MyMath::MakeRotateMatrix(-radianOffset * 2);
+		P1rotateMat = MyMath::Multiply(moveMat, M1rotateMat);
+		M2AddRadian[1] = {
+		    originPos_.x + P1rotateMat.m[2][0], originPos_.y + P1rotateMat.m[2][1]};
+	}
+}
+
+void Player::RootRotateMove2() {
+	Vector2 Mark2Pla = pos_ - markerPos_;
+	Vector2 PMark2Pla = pos_ - preMarkerPos_;
+
+	float cross = MyMath::Cross(Mark2Pla, PMark2Pla);
+	Vector2 Ple2Mark = markerPos_ - pos_;
+	Mark2Pla.x = Mark2Pla.x / 2;
+	Mark2Pla.y = Mark2Pla.y / 2;
+
+	//
+	if (cross > 0) {
+		Matrix3x3 Mark2PlaRotateMat = MyMath::MakeRotateMatrix((3.14f * 0.5f));
+		Matrix3x3 Mark2PlaMat = MyMath::MakeTranslateMatrix(Mark2Pla);
+		Mark2PlaMat = MyMath::Multiply(Mark2PlaMat, Mark2PlaRotateMat);
+		Vector2 Mark2W = {Mark2PlaMat.m[2][0], Mark2PlaMat.m[2][1]};
+		originPos_.x = markerPos_.x + Mark2W.x / 2;
+		originPos_.y = markerPos_.y + Mark2W.y / 2;
+		W2AddRadian[0].x = originPos_.x + Mark2W.x / 2;
+		W2AddRadian[0].y = originPos_.y + Mark2W.y / 2;
+
+		//float Origin2WRadian = std::atan2(Mark2W.y, Mark2W.x);
+
+		Vector2 Origin2W;
+		Origin2W.x = Mark2W.x / 2;
+		Origin2W.y = Mark2W.y / 2;
+
+		Matrix3x3 Origin2WMat = MyMath::MakeTranslateMatrix(Origin2W);
+
+		Matrix3x3 Origin2WRotateMat = MyMath::MakeRotateMatrix(radianOffset);
+		Origin2WRotateMat = MyMath::Multiply(Origin2WMat, Origin2WRotateMat);
+		M2AddRadian[2] = {
+		    originPos_.x + Origin2WRotateMat.m[2][0], originPos_.y + Origin2WRotateMat.m[2][1]};
+
+		Origin2WRotateMat = MyMath::MakeRotateMatrix(radianOffset * 2);
+		Origin2WRotateMat = MyMath::Multiply(Origin2WMat, Origin2WRotateMat);
+		M2AddRadian[1] = {
+		    originPos_.x + Origin2WRotateMat.m[2][0], originPos_.y + Origin2WRotateMat.m[2][1]};
+
+		M2AddRadian[0] = markerPos_;
+
+		Origin2WRotateMat = MyMath::MakeRotateMatrix(-radianOffset * 2);
+		Origin2WRotateMat = MyMath::Multiply(Origin2WMat, Origin2WRotateMat);
+		W2AddRadian[2] = {
+		    originPos_.x + Origin2WRotateMat.m[2][0], originPos_.y + Origin2WRotateMat.m[2][1]};
+
+		Origin2WRotateMat = MyMath::MakeRotateMatrix(-radianOffset);
+		Origin2WRotateMat = MyMath::Multiply(Origin2WMat, Origin2WRotateMat);
+		W2AddRadian[1] = {
+		    originPos_.x + Origin2WRotateMat.m[2][0], originPos_.y + Origin2WRotateMat.m[2][1]};
+
+
+	}
+	
+	if (cross <= 0) {
+
+		Matrix3x3 Mark2PlaRotateMat = MyMath::MakeRotateMatrix(-(3.14f * 0.5f));
+		Matrix3x3 Mark2PlaMat = MyMath::MakeTranslateMatrix(Mark2Pla);
+		Mark2PlaMat = MyMath::Multiply(Mark2PlaMat, Mark2PlaRotateMat);
+		Vector2 Mark2W = {Mark2PlaMat.m[2][0], Mark2PlaMat.m[2][1]};
+		originPos_.x = markerPos_.x + Mark2W.x / 2;
+		originPos_.y = markerPos_.y + Mark2W.y / 2;
+		W2AddRadian[0].x = originPos_.x + Mark2W.x / 2;
+		W2AddRadian[0].y = originPos_.y + Mark2W.y / 2;
+
+
+		Vector2 Origin2W;
+		Origin2W.x = Mark2W.x / 2;
+		Origin2W.y = Mark2W.y / 2;
+
+		Matrix3x3 Origin2WMat = MyMath::MakeTranslateMatrix(Origin2W);
+
+		Matrix3x3 Origin2WRotateMat = MyMath::MakeRotateMatrix(radianOffset);
+		Origin2WRotateMat = MyMath::Multiply(Origin2WMat, Origin2WRotateMat);
+		W2AddRadian[1] = {
+		    originPos_.x + Origin2WRotateMat.m[2][0], originPos_.y + Origin2WRotateMat.m[2][1]};
+
+		Origin2WRotateMat = MyMath::MakeRotateMatrix(radianOffset * 2);
+		Origin2WRotateMat = MyMath::Multiply(Origin2WMat, Origin2WRotateMat);
+		W2AddRadian[2] = {
+		    originPos_.x + Origin2WRotateMat.m[2][0], originPos_.y + Origin2WRotateMat.m[2][1]};
+
+		M2AddRadian[0] = markerPos_;
+
+		Origin2WRotateMat = MyMath::MakeRotateMatrix(-radianOffset * 2);
+		Origin2WRotateMat = MyMath::Multiply(Origin2WMat, Origin2WRotateMat);
+		M2AddRadian[1] = {
+		    originPos_.x + Origin2WRotateMat.m[2][0], originPos_.y + Origin2WRotateMat.m[2][1]};
+
+		Origin2WRotateMat = MyMath::MakeRotateMatrix(-radianOffset);
+		Origin2WRotateMat = MyMath::Multiply(Origin2WMat, Origin2WRotateMat);
+		M2AddRadian[2] = {
+		    originPos_.x + Origin2WRotateMat.m[2][0], originPos_.y + Origin2WRotateMat.m[2][1]};
+
+	}
+
+
 }
