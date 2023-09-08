@@ -30,33 +30,4 @@ public:
 
 	void BulletDirectRotate();
 
-public: // ファンネル用関数
-
-	void FunnelInitialize(int type, Vector2& startPos,Vector2& endPos);
-
-	void FunnelUpdate();
-
-public:
-	enum FunnelType {
-		kNone,
-		kHorizontal,
-		kVertical,
-	};
-
-private: // ファンネル用変数
-
-	float move_t_ = 0;
-
-	int moveType_ = kNone;
-
-	int turnCount_ = 0;
-
-	int turnCoolTime_ = 0;
-
-	bool isMove_ = false;
-
-	Vector2 prevPos_ = {};
-
-	Vector2 endPos_ = {};
-
 };

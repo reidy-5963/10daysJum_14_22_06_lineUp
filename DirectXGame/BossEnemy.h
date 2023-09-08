@@ -1,6 +1,7 @@
 ﻿#pragma once
 #include "BaseCharacter.h"
 #include "BossBullet.h"
+#include "BossFunnel.h"
 #include "Input.h"
 
 #include <list>
@@ -97,7 +98,7 @@ public:	// 設定・取得
 	/// <param name="bullet"></param>
 	void GenerateBullet(Vector2& velocity);
 
-	void GenerateFunnel(Vector2& velocity, int type);
+	void GenerateFunnel(int type);
 
 	/// <summary>
 	/// コンストラクタ
@@ -128,7 +129,7 @@ private:
 	// 弾のリスト
 	std::list<BossBullet*> bullets_;
 	// ミサイルファンネル
-	std::list<BossBullet*> finFunnel_;
+	std::list<BossFunnel*> funnels_;
 	
 
 private: // 突進

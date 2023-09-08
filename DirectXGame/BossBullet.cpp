@@ -1,4 +1,5 @@
 ﻿#include "BossBullet.h"
+#include "ImGuiManager.h"
 #include "MyMath.h"
 #include <cmath>
 #include <cassert>
@@ -24,26 +25,6 @@ void BossBullet::Update()
 	pos_.x += velocity_.x * bulletSpeed_;
 	pos_.y += velocity_.y * bulletSpeed_;
 
-	BaseBullet::Update();
-}
-
-void BossBullet::FunnelInitialize(int type, Vector2& startPos, Vector2& endPos) 
-{
-	// イージング用の座標
-	prevPos_ = startPos;
-	endPos_ = endPos;
-	move_t_ = 0;
-
-	// 初手の進む方向
-	moveType_ = type;
-
-	isMove_ = true;
-
-}
-
-void BossBullet::FunnelUpdate() {
-	
-	
 	BaseBullet::Update();
 }
 

@@ -24,23 +24,25 @@ void BossEnemy::GenerateBullet(Vector2& velocity)
 	bullets_.push_back(newBullet);
 }
 
-void BossEnemy::GenerateFunnel(Vector2& velocity, int type) 
+void BossEnemy::GenerateFunnel(int type) 
 {
 	// 生成初期化
-	BossBullet* newFunnel = new BossBullet();
-	Vector2 moveDirect = {};
+	BossFunnel* newFunnel = new BossFunnel();
+	Vector2 endPoint = {};
 	switch (type) {
-	case BossBullet::kHorizontal:
-		moveDirect = MyMath::Normalize(Vector2(nowPlayerPos_.x - pos_.x, 0));
+	case BossFunnel::kHorizontal:
+		endPoint = {nowPlayerPos_.x, pos_.y};
+		newFunnel->Initialize(funnelTex_, type, GetPosition(), endPoint);
 		break;
-	case BossBullet::kVertical:
-
+	case BossFunnel::kVertical:
+		endPoint = {pos_.x, nowPlayerPos_.y};
+		newFunnel->Initialize(funnelTex_, type, GetPosition(), endPoint);
 		break;
 	}
-	newFunnel->Initialize(funnelTex_, GetPosition(), velocity);
-
-
+	// リストに追加
+	funnels_.push_back(newFunnel);
 }
+
 
 void BossEnemy::Initialize() 
 {
@@ -135,14 +137,16 @@ void BossEnemy::Draw()
 	for (BossBullet* bullet : bullets_) {
 		bullet->Draw();
 	}
+	for (BossFunnel* funnel : funnels_) {
+		funnel->Draw();
+	}
 	// 描画
 	BaseCharacter::Draw();
 }
 
 void BossEnemy::OnCollision() {}
 
-void BossEnemy::BulletUpdate() 
-{
+void BossEnemy::BulletUpdate() {
 	bullets_.remove_if([](BossBullet* bullet) {
 		if (bullet->GetIsDead()) {
 			delete bullet;
@@ -161,6 +165,27 @@ void BossEnemy::BulletUpdate()
 			bullet->SetIsDead(true);
 		}
 	}
+
+	funnels_.remove_if([](BossFunnel* funnel) {
+		if (funnel->GetIsDead()) {
+			delete funnel;
+			return true;
+		}
+		return false;
+	});
+
+	for (BossFunnel* funnel : funnels_) {
+		funnel->Update(nowPlayerPos_);
+		Vector2 size = funnel->GetSize();
+		size -= Vector2(decreaseValue_ / 2, decreaseValue_ / 2);
+		funnel->SetSize(size);
+		funnel->SetRadius(funnel->GetSize().x / 2);
+		if (funnel->GetRadius() < deadZone_) {
+			funnel->SetIsDead(true);
+		}
+
+	}
+
 }
 
 void BossEnemy::RushAttack() 
@@ -276,22 +301,17 @@ void BossEnemy::FunnelAttack()
 { 
 	modeCount_ += 1;
 
-	if (modeCount_ % 45 == 0) {
-		Vector2 velocity = {};
-
-		velocity = MyMath::Normalize(Vector2(nowPlayerPos_.x - pos_.x, 0));
-		//GenerateFunnel(velocity);
-
-		velocity = MyMath::Normalize(Vector2(0, nowPlayerPos_.y - pos_.y));
-		//GenerateFunnel(velocity);
+	if (modeCount_ % 120 == 0) {
+		GenerateFunnel(BossFunnel::kHorizontal);
+		GenerateFunnel(BossFunnel::kVertical);
 	}
-
+	if (modeCount_ == kModeEndTimer_) {
+		behaviorRequest_ = Behavior::kRoot;
+	}
 }
 
 void BossEnemy::FunnelAttackInitialize() 
-{
-
-}
+{ kModeEndTimer_ = 260; }
 
 void BossEnemy::RootUpdate() 
 {
@@ -312,6 +332,12 @@ void BossEnemy::RootUpdate()
 	if (input_->TriggerKey(DIK_K)) {
 		if (behavior_ != Behavior::kBarrage) {
 			behaviorRequest_ = Behavior::kBarrage;
+		}
+	}
+	
+	if (input_->TriggerKey(DIK_G)) {
+		if (behavior_ != Behavior::kFunnel) {
+			behaviorRequest_ = Behavior::kFunnel;
 		}
 	}
 
