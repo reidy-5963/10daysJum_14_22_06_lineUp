@@ -173,21 +173,22 @@ void Tail::Fire() {
 		    std::sqrtf(std::powf(Tail2Marker_distance.x, 2) + std::powf(Tail2Marker_distance.y, 2));
 		float radius = (32 + GetRadius());
 
-		// もし尻尾とマーカーが当たっていれば
-		if (tailNo_ == 0) {
-			if (distance <= radius && bulletTimer_ <= 0 && !parentBool_) {
-				// 攻撃フラグを有効
-				SetIsFire(true);
-				// タイマーセット
-				bulletTimer_ = kBulletTime;
-			}
-		} 
-		else if (tailNo_ != 0) {
-			if (distance <= radius && bulletTimer_ <= 0 && parentBool_) {
-				// 攻撃フラグを有効
-				SetIsFire(true);
-				// タイマーセット
-				bulletTimer_ = kBulletTime;
+		if (!player_->IsMove()) {
+			// もし尻尾とマーカーが当たっていれば
+			if (tailNo_ == 0) {
+				if (distance <= radius && bulletTimer_ <= 0) {
+					// 攻撃フラグを有効
+					SetIsFire(true);
+					// タイマーセット
+					bulletTimer_ = kBulletTime;
+				}
+			} else if (tailNo_ != 0) {
+				if (distance <= radius && bulletTimer_ <= 0 && parentBool_) {
+					// 攻撃フラグを有効
+					SetIsFire(true);
+					// タイマーセット
+					bulletTimer_ = kBulletTime;
+				}
 			}
 
 		}

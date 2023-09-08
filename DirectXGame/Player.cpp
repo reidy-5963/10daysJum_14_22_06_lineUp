@@ -182,7 +182,16 @@ void Player::Update() {
 				isP2tM = false;
 			}
 			MyMath::CountT(root_t_, 0.0f, isMtM1, true, rootRotate_t_offset);
+
+			if (isMtM1) {
+
+				pos_ = MyMath::CatmullRom(
+				    W2AddRadian[2], M2AddRadian[0], M2AddRadian[1], M2AddRadian[2], root_t_);
+				direction_ = pos_ - prePos_;
+				MyMath::CountT(root_t_, 0.0f, isM1tM2, true, rootRotate_t_offset);
+			}
 		}
+		
 
 		////// ベジエ曲線のスタート位置計算
 		//	// bezierStartPos_ = MyMath::lerp(root_t_, markerPos_, RotateRootPos_);
@@ -383,6 +392,7 @@ void Player::InitializeGrobalVariables() {
 	gloVars->AddItem(groupName, "Move_t_offset", move_t_offset);
 	gloVars->AddItem(groupName, "MarkerLimit_", markerLimit_);
 	gloVars->AddItem(groupName, "RootRotate_t_offset", rootRotate_t_offset);
+	gloVars->AddItem(groupName, "Bullet_shot_Radian", BulletRadian);
 }
 
 void Player::ApplyGrobalVariables() { 
@@ -394,6 +404,7 @@ void Player::ApplyGrobalVariables() {
 	move_t_offset = gloVars->GetFloatValue(groupName, "Move_t_offset");
 	markerLimit_ = gloVars->GetFloatValue(groupName, "MarkerLimit_");
 	rootRotate_t_offset = gloVars->GetFloatValue(groupName, "RootRotate_t_offset");
+	BulletRadian = gloVars->GetFloatValue(groupName, "Bullet_shot_Radian");
 }
 
 void Player::GetCursor() {
@@ -412,9 +423,9 @@ void Player::BulletUpdate() {
 	for (PlayerBullet* bullet : bullets_) {
 		bullet->Update();
 
-		ImGui::Begin("bullet");
+		/*ImGui::Begin("bullet");
 		ImGui::Text("%d", bullet->GetIsDead());
-		ImGui::End();
+		ImGui::End();*/
 
 		if (pos_.x + kDeadOffset < bullet->GetPosition().x ||
 		    pos_.x - kDeadOffset > bullet->GetPosition().x ||

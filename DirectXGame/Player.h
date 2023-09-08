@@ -116,7 +116,7 @@ public: // ゲッター
 	/// マーカーの位置の取得
 	/// </summary>
 	/// <returns></returns>
-	Vector2 GetMarkerPos() { return markerPos_; }
+	Vector2 &GetMarkerPos() { return markerPos_; }
 
 	/// <summary>
 	/// 弾のリストの取得
@@ -196,12 +196,12 @@ private: // メンバ変数
 
 	// 尻尾の数
 	const int kMaxTail_ = 6;
+	float BulletRadian = 0.1f;
 
 #pragma endregion
 
 #pragma region 通常状態の回転用
 	//
-	float BulletRadian = 0.1f;
 	Vector2 M2AddRadian[3];
 	Vector2 W2AddRadian[3];
 

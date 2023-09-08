@@ -1,5 +1,6 @@
 {
     "Player": {
+        "Bullet_shot_Radian": 1.0,
         "MarkerLimit_": 100.0,
         "Move_t_offset": 0.029999999329447746,
         "RootRotate_t_offset": 0.05999999865889549
