@@ -17,6 +17,9 @@ void BaseBullet::Update() {
 
 void BaseBullet::Draw() {}
 void BaseBullet::OnCollision() {}
+void BaseBullet::SetSize(Vector2 size) 
+{ sprite_->SetSize(size); }
+Vector2 BaseBullet::GetSize() { return sprite_->GetSize(); }
 // クラスの枠つくっただけやね
 // さっき触れ始めた
 //うん☆

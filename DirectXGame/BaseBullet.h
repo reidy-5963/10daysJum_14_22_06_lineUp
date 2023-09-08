@@ -29,6 +29,10 @@ public: // メンバ変数
 	/// </summary>
 	virtual void OnCollision();
 
+	void SetSize(Vector2 size);
+
+	Vector2 GetSize();
+
 protected: // メンバ変数
 	// スプライト
 	std::unique_ptr<Sprite> sprite_;
@@ -43,6 +47,8 @@ protected: // メンバ変数
 	bool isDead_;
 
 	float radius_;
+
+	float bulletSpeed_;
 
 public:
 	/// <summary>

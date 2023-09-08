@@ -45,8 +45,10 @@ void GameScene::Initialize() {
 }
 
 void GameScene::Update() {
+	// スクロール
 	scroll_->Update();
 
+	// 敵の更新処理
 	enemyManager_->SetPlayer(player_->GetPosition());
 	enemyManager_->Update();
 
@@ -59,8 +61,9 @@ void GameScene::Update() {
 	// ボスの更新処理
 	boss_->SetPlayer(player_->GetPosition());
 	boss_->Update();
-	Scroll* scroll = Scroll::GetInstance();
 
+	// 背景処理
+	Scroll* scroll = Scroll::GetInstance();
 	back->SetPosition(backPos - scroll->GetAddScroll());
 }
 
@@ -103,6 +106,7 @@ void GameScene::Draw() {
 	/// ここに前景スプライトの描画処理を追加できる
 	/// </summary>
 
+	// 敵の描画
 	enemyManager_->Draw();
 
 	// プレイヤーの描画処理
@@ -124,6 +128,7 @@ void GameScene::CheckAllCollision()
 
 	const std::list<PlayerBullet*>& playerBullet = player_->GetBullets();
 	const std::list<Enemy*>& enemys = enemyManager_->GetEnemyLists();
+	//const std::list<BossBullet*>& bossBullet = boss_->GetBullets();
 
 	// プレイヤーと敵の衝突判定
 	targetA = player_->GetPosition();
@@ -136,7 +141,6 @@ void GameScene::CheckAllCollision()
 		if (distance <= radius) {
 			// コールバック
 			enemy->OnCollision();
-
 			player_->OnCollision();
 		}
 	}
@@ -155,9 +159,7 @@ void GameScene::CheckAllCollision()
 				enemy->OnCollision();
 				playerBullet_->OnCollision();
 			}
-
 		}
-
 	}
 
 }

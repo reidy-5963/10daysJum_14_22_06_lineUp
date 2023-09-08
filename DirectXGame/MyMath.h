@@ -408,8 +408,16 @@ public:
 	static float EaseInOutQuadF(float t, float start, float end);
 
 
+	static Vector2 EaseInQuadF(float t, Vector2 start, Vector2 end);
+	static Vector2 EaseOutQuadF(float t, Vector2 start, Vector2 end);
+	static Vector2 EaseInOutQuadF(float t, Vector2 start, Vector2 end);
+
+
 	static float EaseInCubicF(float t, float start, float end);
 	static float EaseOutCubicF(float t, float start, float end);
 	static float EaseInOutCubicF(float t, float start, float end);
+
+
+	static Vector2 EaseInCubicF(float t, Vector2 start, Vector2 end);
 
 };
