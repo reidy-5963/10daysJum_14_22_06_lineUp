@@ -118,7 +118,7 @@ void Player::Update() {
 
 				isMtM1 = false;
 			}
-			MyMath::CountT(rootTOffset, 0.0f, isM1tM2, true, rootTOffset);
+			MyMath::CountT(root_t_, 0.0f, isM1tM2, true, rootTOffset);
 		}
 		//
 		if (isM1tM2) {
