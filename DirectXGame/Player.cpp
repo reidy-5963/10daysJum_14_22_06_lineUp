@@ -113,12 +113,12 @@ void Player::Update() {
 			    W2AddRadian[2], M2AddRadian[0], M2AddRadian[1], M2AddRadian[2], root_t_);
 			direction_ = pos_ - prePos_;
 
-			if (root_t_ >= 1.0f) {
+			if (root_t_ >= 2.0f) {
 				direction_ = M2AddRadian[1] - M2AddRadian[0];
 
 				isMtM1 = false;
 			}
-			MyMath::CountT(root_t_, 0.0f, isM1tM2, true, rootTOffset);
+			MyMath::CountT(rootTOffset, 0.0f, isM1tM2, true, rootTOffset);
 		}
 		//
 		if (isM1tM2) {
