@@ -46,24 +46,33 @@ public: // メンバ関数
 	void OnCollision() override;
 
 	/// <summary>
-	/// 
+	/// カーソルの更新処理
 	/// </summary>
 	void CursorUpdate();
 
+	/// <summary>
+	/// 弾の更新処理
+	/// </summary>
 	void BulletUpdate();
 
 	/// <summary>
-	/// 
+	/// カーソルの制限処理
 	/// </summary>
 	void MarkerControl();
 
 	/// <summary>
-	/// 
+	/// 左クリックの処理
 	/// </summary>
 	void LeftClickUpdate();
 
+	/// <summary>
+	/// 弾を削除する処理
+	/// </summary>
 	void DeleteBullet();
 
+	/// <summary>
+	/// 通常時の回転処理(パターン2つ)
+	/// </summary>
 	void RootRotateMove1();
 	void RootRotateMove2();
 
@@ -84,9 +93,10 @@ public: // 追加や削除の関数
 	/// <param name="bullet">追加する弾</param>
 	void AddBullets(PlayerBullet* bullet);
 
+	/// <summary>
+	/// 尻尾の更新処理
+	/// </summary>
 	void TailUpdate();
-
-	void LeftRotate2();
 
 public: // ゲッター
 #pragma region ゲっター
@@ -187,7 +197,7 @@ private: // メンバ変数
 	Vector2 M2AddRadian[3];
 	Vector2 W2AddRadian[3];
 
-	float radianOffset = 1.0f;
+	float radianOffset = 3.14f * ( 1.0f / 3.0f);
 
 	bool isMtM1 = false;
 	bool isM1tM2 = false;

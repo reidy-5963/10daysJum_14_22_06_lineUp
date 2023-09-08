@@ -53,15 +53,11 @@ void Tail::Update() {
 	//
 	else if (isHitOut_) {
 		//Vector2 offset = {4.0f, 0.0f};
-
 		//Vector2 P2T;
 		//P2T.x = parentPos_->x - pos_.x;
 		//P2T.y = parentPos_->y - pos_.y;
-
 		//Matrix3x3 rotateMat = MyMath::MakeRotateMatrix(std::atan2(P2T.y, P2T.x));
-
 		//offset = MyMath::TransformNormal(offset, rotateMat);
-
 		//pos_.y += offset.y;
 		//pos_.x += offset.x;
 	}
