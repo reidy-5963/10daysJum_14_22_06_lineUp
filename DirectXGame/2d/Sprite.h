@@ -191,6 +191,7 @@ public: // メンバ関数
 	/// </summary>
 	void Draw();
 
+	
 private: // メンバ変数
 	// 頂点バッファ
 	Microsoft::WRL::ComPtr<ID3D12Resource> vertBuff_;
