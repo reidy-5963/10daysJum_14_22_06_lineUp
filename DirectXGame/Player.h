@@ -45,8 +45,14 @@ public: // メンバ関数
 	/// </summary>
 	void OnCollision() override;
 	
+	/// <summary>
+	/// グローバル変数の初期化処理
+	/// </summary>
 	void InitializeGrobalVariables() override;
 
+	/// <summary>
+	/// グローバル変数の更新処理
+	/// </summary>
 	void ApplyGrobalVariables() override;
 
 	/// <summary>
@@ -79,6 +85,12 @@ public: // メンバ関数
 	/// </summary>
 	void RootRotateMove1();
 	void RootRotateMove2();
+	/// <summary>
+	/// 尻尾の更新処理
+	/// </summary>
+	void TailUpdate();
+
+	void MarkerUpdate();
 
 public: // 追加や削除の関数
 	/// <summary>
@@ -97,12 +109,6 @@ public: // 追加や削除の関数
 	/// <param name="bullet">追加する弾</param>
 	void AddBullets(PlayerBullet* bullet);
 
-	/// <summary>
-	/// 尻尾の更新処理
-	/// </summary>
-	void TailUpdate();
-
-	void MarkerUpdate();
 
 public: // ゲッター
 #pragma region ゲっター
