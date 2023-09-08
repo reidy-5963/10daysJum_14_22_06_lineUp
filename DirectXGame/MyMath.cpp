@@ -1096,7 +1096,7 @@ Matrix4x4 MyMath::MakeIdentity4x4() {
 #pragma endregion
 
 void MyMath::CountT(float& t, const float endT, bool& flag, const bool setFlag, float offset) {
-	if (t > 1.0f) {
+	if (t >= 1.0f) {
 		t = endT;
 		flag = setFlag;
 	} else {
@@ -1177,6 +1177,22 @@ float MyMath::EaseInOutCubicF(float t, float start, float end) {
 	                                : 1.0f - powf(-2.0f * t + 2, 3.0f) / 2.0f;
 
 	return (1.0f - easeT) * start + easeT * end;
+}
+float MyMath::gcd(float a, float b) {
+	//
+	if (a == 0 || b == 0) {
+		return 0;
+	}
+
+
+	while (a != b) {
+		if (a < b) {
+			b -= a;
+		} else {
+			a -= b;
+		}
+	}
+	return a;
 }
 
 

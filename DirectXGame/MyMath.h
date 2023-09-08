@@ -62,7 +62,7 @@ public:
 	/// <param name="matrix">行列</param>
 	/// <returns></returns>
 	static Vector2 TransformNormal(const Vector2& v, const Matrix3x3& m);
-
+	
 #pragma endregion
 
 #pragma region Vector3
@@ -318,7 +318,8 @@ public:
 	/// <param name="flag">フラグ</param>
 	/// <param name="setFlag">true or false</param>
 	/// <param name="offset">増えてく値</param>
-	static void CountT(float& t, const float endT, bool& flag, const bool setFlag, float offset);
+	static void CountT(
+	    float& t, const float endT, bool& flag, const bool setFlag, float offset);
 
 	/// <summary>
 	/// より大きい値を返す
@@ -351,6 +352,8 @@ public:
 	static float EaseInCubicF(float t, float start, float end);
 	static float EaseOutCubicF(float t, float start, float end);
 	static float EaseInOutCubicF(float t, float start, float end);
+
+	static float gcd(float a, float b);
 
 #pragma region 使わないやつ
 	/// <summary>
