@@ -52,7 +52,7 @@ public: // メンバ関数
 	/// <summary>
 	/// カーソルの更新処理
 	/// </summary>
-	void CursorUpdate();
+	void GetCursor();
 
 	/// <summary>
 	/// 弾の更新処理
@@ -102,6 +102,8 @@ public: // 追加や削除の関数
 	/// </summary>
 	void TailUpdate();
 
+	void MarkerUpdate();
+
 public: // ゲッター
 #pragma region ゲっター
 	/// <summary>
@@ -144,6 +146,8 @@ private: // メンバ変数
 	Vector2 markerPos_{};
 	// (前クリックした時のマーカーの位置)
 	Vector2 preMarkerPos_{};
+
+	Vector2 clickPos_{};
 #pragma endregion
 
 #pragma region 通常時の動き用
@@ -212,7 +216,8 @@ private: // メンバ変数
 
 	float rootRotate_t_offset = 0.04f;
 #pragma endregion
-
+	bool ismarkerMove_ = false;
+	float markerMove_t = 0.0f;
 #ifdef _DEBUG
 	// test
 	std::unique_ptr<Sprite> m1 = nullptr;

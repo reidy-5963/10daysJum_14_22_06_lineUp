@@ -75,4 +75,4 @@ public: // セッター関数
 	/// </summary>
 	/// <returns></returns>
 	bool IsMove() { return isMove_; }
-};
+};// 一瞬逆むくね
