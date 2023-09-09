@@ -44,29 +44,64 @@ public: // メンバ関数
 	/// 衝突処理
 	/// </summary>
 	void OnCollision() override;
-	void CursorUpdate();
+	
+	/// <summary>
+	/// グローバル変数の初期化処理
+	/// </summary>
+	void InitializeGrobalVariables() override;
 
 	/// <summary>
-	/// 線形補間用のtのカウント
+	/// グローバル変数の更新処理
 	/// </summary>
-	/// <param name="t">t</param>
-	/// <param name="endT">1.0fになったあとの値の初期化</param>
-	/// <param name="flag">フラグ</param>
-	/// <param name="setFlag">true or false</param>
-	/// <param name="offset">増えてく値</param>
-	void CountT(float& t,const float endT, bool& flag, const bool setFlag, float offset);
+	void ApplyGrobalVariables() override;
 
-public: // 追加関数
+	/// <summary>
+	/// カーソルの更新処理
+	/// </summary>
+	void GetCursor();
+
+	/// <summary>
+	/// 弾の更新処理
+	/// </summary>
+	void BulletUpdate();
+
+	/// <summary>
+	/// カーソルの制限処理
+	/// </summary>
+	void MarkerControl();
+
+	/// <summary>
+	/// 左クリックの処理
+	/// </summary>
+	void LeftClickUpdate();
+
+	/// <summary>
+	/// 弾を削除する処理
+	/// </summary>
+	void DeleteBullet();
+
+	/// <summary>
+	/// 通常時の回転処理(パターン2つ)
+	/// </summary>
+	void RootRotateMove1();
+	void RootRotateMove2();
+	/// <summary>
+	/// 尻尾の更新処理
+	/// </summary>
+	void TailUpdate();
+
+	void MarkerUpdate();
+
+public: // 追加や削除の関数
 	/// <summary>
 	/// 尻尾の追加
 	/// </summary>
 	void AddTails();
 
 	/// <summary>
-	/// 尻尾の追加
+	/// 尻尾の削除
 	/// </summary>
 	void DeleteTails();
-
 
 	/// <summary>
 	/// 弾の追加
@@ -74,7 +109,8 @@ public: // 追加関数
 	/// <param name="bullet">追加する弾</param>
 	void AddBullets(PlayerBullet* bullet);
 
-public: // ゲッター
+
+public: // Setter & Getter
 	/// <summary>
 	/// 弾テクスチャの取得
 	/// </summary>
@@ -85,41 +121,66 @@ public: // ゲッター
 	/// マーカーの位置の取得
 	/// </summary>
 	/// <returns></returns>
-	Vector2 GetMarkerPos() { return markerPos_; }
+	Vector2 &GetMarkerPos() { return markerPos_; }
+
+	/// <summary>
+	/// 弾の速さ取得
+	/// </summary>
+	/// <returns></returns>
+	float GetBulletSpeed() { return bulletSpeed_; }
 
 	/// <summary>
 	/// 弾のリストの取得
 	/// </summary>
 	/// <returns></returns>
 	const std::list<PlayerBullet*>& GetBullets() { return bullets_; }
+	
+	/// <summary>
+	/// 尻尾のリストの取得
+	/// </summary>
+	/// <returns></returns>
+	const std::list<Tail*>& GetTails() { return tails_; }
 
-private: // メンバ変数	
+private: // メンバ変数
 	// 入力
 	Input* input_ = nullptr;
+	
 	// マウス位置
 	POINT mousePos;
+
+	// プレイヤーの向き
+	Vector2 direction_{};
 
 #pragma region マーカー
 	// マーカーのスプライト
 	std::unique_ptr<Sprite> markerSprite_ = nullptr;
+
 	// マーカーのテクスチャ
 	uint32_t markerTex_ = 0u;
+
 	// マーカーの位置
 	Vector2 markerPos_{};
+
 	// (前クリックした時のマーカーの位置)
 	Vector2 preMarkerPos_{};
+
+	// クリックした位置
+	Vector2 clickPos_{};
+
 #pragma endregion
 
 #pragma region 通常時の動き用
 	// 回転するための4つ目の点
 	Vector2 RotateRootPos_;
+
 	// 回転用の線形補完
 	float root_t_ = 0.0f;
+
 	// 回転用のフラグ
 	bool isRootMove_ = false;
-#pragma endregion 
 
-	// 前フレーム時の位置
+#pragma endregion
+	// 前フレーム時のプレイヤーの位置
 	Vector2 clickPlayerPos_{};
 
 	// 前フレーム時の位置
@@ -127,26 +188,73 @@ private: // メンバ変数
 
 	// 動くときの線形補完
 	float move_t_ = 0.0f;
+	float move_t_offset = 0.01f;
 
 	// ベジエで動くときのスタート位置
 	Vector2 bezierStartPos_{};
-	// ベジエで動くときの終わり位置// 
+
+	// ベジエで動くときの終わり位置//
 	Vector2 bezierEndPos_{};
 
+	// マーカーを置ける位置の制限値
+	// (端から設定した値まではマーカーを置けない)
+	float markerLimit_ = 100.0f;
+
+#pragma region 弾
 	// 弾
 	std::list<PlayerBullet*> bullets_;
+
 	// 弾テクスチャ
 	uint32_t bulletTexture_ = 0u;
 
+	// 弾の距離制限
 	const float kDeadOffset = 740.0f;
 
+	// 弾の速さ
+	float bulletSpeed_ = 20.0f;
+
+#pragma endregion
+
+#pragma region 尻尾
 	// 尻尾
 	std::list<Tail*> tails_;
+
 	// 尻尾テクスチャ
 	uint32_t tailTexture_ = 0u;
 
 	// 尻尾の数
 	const int kMaxTail_ = 6;
+	float BulletRadian = 0.1f;
 
-	float radian = 1.0f;
+#pragma endregion
+
+#pragma region 通常状態の回転用
+	//
+	Vector2 M2AddRadian[3];
+	Vector2 W2AddRadian[3];
+
+	float radianOffset = 3.14f * ( 1.0f / 3.0f);
+
+	bool isMtM1 = false;
+	bool isM1tM2 = false;
+	bool isM2tP = false;
+	bool isPtP1 = false;
+	bool isP1tP2 = false;
+	bool isP2tM = false;
+
+	float rootRotate_t_offset = 0.04f;
+#pragma endregion
+	bool ismarkerMove_ = false;
+	float markerMove_t = 0.0f;
+#ifdef _DEBUG
+	// test
+	std::unique_ptr<Sprite> m1 = nullptr;
+	std::unique_ptr<Sprite> m2 = nullptr;
+	std::unique_ptr<Sprite> p1 = nullptr;
+	std::unique_ptr<Sprite> p2 = nullptr;
+	std::unique_ptr<Sprite> origin_ = nullptr;
+	Vector2 originPos_{};
+	//
+
+#endif // _DEBUG
 };

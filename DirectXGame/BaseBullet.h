@@ -1,17 +1,13 @@
 ﻿#pragma once
 #include "Sprite.h"
-#include "Vector2.h"
+#include "MyMath.h"
 #include <memory>
-
 
 /// <summary>
 /// 弾のベースクラス
 /// </summary>
 class BaseBullet {
 public: // メンバ変数
-	/// <summary>
-	/// 初期化処理
-	/// </summary>
 	virtual void Initialize(uint32_t texture, const Vector2& pos, Vector2 velosity);
 
 	/// <summary>
@@ -36,16 +32,21 @@ public: // メンバ変数
 protected: // メンバ変数
 	// スプライト
 	std::unique_ptr<Sprite> sprite_;
+	// テクスチャ
 	uint32_t texture_;
 
 	// 位置
 	Vector2 pos_;
 
 	// 速度
-	Vector2 velocity_;
+	Vector2 direction_;
 
+	// 弾の速さ
+	float bulletSpeed = 20.0f;
+	// 弾の有効フラグ
 	bool isDead_;
 
+	// 半径サイズ
 	float radius_;
 
 	float bulletSpeed_;
@@ -57,17 +58,28 @@ public:
 	/// <param name="pos"></param>
 	void SetPosition(Vector2& pos) { pos_ = pos; }
 
-	/// <summary>
-	/// 座標のGetter
-	/// </summary>
-	/// <returns></returns>
-	Vector2 GetPosition() { return pos_; }
 
 	/// <summary>
 	/// 半径のSetter
 	/// </summary>
 	/// <param name="rad"></param>
 	void SetRadius(float rad) { radius_ = rad; }
+
+
+	/// <summary>
+	/// フラグの設定
+	/// </summary>
+	/// <param name="dead"></param>
+	void SetIsDead(bool dead) { isDead_ = dead; }
+
+	void SetBulletSpeed(float speed) { bulletSpeed = speed; }
+
+public: // ゲッター関数	
+	/// <summary>
+	/// 座標のGetter
+	/// </summary>
+	/// <returns></returns>
+	Vector2 GetPosition() { return pos_; }
 
 	/// <summary>
 	/// 半径のGetter
@@ -79,7 +91,7 @@ public:
 	/// フラグの取得
 	/// </summary>
 	/// <returns></returns>
-	bool GetIsDead() { return isDead_; }
+	bool GetIsDead() { return isDead_; } 
 
 	/// <summary>
 	/// フラグの設定
@@ -87,4 +99,5 @@ public:
 	/// <param name="dead"></param>
 	void SetIsDead(bool dead) { isDead_ = dead; }
 
+	float GetBulletSpeed() { return bulletSpeed; }
 };

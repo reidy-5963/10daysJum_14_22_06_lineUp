@@ -11,7 +11,6 @@
 #include <memory>
 #include <list>
 
-
 #include "BaseScene.h"
 #include "Player.h"
 #include "Enemy.h"
@@ -22,9 +21,7 @@
 /// <summary>
 /// ゲームシーン
 /// </summary>
-class GameScene : public BaseScene
-{
-
+class GameScene : public BaseScene {
 public: // メンバ関数
 	/// <summary>
 	/// コンストクラタ
@@ -51,6 +48,9 @@ public: // メンバ関数
 	/// </summary>
 	void Draw() override;
 
+	/// <summary>
+	/// 当たり判定
+	/// </summary>
 	void CheckAllCollision();
 
 private: // メンバ変数
@@ -70,10 +70,13 @@ private: // メンバ変数
 
 	// ボス
 	std::unique_ptr<BossEnemy> boss_ = nullptr;
-
+	
 	Scroll* scroll_;
 
+#pragma region 背景
+	// 背景スプライト関係
 	std::unique_ptr<Sprite> back;
 	uint32_t backTex;
 	Vector2 backPos = {0.0f, 0.0f};
+#pragma endregion
 };

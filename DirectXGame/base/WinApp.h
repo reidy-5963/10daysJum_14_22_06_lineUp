@@ -10,6 +10,10 @@ public: // 静的メンバ変数
 	// ウィンドウサイズ
 	static const int kWindowWidth = 1280; // 横幅
 	static const int kWindowHeight = 720; // 縦幅
+
+	static const int kFullScreenWidth = 1920;
+	static const int kFullScreenHEight = 1080;
+
 	// ウィンドウクラス名
 	static const wchar_t kWindowClassName[];
 

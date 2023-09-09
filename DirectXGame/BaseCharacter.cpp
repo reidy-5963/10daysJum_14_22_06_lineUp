@@ -1,7 +1,8 @@
 #include "BaseCharacter.h"
 #include "Scroll.h"
+#include "WinApp.h"
 
-    /// <summary>
+/// <summary>
 /// 初期化処理
 /// </summary>
 void BaseCharacter::Initialize() {}
@@ -10,9 +11,13 @@ void BaseCharacter::Initialize() {}
 /// 更新処理
 /// </summary>
 void BaseCharacter::Update() { 
+	// スクロールのインスタンス取得
 	Scroll* scroll = Scroll::GetInstance();
 
-	sprite_->SetPosition(pos_ - scroll->GetAddScroll());
+	Vector2 ScreenPos = pos_ - scroll->GetAddScroll();
+
+	// スプライトの位置の更新処理
+	sprite_->SetPosition(ScreenPos);
 }
 
 /// <summary>
@@ -23,4 +28,11 @@ void BaseCharacter::Draw() {
 	sprite_->Draw();
 }
 
+/// <summary>
+/// 衝突処理
+/// </summary>
 void BaseCharacter::OnCollision() {}
+
+void BaseCharacter::InitializeGrobalVariables() {}
+
+void BaseCharacter::ApplyGrobalVariables() {}

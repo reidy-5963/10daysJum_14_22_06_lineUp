@@ -5,10 +5,19 @@
 #include <cmath>
 #include "Scroll.h"
 
+/// <summary>
+/// コンストクラタ
+/// </summary>
 GameScene::GameScene() {}
 
+/// <summary>
+/// デストラクタ
+/// </summary>
 GameScene::~GameScene() {}
 
+/// <summary>
+/// 初期化
+/// </summary>
 void GameScene::Initialize() {
 
 	dxCommon_ = DirectXCommon::GetInstance();
@@ -18,15 +27,21 @@ void GameScene::Initialize() {
 	unsigned int currentTime = (int)time(nullptr);
 	srand(currentTime);
 
+#pragma region プレイヤー
 	// プレイヤー生成
 	player_ = std::make_unique<Player>();
 	// プレイヤーの初期化処理
 	player_->Initialize();
+#pragma endregion
 
+#pragma region スクロール
 	scroll_ = Scroll::GetInstance(); 
 	scroll_->Initialize();
 	scroll_->SetTarget(&player_->GetPosition());
 	scroll_->SetEdgePos({WinApp::kWindowWidth / 2, WinApp::kWindowHeight / 2});
+#pragma endregion
+
+#pragma region ボス
 	// ボス生成
 	boss_ = std::make_unique<BossEnemy>();
 	// 初期化
@@ -39,13 +54,15 @@ void GameScene::Initialize() {
 	back.reset(Sprite::Create(backTex, {0.0f, 0.0f}, {1.0f, 1.0f, 1.0f, 1.0f}, {0.0f, 0.0f}));
 	Vector2 size = back->GetSize();
 	back->SetSize({size.x * 1.5f, size.y * 1.5f});
-
-
-	
+#pragma endregion
 }
 
-void GameScene::Update() {
-	// スクロール
+/// <summary>
+/// 毎フレーム処理
+/// </summary>
+void GameScene::Update() { 
+	// スクロールの更新処理
+	Scroll* scroll = Scroll::GetInstance();
 	scroll_->Update();
 
 	// 敵の更新処理
@@ -62,11 +79,13 @@ void GameScene::Update() {
 	boss_->SetPlayer(player_->GetPosition());
 	boss_->Update();
 
-	// 背景処理
-	Scroll* scroll = Scroll::GetInstance();
+	// 背景の更新処理
 	back->SetPosition(backPos - scroll->GetAddScroll());
 }
 
+/// <summary>
+/// 描画
+/// </summary>
 void GameScene::Draw() {
 
 	// コマンドリストの取得
@@ -79,7 +98,10 @@ void GameScene::Draw() {
 	/// <summary>
 	/// ここに背景スプライトの描画処理を追加できる
 	/// </summary>
+	
+	// 背景の描画
 	back->Draw();
+
 	// スプライト描画後処理
 	Sprite::PostDraw();
 	// 深度バッファクリア
@@ -121,19 +143,28 @@ void GameScene::Draw() {
 #pragma endregion
 }
 
-void GameScene::CheckAllCollision() 
-{
-	// リスト取得
+/// <summary>
+/// 当たり判定
+/// </summary>
+void GameScene::CheckAllCollision() {
+	// 変数の用意
 	Vector2 targetA, targetB;
-
+#pragma region
+#pragma endregion
+	// プレイヤーの弾リストを取得
 	const std::list<PlayerBullet*>& playerBullet = player_->GetBullets();
 	const std::list<Enemy*>& enemys = enemyManager_->GetEnemyLists();
 	//const std::list<BossBullet*>& bossBullet = boss_->GetBullets();
 	//const std::list<BossFunnel*>& bossFunnel = boss_->GetFunnels();
+	// プレイヤーの弾リストを取得
+	const std::list<Tail*>& tails = player_->GetTails();
 
-	// プレイヤーと敵の衝突判定
+	// プレイヤーの位置取得
 	targetA = player_->GetPosition();
-	for (Enemy* enemy : enemys) {
+
+#pragma region 敵とプレイヤー
+	for (Enemy* enemy : enemys_) {
+		// エネミーの位置取得
 		targetB = enemy->GetPosition();
 		float distance =
 		    std::sqrtf(std::powf(targetA.x - targetB.x, 2) + std::powf(targetA.y - targetB.y, 2));
@@ -145,7 +176,29 @@ void GameScene::CheckAllCollision()
 			player_->OnCollision();
 		}
 	}
+#pragma endregion
+#pragma region 敵と尻尾
+	for (Enemy* enemy : enemys_) {
+		// エネミーの位置取得
+		targetB = enemy->GetPosition();
+		for (Tail* tail : tails) {
+			// エネミーの位置取得
+			targetA = tail->GetPosition();
+			float distance = std::sqrtf(
+			    std::powf(targetA.x - targetB.x, 2) + std::powf(targetA.y - targetB.y, 2));
+			float radius = player_->GetRadius() + enemy->GetRadius();
+			// 交差判定
+			if (distance <= radius) {
+				// コールバック
+				enemy->OnCollision();
 
+				tail->OnCollision();
+			}
+		}
+	}
+#pragma endregion
+
+#pragma region プレイヤーの弾と敵
 	// プレイヤーの弾と敵の衝突判定
 	for (PlayerBullet* playerBullet_ : playerBullet) {
 		targetA = playerBullet_->GetPosition();
@@ -160,7 +213,11 @@ void GameScene::CheckAllCollision()
 				enemy->OnCollision();
 				playerBullet_->OnCollision();
 			}
+
 		}
+
 	}
+#pragma endregion
+}
 
 }

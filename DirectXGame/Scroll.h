@@ -7,6 +7,15 @@
 
 class Scroll {
 public:
+	enum OutDirect {
+		UP,
+		DOWN,
+		LEFT,
+		RIGHT,
+		UNKNOWN
+	};
+
+public:
 	static Scroll* GetInstance();
 
 	void Initialize();
@@ -22,6 +31,16 @@ public:
 		target_ = target;
 	}
 
+	int IsScreenOut() { return isScreenOut_; }
+
+	void SetIsScreenOut(int isScreenOut) { isScreenOut_ = isScreenOut; }
+	
+	void loopUpdate();
+
+	void WorldUpdate2x2();
+
+	Vector2 GetEdgePos() { return edgePos_; }
+
 private:
 	Scroll() = default;
 	~Scroll() = default;
@@ -35,4 +54,8 @@ private:
 
 	int widthMax = 2;
 	int heightMax = 2;
+
+
+	int isScreenOut_ = UNKNOWN;
+
 };
