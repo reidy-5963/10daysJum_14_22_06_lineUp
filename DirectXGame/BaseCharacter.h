@@ -32,6 +32,10 @@ public: // メンバ関数
 	virtual void InitializeGrobalVariables();
 
 	virtual void ApplyGrobalVariables();
+	
+	void DrawAnimation(
+	    Sprite* sprite, int texX, int texY, int srcX, int srcY, int srcW, int srcH,
+	    uint32_t texture);
 
 protected: // 継承限定メンバ変数
 	// スプライト
@@ -44,6 +48,12 @@ protected: // 継承限定メンバ変数
 	bool isMove_ = false;
 	// 半径サイズ
 	float radius_;
+
+	int animationTimer = 0;
+	int animationNumber = 0;
+	int animationScene = 5;
+	int oneTime = 20;
+	bool isAnimation = false;
 
 public: // セッター関数
 	/// <summary>

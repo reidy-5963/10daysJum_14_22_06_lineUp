@@ -92,7 +92,7 @@ public: // メンバ関数
 
 	void MarkerUpdate();
 
-public: // 追加や削除の関数
+	public: // 追加や削除の関数
 	/// <summary>
 	/// 尻尾の追加
 	/// </summary>

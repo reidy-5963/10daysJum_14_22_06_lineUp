@@ -191,13 +191,6 @@ void Tail::DirectionUpdate() {
 void Tail::MoveUpdate() {
 	// もし動いているとき
 	if (isMove_) {
-		// 媒介変数t(0.0f ~ 1.0f)
-		if (t_ >= 1.0f) {
-			t_ = 1.0f;
-			isMove_ = false;
-		} else {
-			t_ += 0.2f;
-		}
 
 		// 線形補完
 		// pos_ = MyMath::CatmullRom(prePos_, pos_, lerpEndPos_, lerpEndPos_, t_);
@@ -205,6 +198,7 @@ void Tail::MoveUpdate() {
 		}
 
 		pos_ = MyMath::lerp(t_, prePos_, lerpEndPos_);
+		MyMath::CountT(t_, 1.0f, isMove_, false, 0.17f);
 	}
 	// もし動いていないとき
 	if (!isMove_) {

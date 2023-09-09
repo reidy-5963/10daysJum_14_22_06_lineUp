@@ -31,9 +31,15 @@ void Player::Initialize() {
 	clickPlayerPos_ = pos_;
 	markerPos_ = pos_;
 	preMarkerPos_ = markerPos_;
-
+	animationTimer = 0;
+	animationNumber = 0;
+	animationScene = 4;
+	oneTime = 20;
+	isAnimation = true;
 	// キャラのテクスチャ読み込み
-	charaTex_ = TextureManager::Load("Player.png");
+	//charaTex_ = TextureManager::Load("Player.png");	
+	charaTex_ = TextureManager::Load("Player_ver2.png");
+
 	// キャラのテクスチャ読み込み
 	tailTexture_ = TextureManager::Load("Cannon.png");
 	// キャラのテクスチャ読み込み
@@ -42,8 +48,8 @@ void Player::Initialize() {
 	// スプライトの生成
 	sprite_.reset(Sprite::Create(charaTex_, pos_, {1.0f, 1.0f, 1.0f, 1.0f}, {0.5f, 0.5f}));
 
-	radius_ = sprite_->GetSize().x / 2;
-
+	radius_ = 64.0f;
+	sprite_->SetSize({radius_ * 2, radius_ * 2});
 	// マーカーのテクスチャ読み込み
 	markerTex_ = TextureManager::Load("Marker.png");
 	
@@ -95,6 +101,9 @@ void Player::Update() {
 	ImGui::End();
 
 #endif
+	MyMath::Anime(animationTimer, animationNumber, animationScene, oneTime);
+
+
 	// ベースの更新処理
 	BaseCharacter::Update();
 	// 自機の回転を反映させる
@@ -190,28 +199,6 @@ void Player::Update() {
 			}
 		}
 
-		////// ベジエ曲線のスタート位置計算
-		//	// bezierStartPos_ = MyMath::lerp(root_t_, markerPos_, RotateRootPos_);
-		//	//// ベジエ曲線の終わり位置計算
-		//	// bezierEndPos_ = MyMath::lerp(root_t_, RotateRootPos_, clickPlayerPos_);
-		//	// prePos_ = pos_;
-		//	//// 実際にプレイヤーの位置を計算
-		//	// pos_ = MyMath::lerp(root_t_, bezierStartPos_, bezierEndPos_);
-		////}
-		////
-		////else if (isRootMove_) {
-		//	//// ベジエ曲線のスタート位置計算
-		//	//bezierStartPos_ = MyMath::lerp(root_t_, clickPlayerPos_, preMarkerPos_);
-		//	//// ベジエ曲線の終わり位置計算
-		//	//bezierEndPos_ = MyMath::lerp(root_t_, preMarkerPos_, markerPos_);
-		//	//
-		//	//// 実際にプレイヤーの位置を計算
-		//	//pos_ = MyMath::lerp(root_t_, bezierStartPos_, bezierEndPos_);
-		////	pos_ = MyMath::CatmullRom(
-		////	    markerPos_, RotateRootPos_, clickPlayerPos_, preMarkerPos_, root_t_);
-		////	prePos_ = pos_;
-		//	//CountT(root_t_, 0.0f, isRootMove_, false, 0.01f);
-		////}
 		for (Tail* tail : tails_) {
 			tail->SetIsMove(true);
 		}
@@ -309,9 +296,12 @@ void Player::Draw() {
 		bullet->Draw();
 	}
 	// しっぽの描画
+	tails_.reverse();
+
 	for (Tail* tail : tails_) {
 		tail->Draw();
 	}
+	tails_.reverse();
 
 
 	// スプライトの描画
@@ -397,6 +387,7 @@ void Player::MarkerUpdate() {
 	}
 }
 
+
 void Player::OnCollision() { DeleteTails(); }
 
 void Player::InitializeGrobalVariables() {
@@ -412,6 +403,7 @@ void Player::InitializeGrobalVariables() {
 	gloVars->AddItem(groupName, "RootRotate_t_offset", rootRotate_t_offset);
 	gloVars->AddItem(groupName, "Bullet_shot_Radian", BulletRadian);
 	gloVars->AddItem(groupName, "bulletSpeed_", bulletSpeed_);
+	gloVars->AddItem(groupName, "oneTime", oneTime);
 }
 
 void Player::ApplyGrobalVariables() {
@@ -425,6 +417,7 @@ void Player::ApplyGrobalVariables() {
 	rootRotate_t_offset = gloVars->GetFloatValue(groupName, "RootRotate_t_offset");
 	BulletRadian = gloVars->GetFloatValue(groupName, "Bullet_shot_Radian");
 	bulletSpeed_ = gloVars->GetFloatValue(groupName, "bulletSpeed_");
+	oneTime = gloVars->GetIntValue(groupName, "oneTime");
 }
 
 void Player::GetCursor() {
