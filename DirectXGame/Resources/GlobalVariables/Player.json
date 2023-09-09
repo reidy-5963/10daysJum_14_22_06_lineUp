@@ -4,6 +4,7 @@
         "MarkerLimit_": 100.0,
         "Move_t_offset": 0.029999999329447746,
         "RootRotate_t_offset": 0.05999999865889549,
-        "bulletSpeed_": 15.0
+        "bulletSpeed_": 15.0,
+        "oneTime": 4
     }
 }
