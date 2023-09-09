@@ -33,9 +33,6 @@ public: // メンバ関数
 
 	virtual void ApplyGrobalVariables();
 	void ScreenPosInitialize() { ScreenPos = {}; }
-	void DrawAnimation(
-	    Sprite* sprite, int texX, int texY, int srcX, int srcY, int srcW, int srcH,
-	    uint32_t texture);
 	void AddScreenPos(Vector2 pos) { ScreenPos += pos;
 	}
 

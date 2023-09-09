@@ -8,6 +8,7 @@
 #include <cassert>
 #include <cmath>
 #include <complex>
+#include "Animation.h"
 
 /// <summary>
 /// コンストラクタ
@@ -55,11 +56,13 @@ void Player::Initialize() {
 	radius_ = 64.0f;
 	sprite_->SetSize({radius_ * 2, radius_ * 2});
 	// マーカーのテクスチャ読み込み
-	markerTex_ = TextureManager::Load("Marker.png");
-	
+	markerTex_ = TextureManager::Load("Marker_ver2_0.png");
+	ismarkerAnimation = true;
 	// マーカーのスプライトの生成
 	markerSprite_.reset(
-	    Sprite::Create(markerTex_, markerPos_, {1.0f, 1.0f, 1.0f, 0.5f}, {0.5f, 0.5f}));
+	    Sprite::Create(markerTex_, markerPos_, {1.0f, 1.0f, 1.0f, 1.0f}, {0.5f, 0.5f}));
+	float markerradius = 32.0f;
+	markerSprite_->SetSize({markerradius * 2, markerradius * 2});
 	// 1本目の追加
 	AddTails();
 
@@ -153,7 +156,9 @@ void Player::Update() {
 	markerSprite_->SetPosition(markerPos_ - scroll->GetAddScroll()); 
 	
 	// プレイヤーのアニメーション
-	MyMath::Anime(animationTimer, animationNumber, animationScene, oneTime);
+	Animation::Anime(animationTimer, animationNumber, animationScene, oneTime);
+	Animation::Anime(markerAniTimer, markerAniNumber, markerAniScene, markerAniOneTime);
+
 	MyMath::ShakeUpdate(shakeVelo_, isDamageShake, amplitNum);
 	if (isDamageShake) {
 		color_ = {1.0f, 0.7f, 0.7f, 0.8f};
@@ -206,7 +211,12 @@ void Player::KeyMove() { // 移動距離
 /// </summary>
 void Player::Draw() {
 	// クリックした位置マーカーの描画
-	markerSprite_->Draw();
+	if (ismarkerAnimation) {
+		Animation::DrawAnimation(markerSprite_.get(), markerPos_, markerAniNumber, markerTex_);
+	} else if (!ismarkerAnimation) {
+		markerSprite_->Draw();
+
+	}
 
 	// 弾の描画
 	for (PlayerBullet* bullet : bullets_) {
