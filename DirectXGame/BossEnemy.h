@@ -183,8 +183,10 @@ private: // 行動管理用変数
 
 private: // 動きの管理
 	int actionTimer_ = 0;
-	int kActionCoolTime_ = 60 * 5;
+	int kActionCoolTime_ = 60 * 2;
 
 	void RandomActionManager();
+
+	int ConvertSeconds(int second) { return int(second * 60); }
 
 };

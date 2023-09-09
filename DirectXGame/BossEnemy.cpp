@@ -24,9 +24,12 @@ void BossEnemy::RespownBoss()
 
 void BossEnemy::RandomActionManager() 
 { 
-	actionTimer_++;
+	if (behavior_ == Behavior::kRoot) {
+		actionTimer_++;
+	}
 	if (actionTimer_ == kActionCoolTime_) {
 		int behaviorRand = rand() % 5 + 1;
+		actionTimer_ = 0;
 		switch (behaviorRand) {
 		case 1:
 			behaviorRequest_ = Behavior::kRush;
@@ -44,7 +47,6 @@ void BossEnemy::RandomActionManager()
 			behaviorRequest_ = Behavior::kRush;
 			break;
 		}
-		actionTimer_ = 0;
 	}
 
 }
@@ -116,7 +118,7 @@ void BossEnemy::Update()
 		// それぞれの初期化
 		switch (behavior_) {
 		case BossEnemy::Behavior::kRoot:
-
+			RootInitialize();
 			break;
 		// 突進初期化
 		case BossEnemy::Behavior::kRush:
@@ -253,6 +255,8 @@ void BossEnemy::RushAttackInitialize()
 { 
 	// 補間レート初期化
 	this->rushMove_t_ = 0;
+	prevBossPos_ = pos_;
+	prevPlayerPos_ = nowPlayerPos_;
 }
 
 void BossEnemy::GuidedAttack() 
@@ -270,7 +274,7 @@ void BossEnemy::GuidedAttack()
 
 void BossEnemy::GuidedAttackInitialize() 
 {
-	kModeEndTimer_ = 600;
+	kModeEndTimer_ = ConvertSeconds(5);
 
 }
 
@@ -401,3 +405,8 @@ void BossEnemy::RootUpdate()
 		}
 	}	
 }
+
+void BossEnemy::RootInitialize() 
+{ actionTimer_ = 0; }
+
+
