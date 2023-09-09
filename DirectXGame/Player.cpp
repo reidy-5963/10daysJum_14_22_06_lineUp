@@ -1,4 +1,5 @@
 #include "Player.h"
+#include "Animation.h"
 #include "GlobalVariables.h"
 #include "ImGuiManager.h"
 #include "MyMath.h"
@@ -8,7 +9,6 @@
 #include <cassert>
 #include <cmath>
 #include <complex>
-#include "Animation.h"
 
 /// <summary>
 /// コンストラクタ
@@ -38,7 +38,7 @@ void Player::Initialize() {
 	oneTime = 20;
 	isAnimation = true;
 	// キャラのテクスチャ読み込み
-	//charaTex_ = TextureManager::Load("Player.png");	
+	// charaTex_ = TextureManager::Load("Player.png");
 	charaTex_ = TextureManager::Load("Player_ver2.png");
 
 	// 無敵関係の初期化
@@ -46,7 +46,7 @@ void Player::Initialize() {
 	isInvisible_ = false;
 
 	// キャラのテクスチャ読み込み
-	tailTexture_ = TextureManager::Load("Cannon.png");
+	tailTexture_ = TextureManager::Load("Cannon_ver2.png");
 	// キャラのテクスチャ読み込み
 	bulletTexture_ = TextureManager::Load("Bullet.png");
 
@@ -117,7 +117,6 @@ void Player::Update() {
 	// 前フレームの位置を取得
 	prePos_ = pos_;
 
-
 	// 自機の回転を反映させる
 	sprite_->SetRotation(std::atan2(direction_.y, direction_.x));
 
@@ -153,18 +152,14 @@ void Player::Update() {
 	BulletUpdate();
 
 	// マーカーの位置を反映させる
-	markerSprite_->SetPosition(markerPos_ - scroll->GetAddScroll()); 
-	
+	markerSprite_->SetPosition(markerPos_ - scroll->GetAddScroll() + sceneVelo);
+
 	// プレイヤーのアニメーション
 	Animation::Anime(animationTimer, animationNumber, animationScene, oneTime);
 	Animation::Anime(markerAniTimer, markerAniNumber, markerAniScene, markerAniOneTime);
 
 	MyMath::ShakeUpdate(shakeVelo_, isDamageShake, amplitNum);
-	if (isDamageShake) {
-		color_ = {1.0f, 0.7f, 0.7f, 0.8f};
-	} else {
-		color_ = {1.0f, 1.0f, 1.0f, 1.0f};
-	}
+
 	sprite_->SetColor(color_);
 	ScreenPos += shakeVelo_;
 	// ベースの更新処理
@@ -172,11 +167,13 @@ void Player::Update() {
 
 	if (isInvisible_) {
 		invisibleTimeCount_ += 1;
+		color_ = {1.0f, 0.7f, 0.7f, 0.8f};
 	}
 
 	if (invisibleTimeCount_ == kInvisibleTimer_) {
 		invisibleTimeCount_ = 0;
 		isInvisible_ = false;
+		color_ = {1.0f, 1.0f, 1.0f, 1.0f};
 	}
 }
 
@@ -215,7 +212,6 @@ void Player::Draw() {
 		Animation::DrawAnimation(markerSprite_.get(), markerPos_, markerAniNumber, markerTex_);
 	} else if (!ismarkerAnimation) {
 		markerSprite_->Draw();
-
 	}
 
 	// 弾の描画
@@ -229,7 +225,6 @@ void Player::Draw() {
 		tail->Draw();
 	}
 	tails_.reverse();
-
 
 	// スプライトの描画
 	BaseCharacter::Draw();
@@ -414,6 +409,7 @@ void Player::ToMarkerMoveUpdate() {
 void Player::TailUpdate() {
 	// 尻尾の更新処理
 	for (Tail* tail : tails_) {
+		tail->SetSceneVelo(sceneVelo);
 		tail->SetBulletRad(BulletRadian);
 		tail->Update();
 	}
@@ -446,8 +442,7 @@ void Player::MarkerMovement() {
 	}
 }
 
-void Player::OnCollision() 
-{
+void Player::OnCollision() {
 	if (!isInvisible_) {
 		// もし当たったらシェイクフラグを有効に
 		isDamageShake = true;
@@ -456,17 +451,18 @@ void Player::OnCollision()
 		// 尻尾を減らす
 		DeleteTails();
 		isInvisible_ = true;
-	} 
+		color_ = {1.0f, 0.1f, 0.1f, 1.0f};
+	}
 }
 
-//void Player::OnCollision() {
+// void Player::OnCollision() {
 //	// もし当たったらシェイクフラグを有効に
 //	isDamageShake = true;
 //	// 揺れ幅を設定
 //	amplitNum = 30;
 //	// 尻尾を減らす
 //	DeleteTails();
-//}
+// }
 
 void Player::InitializeGrobalVariables() {
 	// グローバル変数系のシングルトンインスタンスを取得
@@ -512,6 +508,7 @@ void Player::GetCursor() {
 void Player::BulletUpdate() {
 	// 弾の更新処理
 	for (PlayerBullet* bullet : bullets_) {
+		bullet->SetSceneVelo(sceneVelo);
 		bullet->Update();
 
 		/*ImGui::Begin("bullet");
@@ -537,9 +534,9 @@ void Player::MarkerControl() {
 
 	else if (
 	    clickPos_.x > (WinApp::kWindowWidth * 2) + scroll->GetEdgePos().x +
-	                       (scroll->GetEdgePos().x - markerLimit_)) {
+	                      (scroll->GetEdgePos().x - markerLimit_)) {
 		clickPos_.x = (WinApp::kWindowWidth * 2) + scroll->GetEdgePos().x +
-		               (scroll->GetEdgePos().x - markerLimit_);
+		              (scroll->GetEdgePos().x - markerLimit_);
 	}
 
 	if (clickPos_.y < 0 + markerLimit_) {
@@ -548,9 +545,9 @@ void Player::MarkerControl() {
 
 	else if (
 	    clickPos_.y > (WinApp::kWindowHeight * 2) + scroll->GetEdgePos().y +
-	                       (scroll->GetEdgePos().y - markerLimit_)) {
+	                      (scroll->GetEdgePos().y - markerLimit_)) {
 		clickPos_.y = (WinApp::kWindowHeight * 2) + scroll->GetEdgePos().y +
-		               (scroll->GetEdgePos().y - markerLimit_);
+		              (scroll->GetEdgePos().y - markerLimit_);
 	}
 }
 
@@ -566,10 +563,10 @@ void Player::LeftClickUpdate() {
 
 	// クリックしたときの位置を取得
 	clickPlayerPos_ = pos_;
-	
+
 	//
 	ToMarkerMoveInitialize();
-	
+
 	//
 	RootRotateMoveInitialize();
 

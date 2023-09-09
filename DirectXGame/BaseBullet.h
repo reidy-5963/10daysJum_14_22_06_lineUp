@@ -28,6 +28,7 @@ public: // メンバ変数
 	void SetSize(Vector2 size);
 
 	Vector2 GetSize();
+	void SetSceneVelo(Vector2 velo) { sceneVelo = velo; }
 
 protected: // メンバ変数
 	// スプライト
@@ -40,7 +41,7 @@ protected: // メンバ変数
 
 	// 速度
 	Vector2 direction_;
-
+	Vector2 sceneVelo;
 	// 弾の速さ
 	float bulletSpeed = 20.0f;
 	// 弾の有効フラグ
@@ -50,6 +51,12 @@ protected: // メンバ変数
 	float radius_;
 
 	float bulletSpeed_;
+
+	int animationTimer = 0;
+	int animationNumber = 0;
+	int animationScene = 5;
+	int oneTime = 20;
+	bool isAnimation = false;
 
 public:
 	/// <summary>

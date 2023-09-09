@@ -3,6 +3,7 @@
 #include "MyMath.h"
 #include "Player.h"
 #include <cmath>
+#include "Animation.h"
 
 /// <summary>
 /// 初期化処理
@@ -11,7 +12,7 @@
 /// <param name="parent">親になるスプライトの位置</param>
 /// <param name="tailNo">尻尾番号</param>
 void Tail::Initialize(uint32_t texture, const Vector2* parent, int tailNo, const bool* ParentBool) {
-
+	charaTex_ = texture;
 	// 親の座標
 	parentPos_ = parent;
 	parentBool_ = ParentBool;
@@ -30,12 +31,19 @@ void Tail::Initialize(uint32_t texture, const Vector2* parent, int tailNo, const
 	lerpEndPos_.x = parentPos_->x;
 	lerpEndPos_.y = parentPos_->y;
 
+	animationTimer = 0;
+	animationNumber = 0;
+	animationScene = 3;
+	oneTime = 6;
+	isAnimation = true;
+
 	// スプライトの生成
 	sprite_.reset(
-	    Sprite::Create(texture, {-10.0f, -10.0f}, {1.0f, 1.0f, 1.0f, 1.0f}, {0.5f, 0.5f}));
+	    Sprite::Create(charaTex_, {-10.0f, -10.0f}, {1.0f, 1.0f, 1.0f, 1.0f}, {0.5f, 0.5f}));
 
 	// 半径
-	radius_ = 8.0f;
+	radius_ = 48.0f;
+	sprite_->SetSize({radius_ * 2, radius_ * 2});
 }
 
 void Tail::Update() {
@@ -66,6 +74,7 @@ void Tail::Update() {
 		// pos_.y += offset.y;
 		// pos_.x += offset.x;
 	}
+	Animation::Anime(animationTimer, animationNumber, animationScene, oneTime);
 
 	// 位置の更新処理
 	BaseCharacter::Update();
@@ -85,7 +94,7 @@ void Tail::Update() {
 
 void Tail::Draw() {
 	// 尻尾の描画
-	sprite_->Draw();
+	BaseCharacter::Draw();
 }
 
 void Tail::OnCollision() {
@@ -149,7 +158,7 @@ void Tail::Fire() {
 		// 当たり判定の計算
 		float distance =
 		    std::sqrtf(std::powf(Tail2Marker_distance.x, 2) + std::powf(Tail2Marker_distance.y, 2));
-		float radius = (8 + GetRadius());
+		float radius = (2 + GetRadius());
 
 		if (!player_->IsMove()) {
 			// もし尻尾とマーカーが当たっていれば

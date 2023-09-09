@@ -1,6 +1,8 @@
 ﻿#include "BaseBullet.h"
 #include <cassert>
 #include "Scroll.h"
+#include "TextureManager.h"
+#include "Animation.h"
 
 /// <summary>
 /// 初期化処理
@@ -21,8 +23,9 @@ void BaseBullet::Update() {
 	// スクロールのインスタンス取得
 	Scroll* scroll = Scroll::GetInstance();
 
+	sprite_->SetRotation(std::atan2(direction_.y, direction_.x));
 	// スプライトの位置を設定
-	sprite_->SetPosition(pos_ - scroll->GetAddScroll());
+	sprite_->SetPosition(pos_ - scroll->GetAddScroll() + sceneVelo);
 }
 
 /// <summary>
@@ -30,7 +33,11 @@ void BaseBullet::Update() {
 /// </summary>
 void BaseBullet::Draw() { 
 	// スプライトの描画処理
-	sprite_->Draw();
+	if (!isAnimation) {
+		sprite_->Draw();
+	} else if (isAnimation) {
+		Animation::DrawAnimation(sprite_.get(), pos_, animationNumber, texture_);
+	}
 }
 
 /// <summary>

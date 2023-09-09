@@ -66,6 +66,7 @@ void EnemyManager::Update()
 
 	// エネミーの更新
 	for (Enemy* enemy : enemys_) {
+		enemy->SetSceneVelo(sceneVelo_);
 		enemy->Update();
 	}
 }
@@ -167,7 +168,6 @@ void EnemyManager::DiagonalBehavior()
 		// 座標設定
 		Vector2 newPos = {offset.x + (enemySpaceOffset * i), offset.y - (enemySpaceOffset * i)};
 		newEnemy->SetPosition(newPos);
-
 		// 角度取得
 		// 度数
 		float degree = 315.0f;

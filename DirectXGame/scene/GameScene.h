@@ -78,6 +78,9 @@ private: // メンバ変数
 	bool isBossRespown_ = false;
 	
 	Scroll* scroll_;
+	Vector2 sceneShakevelo_{};
+	bool issceneShake = false;
+	int sceneaAmplitNum = 40;
 
 #pragma region 背景
 	// 背景スプライト関係

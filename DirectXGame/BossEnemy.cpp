@@ -13,7 +13,7 @@ BossEnemy::BossEnemy() {
 	// 弾
 	bulletTex_ = TextureManager::Load("Bullet.png");
 	// ファンネル
-	funnelTex_ = TextureManager::Load("Player.png");
+	funnelTex_ = TextureManager::Load("Fannel.png");
 }
 
 void BossEnemy::RespownBoss() 
@@ -190,6 +190,7 @@ void BossEnemy::BulletUpdate() {
 	});
 
 	for (BossBullet* bullet : bullets_) {
+		bullet->SetSceneVelo(sceneVelo);
 		bullet->Update();
 		Vector2 size = bullet->GetSize();
 		size -= Vector2(decreaseValue_, decreaseValue_);
@@ -209,6 +210,7 @@ void BossEnemy::BulletUpdate() {
 	});
 
 	for (BossFunnel* funnel : funnels_) {
+		funnel->SetSceneVelo(sceneVelo);
 		funnel->Update(nowPlayerPos_);
 		Vector2 size = funnel->GetSize();
 		size -= Vector2(decreaseValue_ / 2, decreaseValue_ / 2);
