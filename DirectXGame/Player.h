@@ -130,6 +130,12 @@ public: // Setter & Getter
 	float GetBulletSpeed() { return bulletSpeed_; }
 
 	/// <summary>
+	/// 無敵中フラグ取得
+	/// </summary>
+	/// <returns></returns>
+	int GetIsInvisible() { return isInvisible_; }
+
+	/// <summary>
 	/// 弾のリストの取得
 	/// </summary>
 	/// <returns></returns>
@@ -150,6 +156,16 @@ private: // メンバ変数
 
 	// プレイヤーの向き
 	Vector2 direction_{};
+
+#pragma region 当たり判定処理系
+
+	int kInvisibleTimer_ = 90;
+
+	int invisibleTimeCount_;
+
+	bool isInvisible_ = false;
+
+#pragma endregion
 
 #pragma region マーカー
 	// マーカーのスプライト

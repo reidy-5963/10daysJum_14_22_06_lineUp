@@ -47,7 +47,7 @@ void EnemyManager::Update()
 		return false;
 	});
 
-	//TentRes();
+	TentRes();
 
 	// エネミーの更新
 	for (Enemy* enemy : enemys_) {

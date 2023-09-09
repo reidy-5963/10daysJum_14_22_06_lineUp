@@ -32,6 +32,10 @@ void Player::Initialize() {
 	markerPos_ = pos_;
 	preMarkerPos_ = markerPos_;
 
+	// 無敵関係の初期化
+	invisibleTimeCount_ = 0;
+	isInvisible_ = false;
+
 	// キャラのテクスチャ読み込み
 	charaTex_ = TextureManager::Load("Player.png");
 	// キャラのテクスチャ読み込み
@@ -92,6 +96,7 @@ void Player::Update() {
 	ImGui::Begin("debug");
 	ImGui::Text("%f", root_t_);
 	ImGui::DragFloat("radian", &BulletRadian, 0.1f, 2.0f);
+	ImGui::Text("%d Timer : %d", isInvisible_, invisibleTimeCount_);
 	ImGui::End();
 
 #endif
@@ -260,6 +265,15 @@ void Player::Update() {
 
 	// マーカーの位置を反映させる
 	markerSprite_->SetPosition(markerPos_ - scroll->GetAddScroll());
+
+	if (isInvisible_) {
+		invisibleTimeCount_ += 1;
+	}
+
+	if (invisibleTimeCount_ == kInvisibleTimer_) {
+		invisibleTimeCount_ = 0;
+		isInvisible_ = false;
+	}
 }
 
 void Player::KeyMove() { // 移動距離
@@ -388,7 +402,13 @@ void Player::MarkerUpdate() {
 	}
 }
 
-void Player::OnCollision() { DeleteTails(); }
+void Player::OnCollision() 
+{
+	if (!isInvisible_) {
+		DeleteTails(); 
+		isInvisible_ = true;
+	} 
+}
 
 void Player::InitializeGrobalVariables() {
 	// グローバル変数系のシングルトンインスタンスを取得

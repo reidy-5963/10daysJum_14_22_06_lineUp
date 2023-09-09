@@ -153,10 +153,13 @@ void GameScene::CheckAllCollision() {
 #pragma endregion
 	// プレイヤーの弾リストを取得
 	const std::list<PlayerBullet*>& playerBullet = player_->GetBullets();
+	// 敵
 	const std::list<Enemy*>& enemys = enemyManager_->GetEnemyLists();
-	//const std::list<BossBullet*>& bossBullet = boss_->GetBullets();
-	//const std::list<BossFunnel*>& bossFunnel = boss_->GetFunnels();
-	// プレイヤーの弾リストを取得
+	// ボスの弾
+	const std::list<BossBullet*>& bossBullet = boss_->GetBullets();
+	// ファンネル
+	const std::list<BossFunnel*>& bossFunnel = boss_->GetFunnels();
+	// しっぽ
 	const std::list<Tail*>& tails = player_->GetTails();
 
 	// プレイヤーの位置取得
@@ -173,10 +176,47 @@ void GameScene::CheckAllCollision() {
 		if (distance <= radius) {
 			// コールバック
 			enemy->OnCollision();
-			player_->OnCollision();
+			//player_->OnCollision();
 		}
 	}
 #pragma endregion
+
+#pragma region ボスの弾
+
+	for (BossBullet* bossBullet_ : bossBullet) {
+		// エネミーの位置取得
+		targetB = bossBullet_->GetPosition();
+		float distance =
+		    std::sqrtf(std::powf(targetA.x - targetB.x, 2) + std::powf(targetA.y - targetB.y, 2));
+		float radius = player_->GetRadius() + bossBullet_->GetRadius();
+		// 交差判定
+		if (distance <= radius && !player_->GetIsInvisible()) {
+			// コールバック
+			bossBullet_->OnCollision();
+			player_->OnCollision();
+		}
+	}
+
+#pragma endregion
+
+#pragma region ボスのファンネル
+
+	for (BossFunnel* bossFunnel_ : bossFunnel) {
+		// エネミーの位置取得
+		targetB = bossFunnel_->GetPosition();
+		float distance =
+		    std::sqrtf(std::powf(targetA.x - targetB.x, 2) + std::powf(targetA.y - targetB.y, 2));
+		float radius = player_->GetRadius() + bossFunnel_->GetRadius();
+		// 交差判定
+		if (distance <= radius && !player_->GetIsInvisible()) {
+			// コールバック
+			bossFunnel_->OnCollision();
+			player_->OnCollision();
+		}
+	}
+
+#pragma endregion
+
 #pragma region 敵と尻尾
 	for (Enemy* enemy : enemys) {
 		// エネミーの位置取得
@@ -213,9 +253,26 @@ void GameScene::CheckAllCollision() {
 				enemy->OnCollision();
 				playerBullet_->OnCollision();
 			}
-
 		}
+	}
+#pragma endregion
 
+#pragma region プレイヤーの弾とボス
+	// 判定
+	for (PlayerBullet* playerBullet_ : playerBullet) {
+		targetA = playerBullet_->GetPosition();
+		targetB = boss_->GetPosition();
+
+		float distance =
+		    std::sqrtf(std::powf(targetA.x - targetB.x, 2) + std::powf(targetA.y - targetB.y, 2));
+
+		float radius = playerBullet_->GetRadius() + boss_->GetRadius();
+
+		if (distance <= radius) {
+			// コールバック
+			playerBullet_->OnCollision();
+			boss_->OnCollision();
+		}
 	}
 #pragma endregion
 }
