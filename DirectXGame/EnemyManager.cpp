@@ -51,6 +51,14 @@ void EnemyManager::Update()
 		this->DiagonalClockWiseBehavior();
 	}
 
+	if (input_->TriggerKey(DIK_7)) {
+		HorizontalSpawn();
+	}
+
+	if (input_->TriggerKey(DIK_8)) {
+		VerticalSpawn();
+	}
+
 	ArrowBehaviorControl();
 
 	// 消去処理
@@ -83,12 +91,12 @@ void EnemyManager::TentRes()
 {
 	ImGui::Begin("EnemySetting");
 	ImGui::DragInt("Limit", &kEnemyLimit, 1, 0, 20);
-	ImGui::DragInt("Respown", &kRespownTimer, 1, 0, 300);
+	ImGui::DragInt("Respown", &kRespawnTimer, 1, 0, 300);
 	ImGui::End();
 
 	// 生成（仮
-	respownCount--;
-	if (respownCount == 0 && enemys_.size() < kEnemyLimit) {
+	respawnCount--;
+	if (respawnCount == 0 && enemys_.size() < kEnemyLimit) {
 		Enemy* newEnemy = new Enemy();
 		newEnemy->SetTexture(this->charaTex_);
 		newEnemy->Initialize();
@@ -97,7 +105,7 @@ void EnemyManager::TentRes()
 		    float(rand() % 720 + newEnemy->GetRadius())};
 		newEnemy->SetPosition(res);
 		enemys_.push_back(newEnemy);
-		respownCount = kRespownTimer;
+		respawnCount = kRespawnTimer;
 	}
 }
 
@@ -137,6 +145,17 @@ void EnemyManager::CreateEnemy(int spownPoint)
 	newEnemy->SetVelocity(RandomRadianVector());
 	enemys_.push_back(newEnemy);
 	
+}
+
+void EnemyManager::AddEnemy(const Vector2& position, const Vector2& velocity) {
+	Enemy* newEnemy = new Enemy();
+	newEnemy->SetTexture(charaTex_);
+	newEnemy->Initialize();
+	Vector2 pos = position;
+	Vector2 velo = velocity;
+	newEnemy->SetPosition(pos);
+	newEnemy->SetVelocity(velo);
+	enemys_.push_back(newEnemy);
 }
 
 Vector2 EnemyManager::RandomRadianVector() 
@@ -559,5 +578,75 @@ void EnemyManager::ArrowBehaviorControl()
 			isRespown = false;
 			ArrowCoolTime = 0;
 		}
+	}
+}
+
+void EnemyManager::VerticalSpawn() 
+{ 
+	// 左側だったら
+	if (playerPos_.x < 850.0f) {
+		AddEnemy(Vector2(1250.0f,240.0f), Vector2(-1.0f,0.0f));
+		AddEnemy(Vector2(1250.0f, 720.0f), Vector2(-1.0f, 0.0f));
+		AddEnemy(Vector2(1250.0f, 1200.0f), Vector2(-1.0f, 0.0f));
+
+		AddEnemy(Vector2(2125.0f, 240.0f), Vector2(-1.0f, 0.0f));
+		AddEnemy(Vector2(2125.0f, 720.0f), Vector2(-1.0f, 0.0f));
+		AddEnemy(Vector2(2125.0f, 1200.0f), Vector2(-1.0f, 0.0f));
+
+	} 
+	// 中央だったら
+	else if (playerPos_.x >= 850.0f && playerPos_.x < 1700.0f) {
+		AddEnemy(Vector2(425.0f, 240.0f), Vector2(-1.0f, 0.0f));
+		AddEnemy(Vector2(425.0f, 720.0f), Vector2(-1.0f, 0.0f));
+		AddEnemy(Vector2(425.0f, 1200.0f), Vector2(-1.0f, 0.0f));
+
+		AddEnemy(Vector2(2125.0f, 240.0f), Vector2(-1.0f, 0.0f));
+		AddEnemy(Vector2(2125.0f, 720.0f), Vector2(-1.0f, 0.0f));
+		AddEnemy(Vector2(2125.0f, 1200.0f), Vector2(-1.0f, 0.0f));
+	} 
+	// 右側だったら
+	else {
+		AddEnemy(Vector2(425.0f, 240.0f), Vector2(1.0f, 0.0f));
+		AddEnemy(Vector2(425.0f, 720.0f), Vector2(1.0f, 0.0f));
+		AddEnemy(Vector2(425.0f, 1200.0f), Vector2(1.0f, 0.0f));
+
+		AddEnemy(Vector2(1250.0f, 240.0f), Vector2(1.0f, 0.0f));
+		AddEnemy(Vector2(1250.0f, 720.0f), Vector2(1.0f, 0.0f));
+		AddEnemy(Vector2(1250.0f, 1200.0f), Vector2(1.0f, 0.0f));
+	}
+}
+
+void EnemyManager::HorizontalSpawn() 
+{
+	// 上側だったら
+	if (playerPos_.y < 480.0f) {
+		AddEnemy(Vector2(425.0f, 720.0f), Vector2(0.0f, -1.0f));
+		AddEnemy(Vector2(1250.0f, 720.0f), Vector2(0.0f, -1.0f));
+		AddEnemy(Vector2(2125.0f, 720.0f), Vector2(0.0f, -1.0f));
+
+		AddEnemy(Vector2(425.0f, 1200.0f), Vector2(0.0f, -1.0f));
+		AddEnemy(Vector2(1250.0f, 1200.0f), Vector2(0.0f, -1.0f));
+		AddEnemy(Vector2(2125.0f, 1200.0f), Vector2(0.0f, -1.0f));
+
+	}
+	// 中央だったら
+	else if (playerPos_.x >= 480.0f && playerPos_.x < 960.0f) {
+		AddEnemy(Vector2(425.0f, 240.0f), Vector2(0.0f, 1.0f));
+		AddEnemy(Vector2(1250.0f, 240.0f), Vector2(0.0f, 1.0f));
+		AddEnemy(Vector2(2125.0f, 240.0f), Vector2(0.0f, 1.0f));
+
+		AddEnemy(Vector2(425.0f, 1200.0f), Vector2(0.0f, -1.0f));
+		AddEnemy(Vector2(1250.0f, 1200.0f), Vector2(0.0f, -1.0f));
+		AddEnemy(Vector2(2125.0f, 1200.0f), Vector2(0.0f, -1.0f));
+	}
+	// 下側だったら
+	else {
+		AddEnemy(Vector2(425.0f, 240.0f), Vector2(0.0f, 1.0f));
+		AddEnemy(Vector2(1250.0f, 240.0f), Vector2(0.0f, 1.0f));
+		AddEnemy(Vector2(2125.0f, 240.0f), Vector2(0.0f, 1.0f));
+
+		AddEnemy(Vector2(425.0f, 720.0f), Vector2(0.0f, 1.0f));
+		AddEnemy(Vector2(1250.0f, 720.0f), Vector2(0.0f, 1.0f));
+		AddEnemy(Vector2(2125.0f, 720.0f), Vector2(0.0f, 1.0f));
 	}
 }

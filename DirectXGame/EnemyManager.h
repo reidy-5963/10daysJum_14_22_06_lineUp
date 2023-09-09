@@ -70,6 +70,10 @@ public: // 沸きパターン
 	/// </summary>
 	void ArrowBehaviorControl();
 
+	void VerticalSpawn();
+
+	void HorizontalSpawn();
+
 
 public:	// リスポーンタイプ
 	/// <summary>
@@ -78,6 +82,8 @@ public:	// リスポーンタイプ
 	void TentRes();
 
 	void CreateEnemy(int spownPoint);
+
+	void AddEnemy(const Vector2& position, const Vector2& velocity);
 
 	Vector2 RandomRadianVector();
 
@@ -95,8 +101,8 @@ private:
 	Vector2 sceneVelo_{};
 
 	int kEnemyLimit = 8;
-	int kRespownTimer = 180;
-	int respownCount = kRespownTimer;
+	int kRespawnTimer = 180;
+	int respawnCount = kRespawnTimer;
 
 	int ArrowCoolTime = 0;
 
