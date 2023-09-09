@@ -51,7 +51,7 @@ void GameScene::Initialize() {
 	enemyManager_->Initialize();
 
 	backTex = TextureManager::Load("testBackTex.png");
-	back.reset(Sprite::Create(backTex, {0.0f, 0.0f}, {1.0f, 1.0f, 1.0f, 1.0f}, {0.0f, 0.0f}));
+	back.reset(Sprite::Create(backTex, {0.0f, 0.0f}, {0.2f, 0.2f, 0.2f, 1.0f}, {0.0f, 0.0f}));
 	Vector2 size = back->GetSize();
 	back->SetSize({size.x * 1.5f, size.y * 1.5f});
 #pragma endregion
