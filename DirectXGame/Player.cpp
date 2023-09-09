@@ -164,8 +164,6 @@ void Player::Update() {
 	ScreenPos += shakeVelo_;
 	// ベースの更新処理
 	BaseCharacter::Update();
-}
-	markerSprite_->SetPosition(markerPos_ - scroll->GetAddScroll());
 
 	if (isInvisible_) {
 		invisibleTimeCount_ += 1;
@@ -441,19 +439,24 @@ void Player::MarkerMovement() {
 void Player::OnCollision() 
 {
 	if (!isInvisible_) {
-		DeleteTails(); 
+		// もし当たったらシェイクフラグを有効に
+		isDamageShake = true;
+		// 揺れ幅を設定
+		amplitNum = 30;
+		// 尻尾を減らす
+		DeleteTails();
 		isInvisible_ = true;
 	} 
 }
 
-void Player::OnCollision() {
-	// もし当たったらシェイクフラグを有効に
-	isDamageShake = true;
-	// 揺れ幅を設定
-	amplitNum = 30;
-	// 尻尾を減らす
-	DeleteTails();
-}
+//void Player::OnCollision() {
+//	// もし当たったらシェイクフラグを有効に
+//	isDamageShake = true;
+//	// 揺れ幅を設定
+//	amplitNum = 30;
+//	// 尻尾を減らす
+//	DeleteTails();
+//}
 
 void Player::InitializeGrobalVariables() {
 	// グローバル変数系のシングルトンインスタンスを取得
