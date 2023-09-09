@@ -29,6 +29,8 @@ public:
 	/// </summary>
 	void Draw();
 
+	void SetSceneVelo(Vector2 velo) { sceneVelo_ = velo; }
+
 public:	// 設定、取得
 
 	/// <summary>
@@ -65,6 +67,7 @@ public: // 沸きパターン
 	/// </summary>
 	void ArrowBehaviorControl();
 
+
 public:	// リスポーンタイプ
 	/// <summary>
 	/// 適当湧き
@@ -83,6 +86,8 @@ private:
 	std::list<Enemy*> enemys_;
 
 	Vector2 playerPos_ = {};
+
+	Vector2 sceneVelo_{};
 
 	int kEnemyLimit = 8;
 	int kRespownTimer = 180;

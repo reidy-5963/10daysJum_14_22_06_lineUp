@@ -20,9 +20,11 @@ void BaseBullet::Initialize(uint32_t texture, const Vector2& pos, Vector2 velosi
 void BaseBullet::Update() {
 	// スクロールのインスタンス取得
 	Scroll* scroll = Scroll::GetInstance();
-
+	//Vector2 ScreenPos;
+//	ScreenPos += ;
+	
 	// スプライトの位置を設定
-	sprite_->SetPosition(pos_ - scroll->GetAddScroll());
+	sprite_->SetPosition(pos_ - scroll->GetAddScroll() + sceneVelo);
 }
 
 /// <summary>

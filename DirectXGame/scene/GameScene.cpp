@@ -67,6 +67,7 @@ void GameScene::Update() {
 
 	// 敵の更新処理
 	enemyManager_->SetPlayer(player_->GetPosition());
+	enemyManager_->SetSceneVelo(sceneShakevelo_);
 	enemyManager_->Update();
 
 	// プレイヤーの更新処理
@@ -74,13 +75,16 @@ void GameScene::Update() {
 
 	// 当たり判定
 	CheckAllCollision();
+	MyMath::ShakeUpdate(sceneShakevelo_, issceneShake, sceneaAmplitNum);
+	player_->SetSceneVelo(sceneShakevelo_);
+	boss_->SetSceneVelo(sceneShakevelo_);
 
 	// ボスの更新処理
 	boss_->SetPlayer(player_->GetPosition());
 	boss_->Update();
 
 	// 背景の更新処理
-	back->SetPosition(backPos - scroll->GetAddScroll());
+	back->SetPosition(backPos - scroll->GetAddScroll() + sceneShakevelo_);
 }
 
 /// <summary>
@@ -194,6 +198,8 @@ void GameScene::CheckAllCollision() {
 			// コールバック
 			bossBullet_->OnCollision();
 			player_->OnCollision();
+			issceneShake = true;
+			sceneaAmplitNum = 40;
 		}
 	}
 
@@ -212,6 +218,9 @@ void GameScene::CheckAllCollision() {
 			// コールバック
 			bossFunnel_->OnCollision();
 			player_->OnCollision();
+			issceneShake = true;
+			sceneaAmplitNum = 40;
+
 		}
 	}
 

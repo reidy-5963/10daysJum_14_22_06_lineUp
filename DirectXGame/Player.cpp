@@ -152,7 +152,7 @@ void Player::Update() {
 	BulletUpdate();
 
 	// マーカーの位置を反映させる
-	markerSprite_->SetPosition(markerPos_ - scroll->GetAddScroll());
+	markerSprite_->SetPosition(markerPos_ - scroll->GetAddScroll() + sceneVelo);
 
 	// プレイヤーのアニメーション
 	Animation::Anime(animationTimer, animationNumber, animationScene, oneTime);
@@ -409,6 +409,7 @@ void Player::ToMarkerMoveUpdate() {
 void Player::TailUpdate() {
 	// 尻尾の更新処理
 	for (Tail* tail : tails_) {
+		tail->SetSceneVelo(sceneVelo);
 		tail->SetBulletRad(BulletRadian);
 		tail->Update();
 	}
@@ -507,6 +508,7 @@ void Player::GetCursor() {
 void Player::BulletUpdate() {
 	// 弾の更新処理
 	for (PlayerBullet* bullet : bullets_) {
+		bullet->SetSceneVelo(sceneVelo);
 		bullet->Update();
 
 		/*ImGui::Begin("bullet");
@@ -734,4 +736,3 @@ void Player::RootRotateMove2() {
 		    originPos_.x + Origin2WRotateMat.m[2][0], originPos_.y + Origin2WRotateMat.m[2][1]};
 	}
 }
-@

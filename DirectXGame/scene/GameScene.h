@@ -74,6 +74,9 @@ private: // メンバ変数
 	std::unique_ptr<BossEnemy> boss_ = nullptr;
 	
 	Scroll* scroll_;
+	Vector2 sceneShakevelo_{};
+	bool issceneShake = false;
+	int sceneaAmplitNum = 40;
 
 #pragma region 背景
 	// 背景スプライト関係

@@ -35,6 +35,7 @@ public: // メンバ関数
 	void ScreenPosInitialize() { ScreenPos = {}; }
 	void AddScreenPos(Vector2 pos) { ScreenPos += pos;
 	}
+	void SetSceneVelo(Vector2 velo) { sceneVelo = velo; }
 
 protected: // 継承限定メンバ変数
 	// スプライト
@@ -45,6 +46,8 @@ protected: // 継承限定メンバ変数
 	Vector2 pos_{};
 	Vector2 ScreenPos{};
 	Vector4 color_{1.0f, 1.0f, 1.0f, 1.0f};
+	Vector2 sceneVelo{};
+
 	// 動くときのフラグ
 	bool isMove_ = false;
 	// 半径サイズ
