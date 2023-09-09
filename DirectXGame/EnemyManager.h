@@ -3,6 +3,7 @@
 #include "Enemy.h"
 #include<list>
 #include "Input.h"
+#include <memory>
 
 
 class EnemyManager 
@@ -43,6 +44,8 @@ public:	// 設定、取得
 	/// <param name="pos"></param>
 	void SetPlayer(Vector2 pos) { playerPos_ = pos; }
 
+	//BossEnemy* GetBossEnemy() { return boss_; }
+
 public: // 沸きパターン
 	/// <summary>
 	/// 画面外から中央に
@@ -71,7 +74,7 @@ public:	// リスポーンタイプ
 	/// </summary>
 	void TentRes();
 
-	void CreateEnemy();
+	void CreateEnemy(int spownPoint);
 
 private:
 
@@ -105,7 +108,18 @@ private:	// Arrowの変数
 
 	Vector2 plPrevPos_ = {};
 
-private:
+private: // ステージでの管理系
 	int kRespownTimer_ = 10 * 60;
+	int respownTimer_ = 0;
+
+	Vector2 resCircle_ = {};
+	float resCircleRadius_ = 0;
+
+	enum SpownPoint {
+		kLeftTop,
+		kLeftBottom,
+		kRightTop,
+		kRightBottom,
+	};
 
 };

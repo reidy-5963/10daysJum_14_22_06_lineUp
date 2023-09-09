@@ -3,6 +3,7 @@
 #include "Sprite.h"
 #include "ImGuiManager.h"
 #include "Animation.h"
+#include <numbers>
 
 
 void Enemy::Initialize() 
@@ -33,11 +34,17 @@ void Enemy::Update()
 
 	// 座標移動
 	pos_ += velocity_;
+	Vector2 normalize = MyMath::Normalize(velocity_);
+	sprite_->SetRotation(std::atan2(normalize.y, normalize.x));
 
 	Animation::Anime(animationTimer, animationNumber, animationScene, oneTime);
 
 	// 座標設定
 	BaseCharacter::Update();
+
+	if (pos_.x < kMinusLimits.x || pos_.x > kPlusLimits.x || pos_.y < kMinusLimits.y || pos_.y > kPlusLimits.y) {
+		isDead_ = true;
+	}
 }
 
 void Enemy::Draw() 

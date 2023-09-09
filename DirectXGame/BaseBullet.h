@@ -94,10 +94,8 @@ public: // ゲッター関数
 	bool GetIsDead() { return isDead_; } 
 
 	/// <summary>
-	/// フラグの設定
+	/// 弾の速さの取得
 	/// </summary>
-	/// <param name="dead"></param>
-	//void SetIsDead(bool dead) { isDead_ = dead; }
-
+	/// <returns></returns>
 	float GetBulletSpeed() { return bulletSpeed; }
 };

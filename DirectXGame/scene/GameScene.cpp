@@ -75,6 +75,11 @@ void GameScene::Update() {
 	// 当たり判定
 	CheckAllCollision();
 
+	if (killCount_ > 10 && !isBossRespown_) {
+		isBossRespown_ = true;
+		boss_->RespownBoss();
+	}
+
 	// ボスの更新処理
 	boss_->SetPlayer(player_->GetPosition());
 	boss_->Update();
@@ -177,6 +182,7 @@ void GameScene::CheckAllCollision() {
 			// コールバック
 			enemy->OnCollision();
 			//player_->OnCollision();
+			killCount_ += 1;
 		}
 	}
 #pragma endregion
@@ -231,8 +237,8 @@ void GameScene::CheckAllCollision() {
 			if (distance <= radius) {
 				// コールバック
 				enemy->OnCollision();
-
 				tail->OnCollision();
+				killCount_ += 1;
 			}
 		}
 	}
@@ -252,6 +258,7 @@ void GameScene::CheckAllCollision() {
 				// コールバック
 				enemy->OnCollision();
 				playerBullet_->OnCollision();
+				killCount_ += 1;
 			}
 		}
 	}

@@ -72,6 +72,10 @@ private: // メンバ変数
 
 	// ボス
 	std::unique_ptr<BossEnemy> boss_ = nullptr;
+
+	int killCount_ = 0;
+
+	bool isBossRespown_ = false;
 	
 	Scroll* scroll_;
 

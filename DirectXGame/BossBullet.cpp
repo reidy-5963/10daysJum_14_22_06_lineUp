@@ -11,7 +11,7 @@ void BossBullet::Initialize(uint32_t texture, const Vector2& pos, Vector2 velosi
 	texture_ = texture;
 	pos_ = pos;
 	direction_ = velosity;
-	bulletSpeed_ = 8.0f;
+	bulletSpeed_ = 15.0f;
 
 	// スプライトの生成
 	sprite_.reset(Sprite::Create(texture, pos_, {1.0f, 0.0f, 0.0f, 1.0f}, {0.5f, 0.5f}));

@@ -18,7 +18,6 @@ void EnemyManager::Initialize() {
 	input_ = Input::GetInstance();
 
 	charaTex_ = TextureManager::Load("Enemy_ver2.png");
-	
 }
 
 void EnemyManager::Update() 
@@ -27,6 +26,22 @@ void EnemyManager::Update()
 	ImGui::Text("isRespown : %d", isRespown);
 	ImGui::Text("arrowCoolTime : %d", ArrowCoolTime);
 	ImGui::End();
+
+	respownTimer_++;
+
+	if (respownTimer_ % kRespownTimer_ == 0) {
+		CreateEnemy(kLeftTop);
+		CreateEnemy(kLeftBottom);
+		CreateEnemy(kRightTop);
+		CreateEnemy(kRightBottom);
+	}
+
+	if (input_->TriggerKey(DIK_4)) {
+		CreateEnemy(kLeftTop);
+		CreateEnemy(kLeftBottom);
+		CreateEnemy(kRightTop);
+		CreateEnemy(kRightBottom);
+	}
 
 	if (input_->TriggerKey(DIK_5)) {
 		this->DiagonalBehavior();
@@ -83,6 +98,43 @@ void EnemyManager::TentRes()
 		enemys_.push_back(newEnemy);
 		respownCount = kRespownTimer;
 	}
+}
+
+void EnemyManager::CreateEnemy(int spownPoint) 
+{
+	Enemy* newEnemy = new Enemy();
+	newEnemy->SetTexture(charaTex_);
+	newEnemy->Initialize();
+	Vector2 spownPos = {};
+
+	switch (spownPoint) {
+	case kLeftTop:
+		spownPos = {
+		    playerPos_.x - float(WinApp::kWindowWidth / 2),
+		    playerPos_.y - float(WinApp::kWindowHeight / 2) + 10.0f};
+		break;
+	case kLeftBottom:
+		spownPos = {
+		    playerPos_.x - float(WinApp::kWindowWidth / 2),
+		    playerPos_.y + float(WinApp::kWindowHeight / 2)};
+		break;
+	case kRightTop:
+		spownPos = {
+		    playerPos_.x + float(WinApp::kWindowWidth / 2),
+		    playerPos_.y - float(WinApp::kWindowHeight / 2) + 10.0f};
+		break;
+	case kRightBottom:
+		spownPos = {
+		    playerPos_.x + float(WinApp::kWindowWidth / 2),
+		    playerPos_.y + float(WinApp::kWindowHeight / 2)};
+		break;
+	}
+
+	newEnemy->SetPosition(spownPos);
+	//newEnemy->SetVelocity(Vector2(5.0f, 0));
+	newEnemy->SetVelocity(MyMath::Normalize(playerPos_ - newEnemy->GetPosition()));
+	enemys_.push_back(newEnemy);
+	
 }
 
 void EnemyManager::DiagonalBehavior() 

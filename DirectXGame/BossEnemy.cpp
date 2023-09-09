@@ -19,7 +19,6 @@ BossEnemy::BossEnemy() {
 void BossEnemy::RespownBoss() 
 { 
 	pos_ = {float(WinApp::kWindowWidth), float(WinApp::kWindowHeight)};
-
 }
 
 void BossEnemy::GenerateBullet(Vector2& velocity) 
@@ -50,7 +49,6 @@ void BossEnemy::GenerateFunnel(int type)
 	funnels_.push_back(newFunnel);
 }
 
-
 void BossEnemy::Initialize() 
 {
 	input_ = Input::GetInstance();
@@ -64,7 +62,7 @@ void BossEnemy::Initialize()
 	// 適当にサイズ
 	sprite_->SetSize(Vector2(300.0f, 300.0f));
 	// 当たり判定用の半径（サイズに合わせる）
-	radius_ = 32.0f;
+	radius_ = sprite_->GetSize().x / 2;
 
 }
 
@@ -232,10 +230,6 @@ void BossEnemy::GuidedAttack()
 		Vector2 velocity = MyMath::Normalize(nowPlayerPos_ - pos_);
 		GenerateBullet(velocity);
 	}
-
-	ImGui::Begin("coun");
-	ImGui::Text("%d", modeCount_);
-	ImGui::End();
 }
 
 void BossEnemy::GuidedAttackInitialize() 
@@ -245,17 +239,12 @@ void BossEnemy::GuidedAttackInitialize()
 }
 
 void BossEnemy::BarrageAttack() 
-{
-	
+{	
 	modeCount_ += 1;
 	if (modeCount_ == kModeEndTimer_) {
 		behaviorRequest_ = Behavior::kRoot;
 	}
-
-	if (modeCount_ % 15 == 0) {
-		// 回転
-		rotateDegree += 10.0f;
-
+	if (modeCount_ % 30 == 0) {
 		// 右
 		float radian = rotateDegree * ((float)std::numbers::pi / 180.0f);
 		// 角度に合わせて正規化
@@ -283,17 +272,24 @@ void BossEnemy::BarrageAttack()
 		norm = {std::cosf(radian), -std::sinf(radian)};
 		norm = MyMath::Normalize(norm);
 		GenerateBullet(norm);
-
+		rotateRadian_ = rotateDegree * ((float)std::numbers::pi / 180.0f);
+		// 回転
+		rotateDegree += 10.0f;
+		rotate_t_ = 0;
 	}
-
-
+	//if (rotate_t_ >= 1.0f) {
+	//	rotate_t_ += (1.0f / 30.0f);
+	//	sprite_->SetRotation(MyMath::lerp(rotate_t_, sprite_->GetRotation(), rotateRadian_));
+	//} else {
+	//	rotate_t_ = 1.0f;
+	//}
 }
 
 void BossEnemy::BarrageAttackInitialize() 
 {
 
 	kModeEndTimer_ = 150;
-	rotateDegree = 0;
+	rotateDegree = 180.0f / float(std::numbers::pi) * sprite_->GetRotation();
 
 }
 

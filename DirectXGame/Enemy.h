@@ -50,4 +50,8 @@ private:
 
 	bool isDead_ = false;
 
+private: // 限界値
+	Vector2 kMinusLimits = {-250.0f, -250.0f};
+	Vector2 kPlusLimits = {2800.0f, 1700.0f};
+
 };

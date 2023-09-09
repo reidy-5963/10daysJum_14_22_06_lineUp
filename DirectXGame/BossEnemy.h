@@ -154,6 +154,10 @@ private: // 全方位
 	// 角度
 	float rotateDegree = 0;
 
+	float rotateRadian_ = 0;
+
+	float rotate_t_ = 0;
+
 private: // 行動管理用変数
 	/// <summary>
 	/// 行動のパターン
