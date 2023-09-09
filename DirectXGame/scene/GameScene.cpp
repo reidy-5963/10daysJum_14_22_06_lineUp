@@ -163,7 +163,7 @@ void GameScene::CheckAllCollision() {
 	targetA = player_->GetPosition();
 
 #pragma region 敵とプレイヤー
-	for (Enemy* enemy : enemys_) {
+	for (Enemy* enemy : enemys) {
 		// エネミーの位置取得
 		targetB = enemy->GetPosition();
 		float distance =
@@ -178,7 +178,7 @@ void GameScene::CheckAllCollision() {
 	}
 #pragma endregion
 #pragma region 敵と尻尾
-	for (Enemy* enemy : enemys_) {
+	for (Enemy* enemy : enemys) {
 		// エネミーの位置取得
 		targetB = enemy->GetPosition();
 		for (Tail* tail : tails) {
@@ -218,6 +218,4 @@ void GameScene::CheckAllCollision() {
 
 	}
 #pragma endregion
-}
-
 }

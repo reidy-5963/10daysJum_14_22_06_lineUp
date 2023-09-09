@@ -1305,71 +1305,71 @@ Vector2 MyMath::EaseInOutCubicF(float t, Vector2 start, Vector2 end) {
 //}
 
 //
-float MyMath::lerp(float t, float start, float end) { 
-	return (1.0f - t) * start + t * end; }
-
-Vector2 MyMath::lerp(float t, Vector2 start, Vector2 end) { 
-	return Vector2((1.0f - t) * start.x + t * end.x, (1.0f - t) * start.y + t * end.y);
-}
-
-float MyMath::EaseInQuadF(float t, float start, float end) {
-	float easeT = t * t;
-	return (1.0f - easeT) * start + easeT * end;
-}
-
-Vector2 MyMath::EaseInQuadF(float t, Vector2 start, Vector2 end) {
-	float easeT = t * t;
-	return Vector2(
-	    (1.0f - easeT) * start.x + easeT * end.x, (1.0f - easeT) * start.y + easeT * end.y);
-}
-
-float MyMath::EaseOutQuadF(float t, float start, float end) {
-	float easeT = 1.0f - powf(1.0f - t, 2.0f);
-	return (1.0f - easeT) * start + easeT * end;
-}
-
-Vector2 MyMath::EaseOutQuadF(float t, Vector2 start, Vector2 end) {
-	float easeT = 1.0f - powf(1.0f - t, 2.0f);
-	return Vector2(
-	    (1.0f - easeT) * start.x + easeT * end.x, (1.0f - easeT) * start.y + easeT * end.y);
-}
-
-float MyMath::EaseInOutQuadF(float t, float start, float end) {
-	float easeT = t > 0.5f ? 2.0f * t * t
-	                         : 1.0f - powf(-2.0f * t + 2.0f, 2.0f) / 2.0f;
-
-	return (1.0f - easeT) * start + easeT * end;
-}
-
-Vector2 MyMath::EaseInOutQuadF(float t, Vector2 start, Vector2 end) {
-	float easeT = t > 0.5f ? 2.0f * t * t : 1.0f - powf(-2.0f * t + 2.0f, 2.0f) / 2.0f;
-
-	return Vector2(
-	    (1.0f - easeT) * start.x + easeT * end.x, (1.0f - easeT) * start.y + easeT * end.y);
-}
-
-float MyMath::EaseInCubicF(float t, float start, float end) {
-	float easeT = t * t * t;
-	return (1.0f - easeT) * start + easeT * end;
-}
-
-Vector2 MyMath::EaseInCubicF(float t, Vector2 start, Vector2 end) {
-	float easeT = t * t * t;
-	return Vector2(
-	    (1.0f - easeT) * start.x + easeT * end.x, (1.0f - easeT) * start.y + easeT * end.y);
-}
-
-float MyMath::EaseOutCubicF(float t, float start, float end) {
-	float easeT = 1.0f - powf(1.0f - t, 3.0f);
-	return (1.0f - easeT) * start + easeT * end;
-}
-
-float MyMath::EaseInOutCubicF(float t, float start, float end) {
-	float easeT = t > 0.5f ? 4.0f *t *t * t
-	                                : 1.0f - powf(-2.0f * t + 2, 3.0f) / 2.0f;
-
-	return (1.0f - easeT) * start + easeT * end;
-}
+//float MyMath::lerp(float t, float start, float end) { 
+//	return (1.0f - t) * start + t * end; }
+//
+//Vector2 MyMath::lerp(float t, Vector2 start, Vector2 end) { 
+//	return Vector2((1.0f - t) * start.x + t * end.x, (1.0f - t) * start.y + t * end.y);
+//}
+//
+//float MyMath::EaseInQuadF(float t, float start, float end) {
+//	float easeT = t * t;
+//	return (1.0f - easeT) * start + easeT * end;
+//}
+//
+//Vector2 MyMath::EaseInQuadF(float t, Vector2 start, Vector2 end) {
+//	float easeT = t * t;
+//	return Vector2(
+//	    (1.0f - easeT) * start.x + easeT * end.x, (1.0f - easeT) * start.y + easeT * end.y);
+//}
+//
+//float MyMath::EaseOutQuadF(float t, float start, float end) {
+//	float easeT = 1.0f - powf(1.0f - t, 2.0f);
+//	return (1.0f - easeT) * start + easeT * end;
+//}
+//
+//Vector2 MyMath::EaseOutQuadF(float t, Vector2 start, Vector2 end) {
+//	float easeT = 1.0f - powf(1.0f - t, 2.0f);
+//	return Vector2(
+//	    (1.0f - easeT) * start.x + easeT * end.x, (1.0f - easeT) * start.y + easeT * end.y);
+//}
+//
+//float MyMath::EaseInOutQuadF(float t, float start, float end) {
+//	float easeT = t > 0.5f ? 2.0f * t * t
+//	                         : 1.0f - powf(-2.0f * t + 2.0f, 2.0f) / 2.0f;
+//
+//	return (1.0f - easeT) * start + easeT * end;
+//}
+//
+//Vector2 MyMath::EaseInOutQuadF(float t, Vector2 start, Vector2 end) {
+//	float easeT = t > 0.5f ? 2.0f * t * t : 1.0f - powf(-2.0f * t + 2.0f, 2.0f) / 2.0f;
+//
+//	return Vector2(
+//	    (1.0f - easeT) * start.x + easeT * end.x, (1.0f - easeT) * start.y + easeT * end.y);
+//}
+//
+//float MyMath::EaseInCubicF(float t, float start, float end) {
+//	float easeT = t * t * t;
+//	return (1.0f - easeT) * start + easeT * end;
+//}
+//
+//Vector2 MyMath::EaseInCubicF(float t, Vector2 start, Vector2 end) {
+//	float easeT = t * t * t;
+//	return Vector2(
+//	    (1.0f - easeT) * start.x + easeT * end.x, (1.0f - easeT) * start.y + easeT * end.y);
+//}
+//
+//float MyMath::EaseOutCubicF(float t, float start, float end) {
+//	float easeT = 1.0f - powf(1.0f - t, 3.0f);
+//	return (1.0f - easeT) * start + easeT * end;
+//}
+//
+//float MyMath::EaseInOutCubicF(float t, float start, float end) {
+//	float easeT = t > 0.5f ? 4.0f *t *t * t
+//	                                : 1.0f - powf(-2.0f * t + 2, 3.0f) / 2.0f;
+//
+//	return (1.0f - easeT) * start + easeT * end;
+//}
 
 
 

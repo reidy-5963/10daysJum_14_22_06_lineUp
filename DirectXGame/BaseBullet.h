@@ -97,7 +97,7 @@ public: // ゲッター関数
 	/// フラグの設定
 	/// </summary>
 	/// <param name="dead"></param>
-	void SetIsDead(bool dead) { isDead_ = dead; }
+	//void SetIsDead(bool dead) { isDead_ = dead; }
 
 	float GetBulletSpeed() { return bulletSpeed; }
 };

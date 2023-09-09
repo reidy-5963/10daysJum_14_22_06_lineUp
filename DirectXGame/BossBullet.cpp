@@ -10,7 +10,7 @@ void BossBullet::Initialize(uint32_t texture, const Vector2& pos, Vector2 velosi
 	// 初期化
 	texture_ = texture;
 	pos_ = pos;
-	velocity_ = velosity;
+	direction_ = velosity;
 	bulletSpeed_ = 8.0f;
 
 	// スプライトの生成
@@ -22,8 +22,8 @@ void BossBullet::Initialize(uint32_t texture, const Vector2& pos, Vector2 velosi
 
 void BossBullet::Update() 
 {
-	pos_.x += velocity_.x * bulletSpeed_;
-	pos_.y += velocity_.y * bulletSpeed_;
+	pos_.x += direction_.x * bulletSpeed_;
+	pos_.y += direction_.y * bulletSpeed_;
 
 	BaseBullet::Update();
 }
