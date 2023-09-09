@@ -57,8 +57,15 @@ public: // 沸きパターン
 	/// </summary>
 	void DiagonalClockWiseBehavior();
 
+	/// <summary>
+	/// 矢印の出現
+	/// </summary>
+	/// <param name="switchPatt"></param>
 	void ArrowBehavior(int switchPatt);
 
+	/// <summary>
+	/// 矢印隊列の操作
+	/// </summary>
 	void ArrowBehaviorControl();
 
 private:

@@ -129,6 +129,7 @@ void GameScene::CheckAllCollision()
 	const std::list<PlayerBullet*>& playerBullet = player_->GetBullets();
 	const std::list<Enemy*>& enemys = enemyManager_->GetEnemyLists();
 	//const std::list<BossBullet*>& bossBullet = boss_->GetBullets();
+	//const std::list<BossFunnel*>& bossFunnel = boss_->GetFunnels();
 
 	// プレイヤーと敵の衝突判定
 	targetA = player_->GetPosition();

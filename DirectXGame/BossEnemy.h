@@ -41,6 +41,12 @@ public:
 	/// <returns></returns>
 	const std::list<BossBullet*>& GetBullets() { return bullets_; }
 
+	/// <summary>
+	/// ファンネルのリスト取得
+	/// </summary>
+	/// <returns></returns>
+	const std::list<BossFunnel*>& GetFunnels() { return funnels_; }
+
 private:	// 行動関数
 
 	/// <summary>

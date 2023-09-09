@@ -31,9 +31,6 @@ void Player::Initialize() {
 	markerPos_ = pos_;
 	preMarkerPos_ = markerPos_;
 
-	radius_ = 32.0f;
-
-
 	// キャラのテクスチャ読み込み
 	charaTex_ = TextureManager::Load("Player.png");
 	// キャラのテクスチャ読み込み
@@ -43,6 +40,8 @@ void Player::Initialize() {
 
 	// スプライトの生成
 	sprite_.reset(Sprite::Create(charaTex_, pos_, {1.0f, 1.0f, 1.0f, 1.0f}, {0.5f, 0.5f}));
+
+	radius_ = sprite_->GetSize().x / 2;
 
 	// マーカーのテクスチャ読み込み
 	markerTex_ = TextureManager::Load("Marker.png");
