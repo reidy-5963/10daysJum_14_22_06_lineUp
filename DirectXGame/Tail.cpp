@@ -34,6 +34,7 @@ void Tail::Initialize(uint32_t texture, const Vector2* parent, int tailNo, const
 	sprite_.reset(
 	    Sprite::Create(texture, {-10.0f, -10.0f}, {1.0f, 1.0f, 1.0f, 1.0f}, {0.5f, 0.5f}));
 
+	// 半径
 	radius_ = 8.0f;
 }
 
