@@ -188,7 +188,7 @@ private: // メンバ変数
 
 	// 動くときの線形補完
 	float move_t_ = 0.0f;
-	float move_t_offset = 0.01f;
+	float move_t_offset = 0.005f;
 
 	// ベジエで動くときのスタート位置
 	Vector2 bezierStartPos_{};

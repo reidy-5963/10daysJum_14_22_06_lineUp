@@ -229,12 +229,6 @@ void Player::Update() {
 		root_t_ = 0.0f;
 		isRootMove_ = false;
 
-		// 1.0になるまで加算
-		MyMath::CountT(move_t_, 1.0f, isMove_, false, move_t_offset);
-		if (!isMove_) {
-			isMtM1 = true;
-		}
-
 		// ベジエ曲線のスタート位置計算
 		bezierStartPos_ = MyMath::lerp(move_t_, clickPlayerPos_, preMarkerPos_);
 
@@ -247,6 +241,21 @@ void Player::Update() {
 		for (Tail* tail : tails_) {
 			tail->SetIsMove(isMove_);
 		}
+		// 1.0になるまで加算
+		MyMath::CountT(move_t_, 1.0f, isMove_, false, move_t_offset);
+
+		if (!isMove_) {
+			isMtM1 = true;
+		}
+		if (isMtM1) {
+			pos_ = MyMath::CatmullRom(
+			    W2AddRadian[2], M2AddRadian[0], M2AddRadian[1], M2AddRadian[2], root_t_);
+			direction_ = pos_ - prePos_;
+
+			MyMath::CountT(root_t_, 0.0f, isM1tM2, true, rootRotate_t_offset);
+		}
+
+
 	}
 
 	// 尻尾の更新
