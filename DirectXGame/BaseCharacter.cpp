@@ -25,13 +25,16 @@ void BaseCharacter::Update() {
 /// 描画処理
 /// </summary>
 void BaseCharacter::Draw() { 
+	const D3D12_RESOURCE_DESC& texDesc = TextureManager::GetInstance()->GetResoureDesc(charaTex_);
+
 	// スプライトの描画
 	if(!isAnimation) { 
 		sprite_->Draw();
 	} else if (isAnimation) {
 		DrawAnimation(
 		    sprite_.get(), int(pos_.x), int(pos_.y),
-		    int(animationNumber * (radius_ * 2)), 0, int(radius_ * 2), int(radius_ * 2), charaTex_);
+		    int(animationNumber * int(texDesc.Height)), 0, 
+			int(texDesc.Height), int(texDesc.Height), charaTex_);
 	}
 }
 
