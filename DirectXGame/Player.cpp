@@ -734,3 +734,4 @@ void Player::RootRotateMove2() {
 		    originPos_.x + Origin2WRotateMat.m[2][0], originPos_.y + Origin2WRotateMat.m[2][1]};
 	}
 }
+@
