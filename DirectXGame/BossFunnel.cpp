@@ -3,7 +3,7 @@
 #include "MyMath.h"
 #include <cassert>
 #include <cmath>
-
+#include "Animation.h"
 void BossFunnel::Initialize(uint32_t texture, int type, Vector2& startPos, Vector2& endPos) 
 {
 	// イージング用の座標
@@ -29,14 +29,19 @@ void BossFunnel::Initialize(uint32_t texture, int type, Vector2& startPos, Vecto
 	// 初期化
 	texture_ = texture;
 	pos_ = startPos;
+	animationTimer = 0;
+	animationNumber = 0;
+	animationScene = 6;
+	oneTime = 5;
+	isAnimation = true;
 
 	// スプライトの生成
 	sprite_.reset(Sprite::Create(texture, pos_, {1.0f, 0.0f, 0.0f, 1.0f}, {0.5f, 0.5f}));
 	// サイズ設定
-	sprite_->SetSize({64.0f, 64.0f});
-	radius_ = sprite_->GetSize().x / 2;
-	Vector2 rotateVect = endPos_ - prevPos_;
-	sprite_->SetRotation(std::atan2(rotateVect.y, rotateVect.x));
+	radius_ = 64.0f;
+	sprite_->SetSize({radius_ * 2, radius_ * 2});
+	direction_ = endPos_ - prevPos_;
+	sprite_->SetRotation(std::atan2(direction_.y, direction_.x));
 }
 
 void BossFunnel::Update(Vector2& playerPos) {
@@ -88,17 +93,18 @@ void BossFunnel::Update(Vector2& playerPos) {
 			break;
 		}
 		// 向きの回転
-		Vector2 rotateVect = endPos_ - prevPos_;
-		sprite_->SetRotation(std::atan2(rotateVect.y, rotateVect.x));
+		direction_ = endPos_ - prevPos_;
+		//sprite_->SetRotation(std::atan2(direction_.y, direction_.x));
 		if (turnCount_ == 2) {
 			kMoveSpeed_ = kInitSpeed;
 		}
 	}
-	
+	Animation::Anime(animationTimer, animationNumber, animationScene, oneTime);
+
 	BaseBullet::Update();
 }
 
-void BossFunnel::Draw() { sprite_->Draw(); }
+void BossFunnel::Draw() { BaseBullet::Draw(); }
 
 void BossFunnel::OnCollision() 
 { isDead_ = true; }

@@ -13,7 +13,7 @@ BossEnemy::BossEnemy() {
 	// 弾
 	bulletTex_ = TextureManager::Load("Bullet.png");
 	// ファンネル
-	funnelTex_ = TextureManager::Load("Player.png");
+	funnelTex_ = TextureManager::Load("Fannel.png");
 }
 
 void BossEnemy::RespownBoss() 

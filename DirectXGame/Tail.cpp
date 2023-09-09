@@ -42,7 +42,7 @@ void Tail::Initialize(uint32_t texture, const Vector2* parent, int tailNo, const
 	    Sprite::Create(charaTex_, {-10.0f, -10.0f}, {1.0f, 1.0f, 1.0f, 1.0f}, {0.5f, 0.5f}));
 
 	// 半径
-	radius_ = 64.0f;
+	radius_ = 48.0f;
 	sprite_->SetSize({radius_ * 2, radius_ * 2});
 }
 
@@ -158,7 +158,7 @@ void Tail::Fire() {
 		// 当たり判定の計算
 		float distance =
 		    std::sqrtf(std::powf(Tail2Marker_distance.x, 2) + std::powf(Tail2Marker_distance.y, 2));
-		float radius = (8 + GetRadius());
+		float radius = (2 + GetRadius());
 
 		if (!player_->IsMove()) {
 			// もし尻尾とマーカーが当たっていれば

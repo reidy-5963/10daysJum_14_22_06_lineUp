@@ -52,6 +52,12 @@ protected: // メンバ変数
 
 	float bulletSpeed_;
 
+	int animationTimer = 0;
+	int animationNumber = 0;
+	int animationScene = 5;
+	int oneTime = 20;
+	bool isAnimation = false;
+
 public:
 	/// <summary>
 	/// 座標のSetter
