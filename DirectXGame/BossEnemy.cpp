@@ -62,6 +62,7 @@ void BossEnemy::Initialize()
 
 void BossEnemy::Update() 
 {
+	ScreenPosInitialize();
 
 	ImGui::Begin("cc");
 	ImGui::Text("count : %d\nisRush : %d", rushCount_, rushFlag_);

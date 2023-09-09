@@ -17,7 +17,7 @@ EnemyManager* EnemyManager::GetInstance()
 void EnemyManager::Initialize() { 
 	input_ = Input::GetInstance();
 
-	charaTex_ = TextureManager::Load("Enemy.png");
+	charaTex_ = TextureManager::Load("Enemy_ver2.png");
 	
 }
 

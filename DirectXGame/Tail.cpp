@@ -34,10 +34,13 @@ void Tail::Initialize(uint32_t texture, const Vector2* parent, int tailNo, const
 	sprite_.reset(
 	    Sprite::Create(texture, {-10.0f, -10.0f}, {1.0f, 1.0f, 1.0f, 1.0f}, {0.5f, 0.5f}));
 
+	// 半径
 	radius_ = 8.0f;
 }
 
 void Tail::Update() {
+	ScreenPosInitialize();
+
 	if (!isHitOut_) {
 		// もしプレイヤーが動いていたら
 		if (isPlayerMove_) {
@@ -190,13 +193,6 @@ void Tail::DirectionUpdate() {
 void Tail::MoveUpdate() {
 	// もし動いているとき
 	if (isMove_) {
-		// 媒介変数t(0.0f ~ 1.0f)
-		if (t_ >= 1.0f) {
-			t_ = 1.0f;
-			isMove_ = false;
-		} else {
-			t_ += 0.2f;
-		}
 
 		// 線形補完
 		// pos_ = MyMath::CatmullRom(prePos_, pos_, lerpEndPos_, lerpEndPos_, t_);
@@ -204,6 +200,7 @@ void Tail::MoveUpdate() {
 		}
 
 		pos_ = MyMath::lerp(t_, prePos_, lerpEndPos_);
+		MyMath::CountT(t_, 1.0f, isMove_, false, 0.17f);
 	}
 	// もし動いていないとき
 	if (!isMove_) {

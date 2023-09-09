@@ -3,7 +3,40 @@
 #include <assert.h>
 #include <algorithm>
 
+void MyMath::Anime(int &count, int &number, const int scene, const int oneTime) {
+	// カウント
+	count++;
 
+	// もしアニメーションの枚数 * 1枚にかけるフレーム数
+	if (count > scene * oneTime) {
+		// カウントを0に
+		count = 0;
+	}
+
+	// アニメーションの枚数分
+	for (int i = 0; i < scene; ++i) {
+		// 
+		if (count == i * oneTime) {
+			number = count / oneTime;
+		}
+	}
+}
+void MyMath::ShakeUpdate(Vector2& velo, bool& isStartShake, int& amplitNum) {
+	if (isStartShake) {
+		amplitNum--;
+		int amplitMinus = amplitNum / 2;
+		if (amplitNum <= 0) {
+			isStartShake = false;
+			amplitNum = 0;
+		} else {
+			velo.x = float(rand() % amplitNum - amplitMinus);
+			velo.y = float(rand() % amplitNum - amplitMinus);
+		}
+
+	} else {
+		amplitNum = 0;
+	}
+}
 
 #pragma region Vector2 
 
@@ -1370,7 +1403,7 @@ Vector2 MyMath::EaseInOutCubicF(float t, Vector2 start, Vector2 end) {
 //
 //	return (1.0f - easeT) * start + easeT * end;
 //}
-
+#pragma endregion
 
 
 

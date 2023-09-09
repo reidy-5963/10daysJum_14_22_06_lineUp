@@ -58,6 +58,8 @@ private: // メンバ変数
 	Input* input_ = nullptr;
 	Audio* audio_ = nullptr;
 
+	Vector2 gameScenePos{};
+
 	/// <summary>
 	/// ゲームシーン用
 	/// </summary>

@@ -90,9 +90,9 @@ public: // メンバ関数
 	/// </summary>
 	void TailUpdate();
 
-	void MarkerUpdate();
+	void MarkerMovement();
 
-public: // 追加や削除の関数
+	public: // 追加や削除の関数
 	/// <summary>
 	/// 尻尾の追加
 	/// </summary>
@@ -109,6 +109,13 @@ public: // 追加や削除の関数
 	/// <param name="bullet">追加する弾</param>
 	void AddBullets(PlayerBullet* bullet);
 
+	void RootRotateMoveInitialize();
+
+	void RootRotateMoveUpdate();
+
+	void ToMarkerMoveInitialize();
+
+	void ToMarkerMoveUpdate();
 
 public: // Setter & Getter
 	/// <summary>
@@ -204,7 +211,7 @@ private: // メンバ変数
 
 	// 動くときの線形補完
 	float move_t_ = 0.0f;
-	float move_t_offset = 0.01f;
+	float move_t_offset = 0.005f;
 
 	// ベジエで動くときのスタート位置
 	Vector2 bezierStartPos_{};
@@ -273,4 +280,9 @@ private: // メンバ変数
 	//
 
 #endif // _DEBUG
+
+	Vector2 shakeVelo_{};
+	bool isDamageShake = false;
+	int amplitNum = 30;
+
 };
