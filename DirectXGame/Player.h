@@ -90,7 +90,7 @@ public: // メンバ関数
 	/// </summary>
 	void TailUpdate();
 
-	void MarkerUpdate();
+	void MarkerMovement();
 
 	public: // 追加や削除の関数
 	/// <summary>
@@ -109,6 +109,13 @@ public: // メンバ関数
 	/// <param name="bullet">追加する弾</param>
 	void AddBullets(PlayerBullet* bullet);
 
+	void RootRotateMoveInitialize();
+
+	void RootRotateMoveUpdate();
+
+	void ToMarkerMoveInitialize();
+
+	void ToMarkerMoveUpdate();
 
 public: // Setter & Getter
 	/// <summary>
@@ -257,4 +264,9 @@ private: // メンバ変数
 	//
 
 #endif // _DEBUG
+
+	Vector2 shakeVelo_{};
+	bool isDamageShake = false;
+	int amplitNum = 30;
+
 };

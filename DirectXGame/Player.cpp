@@ -73,9 +73,9 @@ void Player::Initialize() {
 /// 更新処理
 /// </summary>
 void Player::Update() {
+	// グローバル変数の値を取得
 	ApplyGrobalVariables();
-	Scroll* scroll = Scroll::GetInstance();
-
+	ScreenPosInitialize();
 #ifdef _DEBUG
 	////////////////////////////////////////////////////
 	// ひとまずの尻尾追加
@@ -88,24 +88,28 @@ void Player::Update() {
 		DeleteTails();
 	}
 
+	// スクロールのインスタンスを取得
+	Scroll* scroll = Scroll::GetInstance();
+
 	////////////////////////////////////////////////////
+	// 通常状態の回転用の道順
 	p1->SetPosition(W2AddRadian[1] - scroll->GetAddScroll());
 	p2->SetPosition(W2AddRadian[2] - scroll->GetAddScroll());
 	m2->SetPosition(M2AddRadian[2] - scroll->GetAddScroll());
 	m1->SetPosition(M2AddRadian[1] - scroll->GetAddScroll());
 	origin_->SetPosition(originPos_ - scroll->GetAddScroll());
 
+	// ImGui
 	ImGui::Begin("debug");
 	ImGui::Text("%f", root_t_);
 	ImGui::DragFloat("radian", &BulletRadian, 0.1f, 2.0f);
 	ImGui::End();
 
 #endif
-	MyMath::Anime(animationTimer, animationNumber, animationScene, oneTime);
+	// 前フレームの位置を取得
+	prePos_ = pos_;
 
 
-	// ベースの更新処理
-	BaseCharacter::Update();
 	// 自機の回転を反映させる
 	sprite_->SetRotation(std::atan2(direction_.y, direction_.x));
 
@@ -116,133 +120,19 @@ void Player::Update() {
 	if (input_->IsTriggerMouse(0) && !ismarkerMove_) {
 		LeftClickUpdate();
 	}
-	prePos_ = pos_;
 
-	MarkerUpdate();
+	// マーカーの動き処理
+	MarkerMovement();
+
 	// もしマーカーまで移動しきったら
 	if (!isMove_) {
-
-		if (isMtM1) {
-
-			pos_ = MyMath::CatmullRom(
-			    W2AddRadian[2], M2AddRadian[0], M2AddRadian[1], M2AddRadian[2], root_t_);
-			direction_ = pos_ - prePos_;
-
-			if (root_t_ >= 1.0f) {
-				direction_ = M2AddRadian[1] - M2AddRadian[0];
-
-				isMtM1 = false;
-			}
-			MyMath::CountT(root_t_, 0.0f, isM1tM2, true, rootRotate_t_offset);
-		}
-		//
-		if (isM1tM2) {
-			pos_ = MyMath::CatmullRom(
-			    M2AddRadian[0], M2AddRadian[1], M2AddRadian[2], W2AddRadian[0], root_t_);
-			direction_ = pos_ - prePos_;
-			if (root_t_ >= 1.0f) {
-				direction_ = M2AddRadian[2] - M2AddRadian[1];
-				isM1tM2 = false;
-			}
-			MyMath::CountT(root_t_, 0.0f, isM2tP, true, rootRotate_t_offset);
-		}
-		//
-		if (isM2tP) {
-			pos_ = MyMath::CatmullRom(
-			    M2AddRadian[1], M2AddRadian[2], W2AddRadian[0], W2AddRadian[1], root_t_);
-			direction_ = pos_ - prePos_;
-			if (root_t_ >= 1.0f) {
-				direction_ = W2AddRadian[0] - M2AddRadian[1];
-				isM2tP = false;
-			}
-			MyMath::CountT(root_t_, 0.0f, isPtP1, true, rootRotate_t_offset);
-		}
-		//
-		if (isPtP1) {
-			pos_ = MyMath::CatmullRom(
-			    M2AddRadian[2], W2AddRadian[0], W2AddRadian[1], W2AddRadian[2], root_t_);
-			direction_ = pos_ - prePos_;
-			if (root_t_ >= 1.0f) {
-				direction_ = W2AddRadian[1] - W2AddRadian[0];
-				isPtP1 = false;
-			}
-			MyMath::CountT(root_t_, 0.0f, isP1tP2, true, rootRotate_t_offset);
-		}
-
-		if (isP1tP2) {
-			pos_ = MyMath::CatmullRom(
-			    W2AddRadian[0], W2AddRadian[1], W2AddRadian[2], M2AddRadian[0], root_t_);
-			direction_ = pos_ - prePos_;
-			if (root_t_ >= 1.0f) {
-				direction_ = W2AddRadian[2] - W2AddRadian[1];
-				isP1tP2 = false;
-			}
-			MyMath::CountT(root_t_, 0.0f, isP2tM, true, rootRotate_t_offset);
-		}
-
-		if (isP2tM) {
-			pos_ = MyMath::CatmullRom(
-			    W2AddRadian[1], W2AddRadian[2], M2AddRadian[0], M2AddRadian[1], root_t_);
-			direction_ = pos_ - prePos_;
-			if (root_t_ >= 1.0f) {
-				// direction_ = M2AddRadian[0] - W2AddRadian[2];
-				isP2tM = false;
-			}
-			MyMath::CountT(root_t_, 0.0f, isMtM1, true, rootRotate_t_offset);
-
-			if (isMtM1) {
-
-				pos_ = MyMath::CatmullRom(
-				    W2AddRadian[2], M2AddRadian[0], M2AddRadian[1], M2AddRadian[2], root_t_);
-				direction_ = pos_ - prePos_;
-				MyMath::CountT(root_t_, 0.0f, isM1tM2, true, rootRotate_t_offset);
-			}
-		}
-
-		for (Tail* tail : tails_) {
-			tail->SetIsMove(true);
-		}
-
+		// 通常状態の回転の処理
+		RootRotateMoveUpdate();
 	}
 	// そうでないなら
 	else if (isMove_) {
-		isMtM1 = false;
-		isM1tM2 = false;
-		isM2tP = false;
-		isPtP1 = false;
-		isP1tP2 = false;
-		isP2tM = false;
-
-		root_t_ = 0.0f;
-		isRootMove_ = false;
-
-		// ベジエ曲線のスタート位置計算
-		bezierStartPos_ = MyMath::lerp(move_t_, clickPlayerPos_, preMarkerPos_);
-
-		// ベジエ曲線の終わり位置計算
-		bezierEndPos_ = MyMath::lerp(move_t_, preMarkerPos_, markerPos_);
-		direction_ = bezierEndPos_ - bezierStartPos_;
-
-		// 実際にプレイヤーの位置を計算
-		pos_ = MyMath::lerp(move_t_, bezierStartPos_, bezierEndPos_);
-		for (Tail* tail : tails_) {
-			tail->SetIsMove(isMove_);
-		}
-		// 1.0になるまで加算
-		MyMath::CountT(move_t_, 1.0f, isMove_, false, move_t_offset);
-
-		if (!isMove_) {
-			isMtM1 = true;
-		}
-		if (isMtM1) {
-			pos_ = MyMath::CatmullRom(
-			    W2AddRadian[2], M2AddRadian[0], M2AddRadian[1], M2AddRadian[2], root_t_);
-			direction_ = pos_ - prePos_;
-
-			MyMath::CountT(root_t_, 0.0f, isM1tM2, true, rootRotate_t_offset);
-		}
-
-
+		// マーカーまでの移動処理
+		ToMarkerMoveUpdate();
 	}
 
 	// 尻尾の更新
@@ -255,7 +145,20 @@ void Player::Update() {
 	BulletUpdate();
 
 	// マーカーの位置を反映させる
-	markerSprite_->SetPosition(markerPos_ - scroll->GetAddScroll());
+	markerSprite_->SetPosition(markerPos_ - scroll->GetAddScroll()); 
+	
+	// プレイヤーのアニメーション
+	MyMath::Anime(animationTimer, animationNumber, animationScene, oneTime);
+	MyMath::ShakeUpdate(shakeVelo_, isDamageShake, amplitNum);
+	if (isDamageShake) {
+		color_ = {1.0f, 0.7f, 0.7f, 0.8f};
+	} else {
+		color_ = {1.0f, 1.0f, 1.0f, 1.0f};
+	}
+	sprite_->SetColor(color_);
+	ScreenPos += shakeVelo_;
+	// ベースの更新処理
+	BaseCharacter::Update();
 }
 
 void Player::KeyMove() { // 移動距離
@@ -352,6 +255,138 @@ void Player::AddBullets(PlayerBullet* bullet) {
 	bullets_.push_back(bullet);
 }
 
+void Player::RootRotateMoveInitialize() {
+	isMtM1 = false;
+	isM1tM2 = false;
+	isM2tP = false;
+	isPtP1 = false;
+	isP1tP2 = false;
+	isP2tM = false;
+
+	root_t_ = 0.0f;
+	isRootMove_ = false;
+}
+
+void Player::RootRotateMoveUpdate() {
+	if (isMtM1) {
+
+		pos_ = MyMath::CatmullRom(
+		    W2AddRadian[2], M2AddRadian[0], M2AddRadian[1], M2AddRadian[2], root_t_);
+		direction_ = pos_ - prePos_;
+
+		if (root_t_ >= 1.0f) {
+			direction_ = M2AddRadian[1] - M2AddRadian[0];
+
+			isMtM1 = false;
+		}
+		MyMath::CountT(root_t_, 0.0f, isM1tM2, true, rootRotate_t_offset);
+	}
+	//
+	if (isM1tM2) {
+		pos_ = MyMath::CatmullRom(
+		    M2AddRadian[0], M2AddRadian[1], M2AddRadian[2], W2AddRadian[0], root_t_);
+		direction_ = pos_ - prePos_;
+		if (root_t_ >= 1.0f) {
+			direction_ = M2AddRadian[2] - M2AddRadian[1];
+			isM1tM2 = false;
+		}
+		MyMath::CountT(root_t_, 0.0f, isM2tP, true, rootRotate_t_offset);
+	}
+	//
+	if (isM2tP) {
+		pos_ = MyMath::CatmullRom(
+		    M2AddRadian[1], M2AddRadian[2], W2AddRadian[0], W2AddRadian[1], root_t_);
+		direction_ = pos_ - prePos_;
+		if (root_t_ >= 1.0f) {
+			direction_ = W2AddRadian[0] - M2AddRadian[1];
+			isM2tP = false;
+		}
+		MyMath::CountT(root_t_, 0.0f, isPtP1, true, rootRotate_t_offset);
+	}
+	//
+	if (isPtP1) {
+		pos_ = MyMath::CatmullRom(
+		    M2AddRadian[2], W2AddRadian[0], W2AddRadian[1], W2AddRadian[2], root_t_);
+		direction_ = pos_ - prePos_;
+		if (root_t_ >= 1.0f) {
+			direction_ = W2AddRadian[1] - W2AddRadian[0];
+			isPtP1 = false;
+		}
+		MyMath::CountT(root_t_, 0.0f, isP1tP2, true, rootRotate_t_offset);
+	}
+
+	if (isP1tP2) {
+		pos_ = MyMath::CatmullRom(
+		    W2AddRadian[0], W2AddRadian[1], W2AddRadian[2], M2AddRadian[0], root_t_);
+		direction_ = pos_ - prePos_;
+		if (root_t_ >= 1.0f) {
+			direction_ = W2AddRadian[2] - W2AddRadian[1];
+			isP1tP2 = false;
+		}
+		MyMath::CountT(root_t_, 0.0f, isP2tM, true, rootRotate_t_offset);
+	}
+
+	if (isP2tM) {
+		pos_ = MyMath::CatmullRom(
+		    W2AddRadian[1], W2AddRadian[2], M2AddRadian[0], M2AddRadian[1], root_t_);
+		direction_ = pos_ - prePos_;
+		if (root_t_ >= 1.0f) {
+			// direction_ = M2AddRadian[0] - W2AddRadian[2];
+			isP2tM = false;
+		}
+		MyMath::CountT(root_t_, 0.0f, isMtM1, true, rootRotate_t_offset);
+
+		if (isMtM1) {
+
+			pos_ = MyMath::CatmullRom(
+			    W2AddRadian[2], M2AddRadian[0], M2AddRadian[1], M2AddRadian[2], root_t_);
+			direction_ = pos_ - prePos_;
+			MyMath::CountT(root_t_, 0.0f, isM1tM2, true, rootRotate_t_offset);
+		}
+	}
+
+	for (Tail* tail : tails_) {
+		tail->SetIsMove(true);
+	}
+}
+
+void Player::ToMarkerMoveInitialize() {
+	move_t_ = 0.0f;
+
+	// 移動フラグの初期化
+	isMove_ = true;
+}
+
+void Player::ToMarkerMoveUpdate() {
+	RootRotateMoveInitialize();
+
+	// ベジエ曲線のスタート位置計算
+	bezierStartPos_ = MyMath::lerp(move_t_, clickPlayerPos_, preMarkerPos_);
+
+	// ベジエ曲線の終わり位置計算
+	bezierEndPos_ = MyMath::lerp(move_t_, preMarkerPos_, markerPos_);
+	direction_ = bezierEndPos_ - bezierStartPos_;
+
+	// 実際にプレイヤーの位置を計算
+	pos_ = MyMath::lerp(move_t_, bezierStartPos_, bezierEndPos_);
+	for (Tail* tail : tails_) {
+		tail->SetIsMove(isMove_);
+	}
+	// 1.0になるまで加算
+	MyMath::CountT(move_t_, 1.0f, isMove_, false, move_t_offset);
+
+	if (!isMove_) {
+		isMtM1 = true;
+	}
+	if (isMtM1) {
+		pos_ = MyMath::CatmullRom(
+		    W2AddRadian[2], M2AddRadian[0], M2AddRadian[1], M2AddRadian[2], root_t_);
+		direction_ = pos_ - prePos_;
+
+		MyMath::CountT(root_t_, 0.0f, isM1tM2, true, rootRotate_t_offset);
+	}
+}
+
 void Player::TailUpdate() {
 	// 尻尾の更新処理
 	for (Tail* tail : tails_) {
@@ -360,7 +395,7 @@ void Player::TailUpdate() {
 	}
 }
 
-void Player::MarkerUpdate() {
+void Player::MarkerMovement() {
 	if (!ismarkerMove_) {
 		markerMove_t = 0.0f;
 
@@ -388,7 +423,14 @@ void Player::MarkerUpdate() {
 }
 
 
-void Player::OnCollision() { DeleteTails(); }
+void Player::OnCollision() {
+	// もし当たったらシェイクフラグを有効に
+	isDamageShake = true;
+	// 揺れ幅を設定
+	amplitNum = 30;
+	// 尻尾を減らす
+	DeleteTails();
+}
 
 void Player::InitializeGrobalVariables() {
 	// グローバル変数系のシングルトンインスタンスを取得
@@ -488,31 +530,16 @@ void Player::LeftClickUpdate() {
 
 	// クリックしたときの位置を取得
 	clickPlayerPos_ = pos_;
-	// 線形補間の初期化
-	move_t_ = 0.0f;
-
-	// 移動フラグの初期化
-	isMove_ = true;
-	// 線形補間用tの初期化
-	root_t_ = 0.0f;
-
-	{ // （仮）
-		Vector2 A2B = clickPlayerPos_ - markerPos_;
-		A2B.x = A2B.x / 2;
-		A2B.y = A2B.y / 2;
-
-		Vector2 verticalA2B = {A2B.x, -A2B.y};
-		if (A2B.x > 0) {
-		}
-		// 通常時の回転で使う四つ目の点を求める
-		RotateRootPos_ = clickPlayerPos_ + A2B /*markerPos_ - preMark2Pos_distance*/;
-		RotateRootPos_ += verticalA2B;
-	}
+	
+	//
+	ToMarkerMoveInitialize();
+	
+	//
+	RootRotateMoveInitialize();
 
 	RootRotateMove2();
+
 	ismarkerMove_ = true;
-	// 四ツ目の点を求める
-	// RotateRootPos_ = markerPos_ - preMark2Pos_distance;
 }
 
 void Player::DeleteBullet() {

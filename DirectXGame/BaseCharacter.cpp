@@ -15,7 +15,7 @@ void BaseCharacter::Update() {
 	// スクロールのインスタンス取得
 	Scroll* scroll = Scroll::GetInstance();
 
-	Vector2 ScreenPos = pos_ - scroll->GetAddScroll();
+	ScreenPos += pos_ - scroll->GetAddScroll();
 
 	// スプライトの位置の更新処理
 	sprite_->SetPosition(ScreenPos);

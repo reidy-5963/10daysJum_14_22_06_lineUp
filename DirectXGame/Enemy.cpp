@@ -10,14 +10,16 @@ void Enemy::Initialize()
 	sprite_.reset(
 	    Sprite::Create(charaTex_, {pos_.x, pos_.y}, {1.0f, 1.0f, 1.0f, 1.0f}, {0.5f, 0.5f}));
 
-	radius_ = 32.0f;
+	radius_ = sprite_->GetSize().y / 2;
 
 	velocity_ = {};
 
 }
 
 void Enemy::Update() 
-{ 
+{
+	ScreenPosInitialize();
+
 	ImGui::Begin("EnemyInfo");
 	ImGui::DragFloat2("pos", &pos_.x, 0.1f, 0, 2000.0f);
 	ImGui::SliderFloat2("speed", &velocity_.x, 0.0f, 30.0f);

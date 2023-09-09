@@ -39,6 +39,8 @@ void Tail::Initialize(uint32_t texture, const Vector2* parent, int tailNo, const
 }
 
 void Tail::Update() {
+	ScreenPosInitialize();
+
 	if (!isHitOut_) {
 		// もしプレイヤーが動いていたら
 		if (isPlayerMove_) {

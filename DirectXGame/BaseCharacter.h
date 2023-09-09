@@ -32,10 +32,12 @@ public: // メンバ関数
 	virtual void InitializeGrobalVariables();
 
 	virtual void ApplyGrobalVariables();
-	
+	void ScreenPosInitialize() { ScreenPos = {}; }
 	void DrawAnimation(
 	    Sprite* sprite, int texX, int texY, int srcX, int srcY, int srcW, int srcH,
 	    uint32_t texture);
+	void AddScreenPos(Vector2 pos) { ScreenPos += pos;
+	}
 
 protected: // 継承限定メンバ変数
 	// スプライト
@@ -43,7 +45,9 @@ protected: // 継承限定メンバ変数
 	// テクスチャ
 	uint32_t charaTex_ = 0u;
 	// 位置
-	Vector2 pos_{}; 
+	Vector2 pos_{};
+	Vector2 ScreenPos{};
+	Vector4 color_{1.0f, 1.0f, 1.0f, 1.0f};
 	// 動くときのフラグ
 	bool isMove_ = false;
 	// 半径サイズ
