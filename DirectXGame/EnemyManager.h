@@ -76,6 +76,8 @@ public:	// リスポーンタイプ
 
 	void CreateEnemy(int spownPoint);
 
+	Vector2 RandomRadianVector();
+
 private:
 
 	Input* input_ = nullptr;

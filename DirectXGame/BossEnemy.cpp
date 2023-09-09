@@ -21,6 +21,33 @@ void BossEnemy::RespownBoss()
 	pos_ = {float(WinApp::kWindowWidth), float(WinApp::kWindowHeight)};
 }
 
+void BossEnemy::RandomActionManager() 
+{ 
+	actionTimer_++;
+	if (actionTimer_ == kActionCoolTime_) {
+		int behaviorRand = rand() % 5 + 1;
+		switch (behaviorRand) {
+		case 1:
+			behaviorRequest_ = Behavior::kRush;
+			break;
+		case 2:
+			behaviorRequest_ = Behavior::kGuided;
+			break;
+		case 3:
+			behaviorRequest_ = Behavior::kBarrage;
+			break;
+		case 4:
+			behaviorRequest_ = Behavior::kFunnel;
+			break;
+		case 5:
+			behaviorRequest_ = Behavior::kRush;
+			break;
+		}
+		actionTimer_ = 0;
+	}
+
+}
+
 void BossEnemy::GenerateBullet(Vector2& velocity) 
 {
 	// 生成・初期化
@@ -351,6 +378,8 @@ void BossEnemy::RootUpdate()
 		//directRotate += pos_;
 		sprite_->SetRotation(std::atan2(directRotate.y, directRotate.x));
 	}
+
+	RandomActionManager();
 
 	/// 突進までの処理
 	if (rushFlag_) {

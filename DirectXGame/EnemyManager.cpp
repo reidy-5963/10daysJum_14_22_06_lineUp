@@ -132,9 +132,19 @@ void EnemyManager::CreateEnemy(int spownPoint)
 
 	newEnemy->SetPosition(spownPos);
 	//newEnemy->SetVelocity(Vector2(5.0f, 0));
-	newEnemy->SetVelocity(MyMath::Normalize(playerPos_ - newEnemy->GetPosition()));
+	//newEnemy->SetVelocity(MyMath::Normalize(playerPos_ - newEnemy->GetPosition()));
+	newEnemy->SetVelocity(RandomRadianVector());
 	enemys_.push_back(newEnemy);
 	
+}
+
+Vector2 EnemyManager::RandomRadianVector() 
+{
+	int random = int(rand()) % 20 + 1;
+	int degree = 360 / random;
+	float radian = (float(degree) * (float)std::numbers::pi) / 180;
+	Vector2 result = {1 * std::cosf(radian), 1 * std::sinf(radian)};
+	return result; 
 }
 
 void EnemyManager::DiagonalBehavior() 

@@ -180,4 +180,11 @@ private: // 行動管理用変数
 	/// </summary>
 	int modeCount_ = 0;
 	int kModeEndTimer_ = 0;
+
+private: // 動きの管理
+	int actionTimer_ = 0;
+	int kActionCoolTime_ = 60 * 5;
+
+	void RandomActionManager();
+
 };
