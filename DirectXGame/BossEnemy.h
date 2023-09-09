@@ -111,6 +111,8 @@ public:	// 設定・取得
 	/// </summary>
 	BossEnemy();
 
+	void RespownBoss();
+
 private:
 	// 入力
 	Input* input_ = nullptr;

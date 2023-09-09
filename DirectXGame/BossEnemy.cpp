@@ -5,6 +5,7 @@
 #include <numbers>
 #include <cmath>
 #include "BossBullet.h"
+#include "WinApp.h"
 
 BossEnemy::BossEnemy() {
 	// キャラ
@@ -13,6 +14,12 @@ BossEnemy::BossEnemy() {
 	bulletTex_ = TextureManager::Load("Bullet.png");
 	// ファンネル
 	funnelTex_ = TextureManager::Load("Player.png");
+}
+
+void BossEnemy::RespownBoss() 
+{ 
+	pos_ = {float(WinApp::kWindowWidth), float(WinApp::kWindowHeight)};
+
 }
 
 void BossEnemy::GenerateBullet(Vector2& velocity) 
@@ -48,7 +55,9 @@ void BossEnemy::Initialize()
 {
 	input_ = Input::GetInstance();
 
-	pos_ = {1000.0f, 500.0f};
+	pos_ = {-3000.0f, -3000.0f};
+
+	RespownBoss();
 
 	sprite_.reset(
 	    Sprite::Create(charaTex_, {pos_.x, pos_.y}, {1.0f, 1.0f, 1.0f, 1.0f}, {0.5f, 0.5f}));
@@ -56,7 +65,6 @@ void BossEnemy::Initialize()
 	sprite_->SetSize(Vector2(300.0f, 300.0f));
 	// 当たり判定用の半径（サイズに合わせる）
 	radius_ = 32.0f;
-
 
 }
 

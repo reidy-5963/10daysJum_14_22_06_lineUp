@@ -44,9 +44,6 @@ public:	// 設定、取得
 	void SetPlayer(Vector2 pos) { playerPos_ = pos; }
 
 public: // 沸きパターン
-
-	void TentRes();
-
 	/// <summary>
 	/// 画面外から中央に
 	/// </summary>
@@ -67,6 +64,14 @@ public: // 沸きパターン
 	/// 矢印隊列の操作
 	/// </summary>
 	void ArrowBehaviorControl();
+
+public:	// リスポーンタイプ
+	/// <summary>
+	/// 適当湧き
+	/// </summary>
+	void TentRes();
+
+	void CreateEnemy();
 
 private:
 
@@ -99,5 +104,8 @@ private:	// Arrowの変数
 	};
 
 	Vector2 plPrevPos_ = {};
+
+private:
+	int kRespownTimer_ = 10 * 60;
 
 };

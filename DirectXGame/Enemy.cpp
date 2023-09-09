@@ -10,7 +10,7 @@ void Enemy::Initialize()
 	sprite_.reset(
 	    Sprite::Create(charaTex_, {pos_.x, pos_.y}, {1.0f, 1.0f, 1.0f, 1.0f}, {0.5f, 0.5f}));
 	
-	radius_ = 32;
+	radius_ = 48;
 	sprite_->SetSize({radius_ * 2, radius_ * 2});
 	velocity_ = {};
 	animationTimer = 0;
