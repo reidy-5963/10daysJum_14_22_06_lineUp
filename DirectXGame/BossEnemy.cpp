@@ -6,10 +6,11 @@
 #include <cmath>
 #include "BossBullet.h"
 #include "WinApp.h"
+#include "Animation.h"
 
 BossEnemy::BossEnemy() {
 	// キャラ
-	charaTex_ = TextureManager::Load("Enemy.png");
+	charaTex_ = TextureManager::Load("BossEnemy.png");
 	// 弾
 	bulletTex_ = TextureManager::Load("Bullet.png");
 	// ファンネル
@@ -58,13 +59,18 @@ void BossEnemy::Initialize()
 	pos_ = {-3000.0f, -3000.0f};
 
 	RespownBoss();
+	animationTimer = 0;
+	animationNumber = 0;
+	animationScene = 4;
+	oneTime = 5;
+	isAnimation = true;
 
 	sprite_.reset(
 	    Sprite::Create(charaTex_, {pos_.x, pos_.y}, {1.0f, 1.0f, 1.0f, 1.0f}, {0.5f, 0.5f}));
-	// 適当にサイズ
-	sprite_->SetSize(Vector2(300.0f, 300.0f));
 	// 当たり判定用の半径（サイズに合わせる）
-	radius_ = 32.0f;
+	radius_ = 150.0f;
+	// 適当にサイズ
+	sprite_->SetSize(Vector2(radius_ * 2, radius_ * 2));
 
 }
 
@@ -75,6 +81,7 @@ void BossEnemy::Update()
 	ImGui::Begin("cc");
 	ImGui::Text("count : %d\nisRush : %d", rushCount_, rushFlag_);
 	ImGui::End();
+	Animation::Anime(animationTimer, animationNumber, animationScene, oneTime);
 
 	if (behaviorRequest_) {
 		// 行動変更
