@@ -3,24 +3,7 @@
 #include <assert.h>
 #include <algorithm>
 
-void MyMath::Anime(int &count, int &number, const int scene, const int oneTime) {
-	// カウント
-	count++;
 
-	// もしアニメーションの枚数 * 1枚にかけるフレーム数
-	if (count > scene * oneTime) {
-		// カウントを0に
-		count = 0;
-	}
-
-	// アニメーションの枚数分
-	for (int i = 0; i < scene; ++i) {
-		// 
-		if (count == i * oneTime) {
-			number = count / oneTime;
-		}
-	}
-}
 void MyMath::ShakeUpdate(Vector2& velo, bool& isStartShake, int& amplitNum) {
 	if (isStartShake) {
 		amplitNum--;

@@ -2,6 +2,8 @@
 #include "TextureManager.h"
 #include "Sprite.h"
 #include "ImGuiManager.h"
+#include "Animation.h"
+
 
 void Enemy::Initialize() 
 {
@@ -32,7 +34,7 @@ void Enemy::Update()
 	// 座標移動
 	pos_ += velocity_;
 
-	MyMath::Anime(animationTimer, animationNumber, animationScene, oneTime);
+	Animation::Anime(animationTimer, animationNumber, animationScene, oneTime);
 
 	// 座標設定
 	BaseCharacter::Update();

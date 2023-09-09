@@ -32,7 +32,6 @@
 /// </summary>
 class MyMath {
 public:
-	static void Anime(int &count, int &number, const int scene, const int oneTime);
 	static void ShakeUpdate(Vector2 &velo, bool &isStartShake, int &amplitNum);
 	
 #pragma region Vector2

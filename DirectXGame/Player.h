@@ -269,4 +269,9 @@ private: // メンバ変数
 	bool isDamageShake = false;
 	int amplitNum = 30;
 
+	int markerAniTimer = 0;
+	int markerAniNumber = 0;
+	int markerAniScene = 15;
+	int markerAniOneTime = 4;
+	bool ismarkerAnimation = false;
 };
