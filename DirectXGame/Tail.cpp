@@ -86,12 +86,12 @@ void Tail::Draw() {
 }
 
 void Tail::OnCollision() {
-	if (!isHitOut_) {
-		isHitOut_ = true;
-		tailNo_ = -1;
-	} else if (isHitOut_) {
-		// isDead_ = true;
-	}
+	//if (!isHitOut_) {
+	//	isHitOut_ = true;
+	//	tailNo_ = -1;
+	//} else if (isHitOut_) {
+	//	// isDead_ = true;
+	//}
 }
 
 void Tail::Fire() {
