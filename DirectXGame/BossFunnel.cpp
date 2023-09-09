@@ -36,7 +36,7 @@ void BossFunnel::Initialize(uint32_t texture, int type, Vector2& startPos, Vecto
 	isAnimation = true;
 
 	// スプライトの生成
-	sprite_.reset(Sprite::Create(texture, pos_, {1.0f, 0.0f, 0.0f, 1.0f}, {0.5f, 0.5f}));
+	sprite_.reset(Sprite::Create(texture, pos_, {1.0f, 1.0f, 1.0f, 1.0f}, {0.5f, 0.5f}));
 	// サイズ設定
 	radius_ = 64.0f;
 	sprite_->SetSize({radius_ * 2, radius_ * 2});
