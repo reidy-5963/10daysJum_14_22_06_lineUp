@@ -1,4 +1,5 @@
 #include "Player.h"
+#include "GlobalVariables.h"
 #include "ImGuiManager.h"
 #include "MyMath.h"
 #include "Scroll.h"
@@ -7,8 +8,6 @@
 #include <cassert>
 #include <cmath>
 #include <complex>
-#include "GlobalVariables.h"
-
 
 /// <summary>
 /// コンストラクタ
@@ -48,10 +47,10 @@ void Player::Initialize() {
 
 	// マーカーのテクスチャ読み込み
 	markerTex_ = TextureManager::Load("Marker.png");
-
+	
 	// マーカーのスプライトの生成
 	markerSprite_.reset(
-	    Sprite::Create(markerTex_, markerPos_, {1.0f, 1.0f, 1.0f, 1.0f}, {0.5f, 0.5f}));
+	    Sprite::Create(markerTex_, markerPos_, {1.0f, 1.0f, 1.0f, 0.5f}, {0.5f, 0.5f}));
 	// 1本目の追加
 	AddTails();
 
@@ -191,7 +190,6 @@ void Player::Update() {
 				MyMath::CountT(root_t_, 0.0f, isM1tM2, true, rootRotate_t_offset);
 			}
 		}
-		
 
 		////// ベジエ曲線のスタート位置計算
 		//	// bezierStartPos_ = MyMath::lerp(root_t_, markerPos_, RotateRootPos_);
@@ -261,8 +259,6 @@ void Player::Update() {
 	// 弾の更新処理
 	BulletUpdate();
 
-
-
 	// マーカーの位置を反映させる
 	markerSprite_->SetPosition(markerPos_ - scroll->GetAddScroll());
 }
@@ -297,6 +293,9 @@ void Player::KeyMove() { // 移動距離
 /// 描画処理
 /// </summary>
 void Player::Draw() {
+	// クリックした位置マーカーの描画
+	markerSprite_->Draw();
+
 	// 弾の描画
 	for (PlayerBullet* bullet : bullets_) {
 		bullet->Draw();
@@ -306,17 +305,15 @@ void Player::Draw() {
 		tail->Draw();
 	}
 
-	// クリックした位置マーカーの描画
-	markerSprite_->Draw();
 
 	// スプライトの描画
 	BaseCharacter::Draw();
 #ifdef _DEBUG
-	//m1->Draw();
-	//m2->Draw();
-	//p1->Draw();
-	//p2->Draw();
-	//origin_->Draw();
+	// m1->Draw();
+	// m2->Draw();
+	// p1->Draw();
+	// p2->Draw();
+	// origin_->Draw();
 #endif // _DEBUG
 }
 
@@ -365,18 +362,31 @@ void Player::TailUpdate() {
 	}
 }
 
-void Player::MarkerUpdate() { 
-		if (!ismarkerMove_) {
-			markerMove_t = 0.0f;
+void Player::MarkerUpdate() {
+	if (!ismarkerMove_) {
+		markerMove_t = 0.0f;
 
-		}
-		//
-		else if (ismarkerMove_) {
-			markerPos_ = MyMath::EaseInQuadF(markerMove_t, preMarkerPos_, clickPos_);
+	}
+	//
+	else if (ismarkerMove_) {
+		markerPos_ = MyMath::EaseInQuadF(markerMove_t, preMarkerPos_, clickPos_);
 
-	
-			MyMath::CountT(markerMove_t, 1.0f, ismarkerMove_, false, 0.1f);
-		}
+		MyMath::CountT(markerMove_t, 1.0f, ismarkerMove_, false, 0.1f);
+	}
+
+	Vector2 Mark2Pla = clickPlayerPos_ - clickPos_;
+	Vector2 PMark2Pla = clickPlayerPos_ - preMarkerPos_;
+
+	float cross = MyMath::Cross(Mark2Pla, PMark2Pla);
+	//
+
+	Vector2 FireBulletDirection = markerPos_ - originPos_;
+	float markerROtate = std::atan2(FireBulletDirection.y, FireBulletDirection.x);
+	if (cross > 0) {
+		markerSprite_->SetRotation(markerROtate - (0.5f * 3.14f));
+	} else if (cross <= 0) {
+		markerSprite_->SetRotation(markerROtate + (0.5f * 3.14f));
+	}
 }
 
 void Player::OnCollision() { DeleteTails(); }
@@ -396,7 +406,7 @@ void Player::InitializeGrobalVariables() {
 	gloVars->AddItem(groupName, "bulletSpeed_", bulletSpeed_);
 }
 
-void Player::ApplyGrobalVariables() { 
+void Player::ApplyGrobalVariables() {
 	// グローバル変数系のシングルトンインスタンスを取得
 	GlobalVariables* gloVars = GlobalVariables::GetInstance();
 	// グループ名の設定
@@ -442,25 +452,25 @@ void Player::MarkerControl() {
 	// スクロールのインスタンス取得
 	Scroll* scroll = Scroll::GetInstance();
 
-	if (markerPos_.x < 0 + markerLimit_) {
-		markerPos_.x = markerLimit_ + scroll->GetAddScroll().x;
+	if (clickPos_.x < 0 + markerLimit_) {
+		clickPos_.x = markerLimit_ + scroll->GetAddScroll().x;
 	}
 
 	else if (
-	    markerPos_.x > (WinApp::kWindowWidth * 2) + scroll->GetEdgePos().x +
+	    clickPos_.x > (WinApp::kWindowWidth * 2) + scroll->GetEdgePos().x +
 	                       (scroll->GetEdgePos().x - markerLimit_)) {
-		markerPos_.x = (WinApp::kWindowWidth * 2) + scroll->GetEdgePos().x +
+		clickPos_.x = (WinApp::kWindowWidth * 2) + scroll->GetEdgePos().x +
 		               (scroll->GetEdgePos().x - markerLimit_);
 	}
 
-	if (markerPos_.y < 0 + markerLimit_) {
-		markerPos_.y = markerLimit_ + scroll->GetAddScroll().y;
+	if (clickPos_.y < 0 + markerLimit_) {
+		clickPos_.y = markerLimit_ + scroll->GetAddScroll().y;
 	}
 
 	else if (
-	    markerPos_.y > (WinApp::kWindowHeight * 2) + scroll->GetEdgePos().y +
+	    clickPos_.y > (WinApp::kWindowHeight * 2) + scroll->GetEdgePos().y +
 	                       (scroll->GetEdgePos().y - markerLimit_)) {
-		markerPos_.y = (WinApp::kWindowHeight * 2) + scroll->GetEdgePos().y +
+		clickPos_.y = (WinApp::kWindowHeight * 2) + scroll->GetEdgePos().y +
 		               (scroll->GetEdgePos().y - markerLimit_);
 	}
 }
@@ -575,11 +585,11 @@ void Player::RootRotateMove1() {
 }
 
 void Player::RootRotateMove2() {
-	Vector2 Mark2Pla = pos_ - clickPos_;
-	Vector2 PMark2Pla = pos_ - preMarkerPos_;
+	Vector2 Mark2Pla = clickPlayerPos_ - clickPos_;
+	Vector2 PMark2Pla = clickPlayerPos_ - preMarkerPos_;
 
 	float cross = MyMath::Cross(Mark2Pla, PMark2Pla);
-	Vector2 Ple2Mark = clickPos_ - pos_;
+	Vector2 Ple2Mark = clickPos_ - clickPlayerPos_;
 	Mark2Pla.x = Mark2Pla.x / 2;
 	Mark2Pla.y = Mark2Pla.y / 2;
 

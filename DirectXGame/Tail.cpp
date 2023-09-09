@@ -31,8 +31,10 @@ void Tail::Initialize(uint32_t texture, const Vector2* parent, int tailNo, const
 	lerpEndPos_.y = parentPos_->y;
 
 	// スプライトの生成
-	sprite_.reset(Sprite::Create(texture, {-10.0f, -10.0f}, {1.0f, 1.0f, 1.0f, 1.0f}, {0.5f, 0.5f}));
+	sprite_.reset(
+	    Sprite::Create(texture, {-10.0f, -10.0f}, {1.0f, 1.0f, 1.0f, 1.0f}, {0.5f, 0.5f}));
 
+	radius_ = 8.0f;
 }
 
 void Tail::Update() {
@@ -44,28 +46,28 @@ void Tail::Update() {
 
 		// 尻尾の動き更新処理
 		//
-		
+
 		MoveUpdate();
 
 		// 進行方向の更新処理
 		DirectionUpdate();
-	} 
+	}
 	//
 	else if (isHitOut_) {
-		//Vector2 offset = {4.0f, 0.0f};
-		//Vector2 P2T;
-		//P2T.x = parentPos_->x - pos_.x;
-		//P2T.y = parentPos_->y - pos_.y;
-		//Matrix3x3 rotateMat = MyMath::MakeRotateMatrix(std::atan2(P2T.y, P2T.x));
-		//offset = MyMath::TransformNormal(offset, rotateMat);
-		//pos_.y += offset.y;
-		//pos_.x += offset.x;
+		// Vector2 offset = {4.0f, 0.0f};
+		// Vector2 P2T;
+		// P2T.x = parentPos_->x - pos_.x;
+		// P2T.y = parentPos_->y - pos_.y;
+		// Matrix3x3 rotateMat = MyMath::MakeRotateMatrix(std::atan2(P2T.y, P2T.x));
+		// offset = MyMath::TransformNormal(offset, rotateMat);
+		// pos_.y += offset.y;
+		// pos_.x += offset.x;
 	}
 
 	// 位置の更新処理
 	BaseCharacter::Update();
 	sprite_->SetRotation(std::atan2(direction_.y, direction_.x));
-	
+
 	// 弾の発射処理
 	Fire();
 
@@ -83,13 +85,12 @@ void Tail::Draw() {
 	sprite_->Draw();
 }
 
-void Tail::OnCollision() { 
+void Tail::OnCollision() {
 	if (!isHitOut_) {
-		isHitOut_ = true; 
+		isHitOut_ = true;
 		tailNo_ = -1;
-	}
-	else if (isHitOut_) {
-		//isDead_ = true;
+	} else if (isHitOut_) {
+		// isDead_ = true;
 	}
 }
 
@@ -99,17 +100,27 @@ void Tail::Fire() {
 
 	// もしフラグが有効なら
 	if (isFire_) {
-		if (tailNo_ == 0) {
-			//** 尻尾の進む向きから弾を打ち出す向きを計算 **//
+		//** 尻尾の進む向きから弾を打ち出す向きを計算 **//
 
-			// 実際に加算する値
+		// 実際に加算する値
+		float fireBulletRad = std::atan2(direction_.y, direction_.x);
+		float minrad = fireBulletRad - offsetRadian / 2;
+		float bulletDistance = offsetRadian / float(tailNo_ + 2);
+
+		for (int i = 0; i < tailNo_ + 1; i++) {
 			Vector2 move = {0.0f, -1.0f};
 
 			// 尻尾の進行方向から弾の撃つ向きを計算
-			move = BulletDirectionInitialize(move);
 
-			//*****************************************//
-			
+			Matrix3x3 rotateMat = MyMath::MakeRotateMatrix(minrad + (float(i + 1) * bulletDistance));
+			// 実際に動く値で平行移動行列を生成
+			Matrix3x3 moveMat = MyMath::MakeTranslateMatrix(move);
+			// 回転行列と平行移動行列を合成
+			// rotateTailMat = MyMath::Multiply(rotateTailMat, rotateMat);
+			moveMat = MyMath::Multiply(moveMat, rotateMat);
+			// 合成した行列から移動成分のみ取得
+			move = {moveMat.m[2][0], moveMat.m[2][1]};
+
 			// 弾の生成
 			PlayerBullet* newBullet = new PlayerBullet();
 			// 弾の初期化処理
@@ -117,50 +128,12 @@ void Tail::Fire() {
 			newBullet->SetBulletSpeed(player_->GetBulletSpeed());
 			// 弾をリストに追加
 			player_->AddBullets(newBullet);
-			// フラグを無効に
-			isFire_ = false;
-		}
-		//
-		else if (tailNo_ != 0) {
-			//** 尻尾の進む向きから弾を打ち出す向きを計算 **//
-
-			// 実際に加算する値
-			float fireBulletRad = std::atan2(direction_.y, direction_.x);
-			float minrad = fireBulletRad - offsetRadian / 2;
-			float tamanoaida = offsetRadian / float(tailNo_ + 2);
-
-			for (int i = 0; i < tailNo_ + 1; i++) {
-				Vector2 move = {0.0f, -1.0f};
-
-				// 尻尾の進行方向から弾の撃つ向きを計算
-
-				Matrix3x3 rotateMat =
-				    MyMath::MakeRotateMatrix(minrad + (float(i) * tamanoaida));
-				// 実際に動く値で平行移動行列を生成
-				Matrix3x3 moveMat = MyMath::MakeTranslateMatrix(move);
-				// 回転行列と平行移動行列を合成
-				//rotateTailMat = MyMath::Multiply(rotateTailMat, rotateMat);
-				moveMat = MyMath::Multiply(moveMat, rotateMat);
-				// 合成した行列から移動成分のみ取得
-				move = {moveMat.m[2][0], moveMat.m[2][1]};
-
-				
-				// 弾の生成
-				PlayerBullet* newBullet = new PlayerBullet();
-				// 弾の初期化処理
-				newBullet->Initialize(player_->GetBulletTex(), GetPosition(), move);
-				newBullet->SetBulletSpeed(player_->GetBulletSpeed());
-				// 弾をリストに追加
-				player_->AddBullets(newBullet);
-			}
-
-			//*****************************************//
-
-			// フラグを無効に
-			isFire_ = false;
 		}
 
+		//*****************************************//
 
+		// フラグを無効に
+		isFire_ = false;
 	}
 	// もしフラグが無効なら
 	else if (!isFire_) {
@@ -173,7 +146,7 @@ void Tail::Fire() {
 		// 当たり判定の計算
 		float distance =
 		    std::sqrtf(std::powf(Tail2Marker_distance.x, 2) + std::powf(Tail2Marker_distance.y, 2));
-		float radius = (32 + GetRadius());
+		float radius = (8 + GetRadius());
 
 		if (!player_->IsMove()) {
 			// もし尻尾とマーカーが当たっていれば
@@ -192,7 +165,6 @@ void Tail::Fire() {
 					bulletTimer_ = kBulletTime;
 				}
 			}
-
 		}
 	}
 }
@@ -227,15 +199,14 @@ void Tail::MoveUpdate() {
 		}
 
 		// 線形補完
-		//pos_ = MyMath::CatmullRom(prePos_, pos_, lerpEndPos_, lerpEndPos_, t_);
+		// pos_ = MyMath::CatmullRom(prePos_, pos_, lerpEndPos_, lerpEndPos_, t_);
 		if (!isMove_) {
-		
 		}
 
 		pos_ = MyMath::lerp(t_, prePos_, lerpEndPos_);
 	}
 	// もし動いていないとき
-	if (!isMove_) { 
+	if (!isMove_) {
 		// 線形補完の完了地点を親の位置に
 		lerpEndPos_.x = parentPos_->x;
 		lerpEndPos_.y = parentPos_->y;
