@@ -46,7 +46,7 @@ void Player::Initialize() {
 	isInvisible_ = false;
 
 	// キャラのテクスチャ読み込み
-	tailTexture_ = TextureManager::Load("Cannon.png");
+	tailTexture_ = TextureManager::Load("Cannon_ver2.png");
 	// キャラのテクスチャ読み込み
 	bulletTexture_ = TextureManager::Load("Bullet.png");
 

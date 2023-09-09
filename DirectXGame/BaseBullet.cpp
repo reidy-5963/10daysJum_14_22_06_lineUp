@@ -1,6 +1,7 @@
 ﻿#include "BaseBullet.h"
 #include <cassert>
 #include "Scroll.h"
+#include "TextureManager.h"
 
 /// <summary>
 /// 初期化処理
@@ -22,7 +23,7 @@ void BaseBullet::Update() {
 	Scroll* scroll = Scroll::GetInstance();
 	//Vector2 ScreenPos;
 //	ScreenPos += ;
-	
+	sprite_->SetRotation(std::atan2(direction_.y, direction_.x));
 	// スプライトの位置を設定
 	sprite_->SetPosition(pos_ - scroll->GetAddScroll() + sceneVelo);
 }
