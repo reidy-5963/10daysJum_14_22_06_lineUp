@@ -24,7 +24,9 @@ public:	// 継承
 	/// </summary>
 	void OnCollision() override;
 
-public:	// 設定
+	void P2EOnCollision();
+
+public: // 設定
 
 	/// <summary>
 	/// 死亡フラグのGetter
@@ -44,11 +46,20 @@ public:	// 設定
 	/// <param name="velocity"></param>
 	void SetVelocity(Vector2 velocity) { velocity_ = velocity; }
 
-private:
+	bool IsParasite() { return isParasite_; }
+	
+	void SetIsDead(bool isDead) { isDead_ = isDead; }
+
+	private:
 
 	Vector2 velocity_ = {};
 
 	bool isDead_ = false;
+
+	bool isParasite_ = false;
+
+	int setTimer = 120;
+	int deleteTimer = setTimer;
 
 private: // 限界値
 	Vector2 kMinusLimits = {-250.0f, -250.0f};

@@ -32,19 +32,29 @@ void Enemy::Update()
 	ImGui::SliderFloat2("speed", &velocity_.x, 0.0f, 30.0f);
 	ImGui::End();
 
-	// 座標移動
-	pos_ += velocity_;
-	Vector2 normalize = MyMath::Normalize(velocity_);
-	sprite_->SetRotation(std::atan2(normalize.y, normalize.x));
+	if (!isParasite_) {
+		// 座標移動
+		pos_ += velocity_;
+		Vector2 normalize = MyMath::Normalize(velocity_);
+		sprite_->SetRotation(std::atan2(normalize.y, normalize.x));
 
-	Animation::Anime(animationTimer, animationNumber, animationScene, oneTime);
+
+		if (pos_.x < kMinusLimits.x || pos_.x > kPlusLimits.x || pos_.y < kMinusLimits.y ||
+		    pos_.y > kPlusLimits.y) {
+			isDead_ = true;
+		}
+		Animation::Anime(animationTimer, animationNumber, animationScene, oneTime);
+
+	} else if (isParasite_) {
+		if (--deleteTimer < 0) {
+			isDead_ = true;
+		}
+
+	}
+
 
 	// 座標設定
 	BaseCharacter::Update();
-
-	if (pos_.x < kMinusLimits.x || pos_.x > kPlusLimits.x || pos_.y < kMinusLimits.y || pos_.y > kPlusLimits.y) {
-		isDead_ = true;
-	}
 }
 
 void Enemy::Draw() 
@@ -55,5 +65,10 @@ void Enemy::Draw()
 
 void Enemy::OnCollision() 
 { 
+	//isDead_ = true;
+	isParasite_ = true;
+}
+
+void Enemy::P2EOnCollision() {
 	isDead_ = true;
 }

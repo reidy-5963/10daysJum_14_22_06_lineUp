@@ -184,8 +184,16 @@ void GameScene::CheckAllCollision() {
 		// 交差判定
 		if (distance <= radius) {
 			// コールバック
-			enemy->OnCollision();
-			//player_->OnCollision();
+			if(enemy->IsParasite()) {
+				player_->AddTails();
+				enemy->SetIsDead(true);
+
+			}
+			if (!enemy->IsParasite()) {
+				player_->OnCollision();
+				enemy->SetIsDead(true);
+			}
+			//
 			killCount_ += 1;
 		}
 	}

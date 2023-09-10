@@ -92,7 +92,8 @@ public: // ゲッター
 	Vector2 GetDirection() { return direction_; }
 
 	bool IsHitOut() { return isHitOut_; }
-
+	bool IsDead() { return isDead_; }
+	bool IsPlayersTail() { return isPlayersTail; }
 #pragma endregion
 
 public: // セッター
@@ -118,6 +119,8 @@ public: // セッター
 	void SetBulletRad(float radian) { offsetRadian = radian; }
 
 	void SetTailNo(int tailNo) { tailNo_ = tailNo; }
+
+	void SetIsPlayersTail(bool flag) { isPlayersTail = flag; }
 #pragma endregion
 
 private: // メンバ変数
@@ -156,4 +159,11 @@ private: // メンバ変数
 	float offsetRadian = 1.0f;
 
 	bool isHitOut_ = false;
+
+	bool isPlayersTail = false;
+
+	const int setDelTimer = 120;
+	int deleteTimer = setDelTimer;
+	bool isDead_ = false;
+
 };

@@ -49,7 +49,7 @@ void Tail::Initialize(uint32_t texture, const Vector2* parent, int tailNo, const
 void Tail::Update() {
 	ScreenPosInitialize();
 
-	if (!isHitOut_) {
+	if (isPlayersTail) {
 		// もしプレイヤーが動いていたら
 		if (isPlayerMove_) {
 			isMove_ = true;
@@ -64,15 +64,11 @@ void Tail::Update() {
 		DirectionUpdate();
 	}
 	//
-	else if (isHitOut_) {
-		// Vector2 offset = {4.0f, 0.0f};
-		// Vector2 P2T;
-		// P2T.x = parentPos_->x - pos_.x;
-		// P2T.y = parentPos_->y - pos_.y;
-		// Matrix3x3 rotateMat = MyMath::MakeRotateMatrix(std::atan2(P2T.y, P2T.x));
-		// offset = MyMath::TransformNormal(offset, rotateMat);
-		// pos_.y += offset.y;
-		// pos_.x += offset.x;
+	else if (!isPlayersTail) {
+		if (--deleteTimer < 0) {
+			isDead_ = true;
+		}
+
 	}
 	Animation::Anime(animationTimer, animationNumber, animationScene, oneTime);
 
@@ -98,12 +94,14 @@ void Tail::Draw() {
 }
 
 void Tail::OnCollision() {
-	//if (!isHitOut_) {
-	//	isHitOut_ = true;
-	//	tailNo_ = -1;
-	//} else if (isHitOut_) {
-	//	// isDead_ = true;
-	//}
+	if (!isPlayersTail) {
+		isPlayersTail = true;
+		std::list<Tail*> tails_ = player_->GetTails();
+
+		tailNo_ = tails_.back()->GetTailNo() + 1;
+		parentPos_ = &tails_.back()->GetPosition();
+		tails_.push_back(this);
+	}
 }
 
 void Tail::Fire() {

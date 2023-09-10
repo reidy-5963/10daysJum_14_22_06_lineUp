@@ -253,7 +253,9 @@ void Player::AddTails() {
 		else {
 			// プレイヤーの位置を親として初期化
 			newTail->Initialize(tailTexture_, &pos_, 0, &isMove_);
+
 		}
+		newTail->SetIsPlayersTail(true);
 
 		// プレイヤーのポインタを設定
 		newTail->SetPlayer(this);
