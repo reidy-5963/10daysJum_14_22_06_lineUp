@@ -432,16 +432,16 @@ void Player::MarkerMovement() {
 	Vector2 Mark2Pla = clickPlayerPos_ - clickPos_;
 	Vector2 PMark2Pla = clickPlayerPos_ - preMarkerPos_;
 
-	float cross = MyMath::Cross(Mark2Pla, PMark2Pla);
-	//
+	//float cross = MyMath::Cross(Mark2Pla, PMark2Pla);
+	////
 
 	Vector2 FireBulletDirection = markerPos_ - originPos_;
 	float markerROtate = std::atan2(FireBulletDirection.y, FireBulletDirection.x);
-	if (cross > 0) {
-		markerSprite_->SetRotation(markerROtate - (0.5f * 3.14f));
-	} else if (cross <= 0) {
+	//if (cross > 0) {
+	//	markerSprite_->SetRotation(markerROtate - (0.5f * 3.14f));
+	//} else if (cross <= 0) {
 		markerSprite_->SetRotation(markerROtate + (0.5f * 3.14f));
-	}
+	//}
 }
 
 void Player::OnCollision() {
@@ -655,10 +655,13 @@ void Player::RootRotateMove2() {
 	Vector2 Ple2Mark = clickPos_ - clickPlayerPos_;
 	Mark2Pla.x = Mark2Pla.x / 2;
 	Mark2Pla.y = Mark2Pla.y / 2;
+	
+	
 
-	//
-	if (cross > 0) {
-		Matrix3x3 Mark2PlaRotateMat = MyMath::MakeRotateMatrix((3.14f * 0.25f));
+		
+		 if (cross > 0) {
+
+		Matrix3x3 Mark2PlaRotateMat = MyMath::MakeRotateMatrix(-(3.14f * 0.75f));
 		Matrix3x3 Mark2PlaMat = MyMath::MakeTranslateMatrix(Mark2Pla);
 		Mark2PlaMat = MyMath::Multiply(Mark2PlaMat, Mark2PlaRotateMat);
 		Vector2 Mark2W = {Mark2PlaMat.m[2][0], Mark2PlaMat.m[2][1]};
@@ -666,8 +669,6 @@ void Player::RootRotateMove2() {
 		originPos_.y = clickPos_.y + Mark2W.y / 2;
 		W2AddRadian[0].x = originPos_.x + Mark2W.x / 2;
 		W2AddRadian[0].y = originPos_.y + Mark2W.y / 2;
-
-		// float Origin2WRadian = std::atan2(Mark2W.y, Mark2W.x);
 
 		Vector2 Origin2W;
 		Origin2W.x = Mark2W.x / 2;
@@ -677,28 +678,29 @@ void Player::RootRotateMove2() {
 
 		Matrix3x3 Origin2WRotateMat = MyMath::MakeRotateMatrix(radianOffset);
 		Origin2WRotateMat = MyMath::Multiply(Origin2WMat, Origin2WRotateMat);
-		M2AddRadian[2] = {
+		W2AddRadian[1] = {
 		    originPos_.x + Origin2WRotateMat.m[2][0], originPos_.y + Origin2WRotateMat.m[2][1]};
 
 		Origin2WRotateMat = MyMath::MakeRotateMatrix(radianOffset * 2);
 		Origin2WRotateMat = MyMath::Multiply(Origin2WMat, Origin2WRotateMat);
-		M2AddRadian[1] = {
+		W2AddRadian[2] = {
 		    originPos_.x + Origin2WRotateMat.m[2][0], originPos_.y + Origin2WRotateMat.m[2][1]};
 
 		M2AddRadian[0] = clickPos_;
 
 		Origin2WRotateMat = MyMath::MakeRotateMatrix(-radianOffset * 2);
 		Origin2WRotateMat = MyMath::Multiply(Origin2WMat, Origin2WRotateMat);
-		W2AddRadian[2] = {
+		M2AddRadian[1] = {
 		    originPos_.x + Origin2WRotateMat.m[2][0], originPos_.y + Origin2WRotateMat.m[2][1]};
 
 		Origin2WRotateMat = MyMath::MakeRotateMatrix(-radianOffset);
 		Origin2WRotateMat = MyMath::Multiply(Origin2WMat, Origin2WRotateMat);
-		W2AddRadian[1] = {
+		M2AddRadian[2] = {
 		    originPos_.x + Origin2WRotateMat.m[2][0], originPos_.y + Origin2WRotateMat.m[2][1]};
 	}
+	
 
-	if (cross <= 0) {
+	else if (cross <= 0) {
 
 		Matrix3x3 Mark2PlaRotateMat = MyMath::MakeRotateMatrix(-(3.14f * 0.25f));
 		Matrix3x3 Mark2PlaMat = MyMath::MakeTranslateMatrix(Mark2Pla);

@@ -12,6 +12,10 @@ public: // メンバ関数
 	/// </summary>
 	void Initialize(uint32_t texture, const Vector2& pos, Vector2 velosity) override;
 
+	void SetRadius(float radius) {
+		radius = radius;
+		sprite_->SetSize({radius * 2, radius * 2});
+	}
 	/// <summary>
 	/// 更新処理
 	/// </summary>

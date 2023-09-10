@@ -122,7 +122,8 @@ void Tail::Fire() {
 
 			// 尻尾の進行方向から弾の撃つ向きを計算
 
-			Matrix3x3 rotateMat = MyMath::MakeRotateMatrix(minrad + (float(i + 1) * bulletDistance));
+			Matrix3x3 rotateMat =
+			    MyMath::MakeRotateMatrix(minrad + (float(i + 1) * bulletDistance));
 			// 実際に動く値で平行移動行列を生成
 			Matrix3x3 moveMat = MyMath::MakeTranslateMatrix(move);
 			// 回転行列と平行移動行列を合成
@@ -136,6 +137,7 @@ void Tail::Fire() {
 			// 弾の初期化処理
 			newBullet->Initialize(player_->GetBulletTex(), GetPosition(), move);
 			newBullet->SetBulletSpeed(player_->GetBulletSpeed());
+			//newBullet->SetRadius(float((64 / tailNo_ + 1)));
 			// 弾をリストに追加
 			player_->AddBullets(newBullet);
 		}
