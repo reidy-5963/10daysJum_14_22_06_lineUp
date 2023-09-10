@@ -208,4 +208,9 @@ private: // 動きの管理
 
 	int ConvertSeconds(int second) { return int(second * 60); }
 
+
+private: // 揺らす系
+	Vector2 shakeVelo_{};
+	bool isDamageShake = false;
+	int amplitNum = 12;
 };

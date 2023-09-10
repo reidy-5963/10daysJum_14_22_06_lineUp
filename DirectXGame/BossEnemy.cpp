@@ -185,6 +185,9 @@ void BossEnemy::Update()
 		FunnelAttack();
 		break;
 	}
+	MyMath::ShakeUpdate(shakeVelo_, isDamageShake, amplitNum);
+
+	ScreenPos += shakeVelo_;
 
 	// スクロールのインスタンス取得
 	Scroll* scroll = Scroll::GetInstance();
@@ -218,7 +221,12 @@ void BossEnemy::Draw()
 
 }
 
-void BossEnemy::OnCollision() {}
+void BossEnemy::OnCollision() { 	
+	// もし当たったらシェイクフラグを有効に
+	isDamageShake = true;
+	// 揺れ幅を設定
+	amplitNum = 12;
+}
 
 void BossEnemy::BulletUpdate() {
 	bullets_.remove_if([](BossBullet* bullet) {
