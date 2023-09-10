@@ -8,7 +8,7 @@
 class WinApp {
 public: // 静的メンバ変数
 	// ウィンドウサイズ
-	static const int kWindowWidth = 1280; // 横幅
+	static const int kWindowWidth = 1920; // 横幅
 	static const int kWindowHeight = 720; // 縦幅
 
 	static const int kFullScreenWidth = 1920;
