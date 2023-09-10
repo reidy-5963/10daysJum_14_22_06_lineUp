@@ -14,7 +14,7 @@ BossEnemy::BossEnemy() {
 	// キャラ
 	charaTex_ = TextureManager::Load("BossEnemy.png");
 	// 弾
-	bulletTex_ = TextureManager::Load("Bullet.png");
+	bulletTex_ = TextureManager::Load("BossBullet.png");
 	// ファンネル
 	funnelTex_ = TextureManager::Load("Fannel.png");
 	// 突進先
