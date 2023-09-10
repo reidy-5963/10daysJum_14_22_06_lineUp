@@ -165,6 +165,7 @@ void BossEnemy::Update()
 		case BossEnemy::Behavior::kBeam:
 			BeamAttackInitialize();
 			break;
+		// ファンネル初期化
 		case BossEnemy::Behavior::kFunnel:
 			FunnelAttackInitialize();
 			break;
@@ -422,7 +423,7 @@ void BossEnemy::FunnelAttackInitialize()
 void BossEnemy::RootUpdate() 
 {
 	/// 突進起動キー処理
-	if (input_->TriggerKey(DIK_H)) {
+	if (input_->TriggerKey(DIK_D)) {
 		if (!isRush_) {
 			RushAttackSetup();
 		}
