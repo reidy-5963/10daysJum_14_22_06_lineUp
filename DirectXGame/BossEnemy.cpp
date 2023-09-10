@@ -19,11 +19,15 @@ BossEnemy::BossEnemy() {
 	funnelTex_ = TextureManager::Load("Fannel.png");
 	// 突進先
 	rushPointTex_ = TextureManager::Load("bossAttack.png");
+	// HP
+	hpTex_ = TextureManager::Load("HP_Out_Tex.png");
+	hpShadowTex_ = TextureManager::Load("Hp_Gauge_Out_Tex.png");
 }
 
 void BossEnemy::RespownBoss() 
 { 
 	pos_ = {float(WinApp::kWindowWidth), float(WinApp::kWindowHeight)};
+	isAlive_ = true;
 }
 
 void BossEnemy::RandomActionManager() 
@@ -101,6 +105,14 @@ void BossEnemy::Initialize()
 	    Sprite::Create(charaTex_, {pos_.x, pos_.y}, {1.0f, 1.0f, 1.0f, 1.0f}, {0.5f, 0.5f}));
 	rushSprite_.reset(
 	    Sprite::Create(rushPointTex_, {0, 0}, {1.0f, 1.0f, 1.0f, 1.0f}, {0.5f, 0.5f}));
+	hpSprite_.reset(Sprite::Create(
+	    hpTex_, {float(WinApp::kWindowWidth / 2), 60.0f}, {1.0f, 1.0f, 1.0f, 1.0f}, {0.5f, 0.5f}));
+	hpShadowSprite_.reset(Sprite::Create(
+	    hpShadowTex_, {float(WinApp::kWindowWidth / 2), 60.0f}, {1.0f, 1.0f, 1.0f, 1.0f},
+	    {0.5f, 0.5f}));
+	//hpSprite_->SetSize(Vector2(200.0f, 15.0f));
+	//hpShadowSprite_->SetSize(Vector2(200.0f, 15.0f));
+
 	// 当たり判定用の半径（サイズに合わせる）
 	radius_ = 150.0f;
 	// 適当にサイズ
@@ -173,6 +185,11 @@ void BossEnemy::Update()
 		break;
 	}
 
+	// スクロールのインスタンス取得
+	Scroll* scroll = Scroll::GetInstance();
+	ScPos = prevPlayerPos_ - scroll->GetAddScroll();
+	rushSprite_->SetPosition(ScPos);
+
 	BulletUpdate();
 
 	// 座標設定
@@ -192,6 +209,10 @@ void BossEnemy::Draw()
 
 	if (isRush_) {
 		rushSprite_->Draw();	
+	}
+	if (isAlive_) {
+		hpSprite_->Draw();
+		hpShadowSprite_->Draw();
 	}
 
 }
@@ -272,10 +293,6 @@ void BossEnemy::RushAttackSetup()
 	// 座標初期化
 	prevBossPos_ = pos_;
 	prevPlayerPos_ = nowPlayerPos_;
-	// スクロールのインスタンス取得
-	Scroll* scroll = Scroll::GetInstance();
-	ScPos = prevPlayerPos_ - scroll->GetAddScroll();
-	rushSprite_->SetPosition(ScPos);
 }
 
 void BossEnemy::GuidedAttack() 

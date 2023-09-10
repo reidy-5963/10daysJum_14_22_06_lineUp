@@ -30,11 +30,22 @@ void EnemyManager::Update()
 
 	respownTimer_++;
 
-	if (respownTimer_ % kRespownTimer_ == 0) {
-		CreateEnemy(kLeftTop);
-		CreateEnemy(kLeftBottom);
-		CreateEnemy(kRightTop);
-		CreateEnemy(kRightBottom);
+	if (respownTimer_ > kRespownTimer_) {
+		spawnShiftFrame_++;
+		if (spawnShiftFrame_ == 10) {
+			CreateEnemy(kLeftTop);
+
+		} else if (spawnShiftFrame_ == 20) {
+			CreateEnemy(kLeftBottom);
+
+		} else if (spawnShiftFrame_ == 30) {
+			CreateEnemy(kRightTop);
+
+		} else if (spawnShiftFrame_ == 40) {
+			CreateEnemy(kRightBottom);
+			spawnShiftFrame_ = 0;
+			respownTimer_ = 0;
+		}
 	}
 
 	if (input_->TriggerKey(DIK_4)) {

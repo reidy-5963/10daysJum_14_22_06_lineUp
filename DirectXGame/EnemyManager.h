@@ -123,9 +123,10 @@ private:	// Arrowの変数
 	Vector2 plPrevPos_ = {};
 
 private: // ステージでの管理系
-	int kRespownTimer_ = 10 * 60;
+	int kRespownTimer_ = 60 * 10;
 	int respownTimer_ = 0;
-
+	int spawnShiftFrame_ = 0;
+	
 	Vector2 resCircle_ = {};
 	float resCircleRadius_ = 0;
 

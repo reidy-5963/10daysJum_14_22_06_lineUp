@@ -121,12 +121,19 @@ private:
 	Input* input_ = nullptr;
 	// スプライト
 	std::unique_ptr<Sprite> rushSprite_;
+	std::unique_ptr<Sprite> hpSprite_;
+	std::unique_ptr<Sprite> hpShadowSprite_;
+
 	// 弾用のテクスチャ
 	uint32_t bulletTex_ = 0u;
 	// ファンネル用のテクスチャ
 	uint32_t funnelTex_ = 0u;
 	// 突進先用のテクスチャ
 	uint32_t rushPointTex_ = 0u;
+	// HP用のテクスチャ
+	uint32_t hpTex_ = 0u;
+	uint32_t hpShadowTex_ = 0u;
+
 	// 毎フレームプレイヤーの座標補間変数
 	Vector2 nowPlayerPos_ = {};
 	// 必要時のプレイヤーの座標変数
@@ -147,6 +154,8 @@ private:
 	std::list<BossFunnel*> funnels_;
 	
 	bool isFunnelAttackNow_ = false;
+
+	bool isAlive_ = false;
 
 private: // 突進
 	// 補間レート
