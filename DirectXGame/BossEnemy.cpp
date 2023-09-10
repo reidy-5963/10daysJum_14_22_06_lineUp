@@ -204,7 +204,7 @@ void BossEnemy::Update()
 
 	// スクロールのインスタンス取得
 	Scroll* scroll = Scroll::GetInstance();
-	ScPos = prevPlayerPos_ - scroll->GetAddScroll();
+	ScPos = prevPlayerPos_ - scroll->GetAddScroll() + sceneVelo;
 	rushSprite_->SetPosition(ScPos);
 
 	BulletUpdate();
