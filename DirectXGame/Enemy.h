@@ -26,6 +26,9 @@ public:	// 継承
 
 	void P2EOnCollision();
 
+	void SetParasiteTexture(uint32_t tex) { parasiteTex_ = tex; }
+	void ParasiteAnimationInitialize();
+
 public: // 設定
 
 	/// <summary>
@@ -55,14 +58,17 @@ public: // 設定
 	Vector2 velocity_ = {};
 
 	bool isDead_ = false;
-
+	bool isPopUpPlayer = false;
 	bool isParasite_ = false;
 
 	int setTimer = 120;
 	int deleteTimer = setTimer;
 
+	uint32_t parasiteTex_ = 0u;
+
 private: // 限界値
 	Vector2 kMinusLimits = {-250.0f, -250.0f};
 	Vector2 kPlusLimits = {2800.0f, 1700.0f};
+
 
 };

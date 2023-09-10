@@ -18,6 +18,7 @@ void EnemyManager::Initialize() {
 	input_ = Input::GetInstance();
 
 	charaTex_ = TextureManager::Load("Enemy_ver2.png");
+	parasiteTex_ = TextureManager::Load("Parasite.png");
 }
 
 void EnemyManager::Update() 
@@ -143,6 +144,7 @@ void EnemyManager::CreateEnemy(int spownPoint)
 	//newEnemy->SetVelocity(Vector2(5.0f, 0));
 	//newEnemy->SetVelocity(MyMath::Normalize(playerPos_ - newEnemy->GetPosition()));
 	newEnemy->SetVelocity(RandomRadianVector());
+	newEnemy->SetParasiteTexture(parasiteTex_);
 	enemys_.push_back(newEnemy);
 	
 }

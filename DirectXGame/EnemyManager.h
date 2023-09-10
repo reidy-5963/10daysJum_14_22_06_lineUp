@@ -93,6 +93,7 @@ private:
 
 	// 共通テクスチャ
 	uint32_t charaTex_ = 0u;
+	uint32_t parasiteTex_ = 0u;
 	// エネミー
 	std::list<Enemy*> enemys_;
 
