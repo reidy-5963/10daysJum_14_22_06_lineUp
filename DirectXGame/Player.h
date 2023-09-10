@@ -231,7 +231,7 @@ private: // メンバ変数
 	uint32_t bulletTexture_ = 0u;
 
 	// 弾の距離制限
-	const float kDeadOffset = 740.0f;
+	const float kDeadOffset = 1200.0f;
 
 	// 弾の速さ
 	float bulletSpeed_ = 20.0f;

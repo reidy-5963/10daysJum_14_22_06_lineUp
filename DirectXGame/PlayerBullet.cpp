@@ -13,8 +13,8 @@ void PlayerBullet::Initialize(uint32_t texture, const Vector2& pos, Vector2 velo
 	// スプライトの生成
 	sprite_.reset(Sprite::Create(texture, pos_, {1.0f, 1.0f, 1.0f, 1.0f}, {0.5f, 0.5f}));
 	// サイズ設定
-	sprite_->SetSize({16.0f, 16.0f});
-	radius_ = sprite_->GetSize().x / 2;
+	radius_ = 16.0f;
+	sprite_->SetSize({radius_ * 2, radius_ * 2});
 }
 
 void PlayerBullet::Update() {
