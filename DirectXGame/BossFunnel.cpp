@@ -58,12 +58,12 @@ void BossFunnel::Update(Vector2& playerPos) {
 			move_t_ = 0;
 			isMove_ = false;
 		} else {
-			move_t_ += 0.01f;
+			move_t_ += 0.02f;
 		}
 	} 
 	// 直進し続ける処理
 	else if (isMove_ && turnCount_ == 2) {
-		kMoveSpeed_ += -3.0f * (1.0f / 60.0f);
+		kMoveSpeed_ += 5.0f * (1.0f / 60.0f);
 		pos_ += Vector2(moveDirect_.x * kMoveSpeed_, moveDirect_.y * kMoveSpeed_);
 		if (kMoveSpeed_ < 0.5f) {
 			isDead_ = true;
