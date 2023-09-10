@@ -183,18 +183,20 @@ void GameScene::CheckAllCollision() {
 		float radius = player_->GetRadius() + enemy->GetRadius();
 		// 交差判定
 		if (distance <= radius) {
-			// コールバック
-			if(enemy->IsParasite()) {
-				player_->AddTails();
-				enemy->SetIsDead(true);
+			if (!player_->GetIsInvisible()) {
+				// コールバック
+				if (enemy->IsParasite()) {
+					player_->AddTails();
+					enemy->SetIsDead(true);
+				}
+				if (!enemy->IsParasite()) {
+					player_->OnCollision();
+					enemy->SetIsDead(true);
+				}
+				//
+				killCount_ += 1;
 
 			}
-			if (!enemy->IsParasite()) {
-				player_->OnCollision();
-				enemy->SetIsDead(true);
-			}
-			//
-			killCount_ += 1;
 		}
 	}
 #pragma endregion
@@ -252,10 +254,13 @@ void GameScene::CheckAllCollision() {
 			float radius = player_->GetRadius() + enemy->GetRadius();
 			// 交差判定
 			if (distance <= radius) {
-				// コールバック
-				enemy->OnCollision();
-				tail->OnCollision();
-				killCount_ += 1;
+				if (!player_->GetIsInvisible()) {
+					// コールバック
+					enemy->OnCollision();
+					tail->OnCollision();
+					killCount_ += 1;
+
+				}
 			}
 		}
 	}
