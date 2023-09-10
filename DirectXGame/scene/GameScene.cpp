@@ -269,26 +269,26 @@ void GameScene::CheckAllCollision() {
 	}
 #pragma endregion
 
-#pragma region ボスの弾と尻尾
-	for (BossFunnel* bossFunnel_ : bossFunnel) {
-		// エネミーの位置取得
-		targetA = bossFunnel_->GetPosition();
-		for (Tail* tail : tails) {
-			targetB = tail->GetPosition();
-			float distance = std::sqrtf(
-			    std::powf(targetA.x - targetB.x, 2) + std::powf(targetA.y - targetB.y, 2));
-			float radius = tail->GetRadius() + bossFunnel_->GetRadius();
-			// 交差判定
-			if (distance <= radius) {
-				// コールバック
-				bossFunnel_->OnCollision();
-				tail->OnCollision();
-			}
-		}
-	}
+#pragma region ボスのファンネルと尻尾
+	//for (BossFunnel* bossFunnel_ : bossFunnel) {
+	//	// エネミーの位置取得
+	//	targetA = bossFunnel_->GetPosition();
+	//	for (Tail* tail : tails) {
+	//		targetB = tail->GetPosition();
+	//		float distance = std::sqrtf(
+	//		    std::powf(targetA.x - targetB.x, 2) + std::powf(targetA.y - targetB.y, 2));
+	//		float radius = tail->GetRadius() + bossFunnel_->GetRadius();
+	//		// 交差判定
+	//		if (distance <= radius) {
+	//			// コールバック
+	//			bossFunnel_->OnCollision();
+	//			tail->OnCollision();
+	//		}
+	//	}
+	//}
 #pragma endregion
 
-#pragma region ボスのファンネルと尻尾
+#pragma region ボスの弾と尻尾
 	for (BossBullet* bossBullet_ : bossBullet) {
 		// エネミーの位置取得
 		targetA = bossBullet_->GetPosition();
