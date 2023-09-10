@@ -23,10 +23,14 @@ void EnemyManager::Initialize() {
 
 void EnemyManager::Update() 
 {
+#ifdef _DEBUG
 	ImGui::Begin("count");
 	ImGui::Text("isRespown : %d", isRespown);
 	ImGui::Text("arrowCoolTime : %d", ArrowCoolTime);
 	ImGui::End();
+
+#endif // _DEBUG
+
 
 	respownTimer_++;
 
@@ -101,10 +105,12 @@ void EnemyManager::Draw()
 
 void EnemyManager::TentRes() 
 {
+	#ifdef _DEBUG
 	ImGui::Begin("EnemySetting");
 	ImGui::DragInt("Limit", &kEnemyLimit, 1, 0, 20);
 	ImGui::DragInt("Respown", &kRespawnTimer, 1, 0, 300);
 	ImGui::End();
+	#endif
 
 	// 生成（仮
 	respawnCount--;

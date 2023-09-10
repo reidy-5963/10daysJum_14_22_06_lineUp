@@ -143,6 +143,10 @@ void GlobalVariables::Update() {
 /// </summary>
 /// <param name="groupName">グループ</param>
 void GlobalVariables::SaveFile(const std::string& groupName) {
+	groupName;
+#ifdef _DEBUG
+
+
 	// グループを検索
 	std::map<std::string, Group>::iterator itGroup = datas_.find(groupName);
 
@@ -214,6 +218,7 @@ void GlobalVariables::SaveFile(const std::string& groupName) {
 	ofs << std::setw(4) << root << std::endl;
 	// ファイルを閉じる
 	ofs.close();
+#endif // _DEBUG
 }
 
 /// <summary>
@@ -248,6 +253,7 @@ void GlobalVariables::LoadFiles() {
 /// </summary>
 /// <param name="groupName">グループ</param>
 void GlobalVariables::LoadFile(const std::string& groupName) {
+	groupName;
 	// 読み込むjsonファイルのフルパスを合成する
 	std::string filePath = kDirectoryPath + groupName + ".json";
 	// 読み込み用ファイルストリーム
@@ -258,7 +264,9 @@ void GlobalVariables::LoadFile(const std::string& groupName) {
 	// ファイルオープン失敗?
 	if (ifs.fail()) {
 		std::string message = "Failed open data file for open.";
+#ifdef _DEBUG
 		MessageBoxA(nullptr, message.c_str(), "GlobalVariables", 0);
+#endif // _DEBUG
 		assert(0);
 		return;
 	}

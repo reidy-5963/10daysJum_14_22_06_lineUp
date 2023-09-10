@@ -50,10 +50,10 @@ void GameScene::Initialize() {
 	enemyManager_ = EnemyManager::GetInstance();
 	enemyManager_->Initialize();
 
-	backTex = TextureManager::Load("testBackTex.png");
-	back.reset(Sprite::Create(backTex, {0.0f, 0.0f}, {0.2f, 0.2f, 0.2f, 1.0f}, {0.0f, 0.0f}));
-	Vector2 size = back->GetSize();
-	back->SetSize({size.x * 1.5f, size.y * 1.5f});
+	backTex = TextureManager::Load("white1x1.png");
+	back.reset(Sprite::Create(backTex, {0.0f, 0.0f}, {0.01f, 0.01f, 0.01f, 1.0f}, {0.0f, 0.0f}));
+	Vector2 size = {1920 * 3, 1080 * 3};
+	back->SetSize(size);
 #pragma endregion
 }
 
@@ -90,7 +90,7 @@ void GameScene::Update() {
 		boss_->Update();
 	//}
 	// 背景の更新処理
-	back->SetPosition(backPos - scroll->GetAddScroll() + sceneShakevelo_);
+	    back->SetPosition(backPos - scroll->GetAddScroll() + sceneShakevelo_);
 }
 
 /// <summary>

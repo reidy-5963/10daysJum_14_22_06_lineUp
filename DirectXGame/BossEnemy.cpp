@@ -29,7 +29,7 @@ void BossEnemy::RespownBoss()
 	pos_ = {float(WinApp::kWindowWidth), float(WinApp::kWindowHeight)};
 	isAlive_ = true;
 	isDead_ = false;
-	hp_ = 30;
+	hp_ = setHp;
 	animationTimer = 0;
 	animationNumber = 0;
 	animationScene = 4;
@@ -114,10 +114,12 @@ void BossEnemy::Initialize()
 	    Sprite::Create(rushPointTex_, {0, 0}, {1.0f, 1.0f, 1.0f, 1.0f}, {0.5f, 0.5f}));
 
 	hpSprite_.reset(Sprite::Create(
-	    hpTex_, {float(WinApp::kWindowWidth / 2), 60.0f}, {1.0f, 1.0f, 1.0f, 1.0f}, {0.5f, 0.5f}));
+	    hpTex_, {float(WinApp::kWindowWidth / 2), 60.0f}, {1.0f, 1.0f, 1.0f, 1.0f}, {0.0f, 0.0f}));
 	hpShadowSprite_.reset(Sprite::Create(
 	    hpShadowTex_, {float(WinApp::kWindowWidth / 2), 60.0f}, {1.0f, 1.0f, 1.0f, 1.0f},
-	    {0.5f, 0.5f}));
+	    {0.0f, 0.0f}));
+
+	hpGaugeSize = hpSprite_->GetSize();
 	//hpSprite_->SetSize(Vector2(200.0f, 15.0f));
 	//hpShadowSprite_->SetSize(Vector2(200.0f, 15.0f));
 
@@ -200,11 +202,15 @@ void BossEnemy::Update()
 	}
 	MyMath::ShakeUpdate(shakeVelo_, isDamageShake, amplitNum);
 
+	hpSprite_->SetSize({ (float(hp_) / float(setHp)) * hpGaugeSize.x, hpGaugeSize.y });
+	hpSprite_->SetPosition({1920 / 2, 60.0f});
+
 	ScreenPos += shakeVelo_;
 
 	// スクロールのインスタンス取得
 	Scroll* scroll = Scroll::GetInstance();
 	ScPos = prevPlayerPos_ - scroll->GetAddScroll() + sceneVelo;
+
 	rushSprite_->SetPosition(ScPos);
 
 	BulletUpdate();

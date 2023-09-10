@@ -65,13 +65,19 @@ void Player::Initialize() {
 	markerSprite_->SetSize({markerradius * 2, markerradius * 2});
 	// 1本目の追加
 	AddTails();
+	AddTails();
+	AddTails();
 
 	//
+#ifdef _DEBUG
 	m1.reset(Sprite::Create(markerTex_, markerPos_, {1.0f, 0.0f, 0.0f, 1.0f}, {0.5f, 0.5f}));
 	m2.reset(Sprite::Create(markerTex_, markerPos_, {0.0f, 1.0f, 0.0f, 1.0f}, {0.5f, 0.5f}));
 	p1.reset(Sprite::Create(markerTex_, markerPos_, {0.0f, 0.0f, 1.0f, 1.0f}, {0.5f, 0.5f}));
 	p2.reset(Sprite::Create(markerTex_, markerPos_, {0.0f, 0.0f, 0.0f, 1.0f}, {0.5f, 0.5f}));
 	origin_.reset(Sprite::Create(markerTex_, markerPos_, {0.5f, 0.5f, 0.5f, 1.0f}, {0.5f, 0.5f}));
+
+#endif // _DEBUG
+
 	//
 	InitializeGrobalVariables();
 }
@@ -83,8 +89,8 @@ void Player::Update() {
 	// グローバル変数の値を取得
 	ApplyGrobalVariables();
 	ScreenPosInitialize();
-#ifdef _DEBUG
-	////////////////////////////////////////////////////
+	// スクロールのインスタンスを取得
+	Scroll* scroll = Scroll::GetInstance();
 	// ひとまずの尻尾追加
 	if (input_->TriggerKey(DIK_1)) {
 		AddTails();
@@ -95,8 +101,9 @@ void Player::Update() {
 		DeleteTails();
 	}
 
-	// スクロールのインスタンスを取得
-	Scroll* scroll = Scroll::GetInstance();
+#ifdef _DEBUG
+	////////////////////////////////////////////////////
+
 
 	////////////////////////////////////////////////////
 	// 通常状態の回転用の道順

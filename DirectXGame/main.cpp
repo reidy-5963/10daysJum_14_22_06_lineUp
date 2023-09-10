@@ -74,7 +74,11 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		imguiManager->Begin();
 		// 入力関連の毎フレーム処理
 		input->Update(); 
-		
+		if (input->TriggerKey(DIK_F12) && !win->IsFullscreen()) {
+			win->SetFullscreen(true);
+		} else if (input->TriggerKey(DIK_F12) && win->IsFullscreen()) {
+			win->SetFullscreen(false);
+		}
 		// グローバル変数の更新処理
 		GlobalVariables::GetInstance()->Update();		
 

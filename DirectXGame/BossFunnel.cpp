@@ -45,9 +45,13 @@ void BossFunnel::Initialize(uint32_t texture, int type, Vector2& startPos, Vecto
 }
 
 void BossFunnel::Update(Vector2& playerPos) {
+#ifdef _DEBUG
 	ImGui::Begin("fla");
 	ImGui::Text("%d", turnCount_);
 	ImGui::End();
+
+#endif // _DEBUG
+
 	// 線形補間での移動
 	if (isMove_ && turnCount_ < 2) {
 		pos_ = MyMath::EaseInCubicF(move_t_, prevPos_, endPos_);

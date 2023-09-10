@@ -167,7 +167,9 @@ public:	// 設定・取得
 
 	bool isDead_ = false;
 
-	int hp_ = 0;
+	const int setHp = 50;
+	int hp_ = setHp;
+	Vector2 hpGaugeSize{};
 
 private: // 突進
 	// 補間レート

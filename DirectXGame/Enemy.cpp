@@ -23,11 +23,14 @@ void Enemy::Initialize() {
 
 void Enemy::Update() {
 	ScreenPosInitialize();
-
+#ifdef _DEBUG
 	ImGui::Begin("EnemyInfo");
 	ImGui::DragFloat2("pos", &pos_.x, 0.1f, 0, 2000.0f);
 	ImGui::SliderFloat2("speed", &velocity_.x, 0.0f, 30.0f);
 	ImGui::End();
+
+#endif // _DEBUG
+
 
 	if (!isParasite_) {
 		// 座標移動

@@ -276,10 +276,10 @@ private: // メンバ変数
 	std::unique_ptr<Sprite> p1 = nullptr;
 	std::unique_ptr<Sprite> p2 = nullptr;
 	std::unique_ptr<Sprite> origin_ = nullptr;
-	Vector2 originPos_{};
 	//
 
 #endif // _DEBUG
+	Vector2 originPos_{};
 
 	Vector2 shakeVelo_{};
 	bool isDamageShake = false;
