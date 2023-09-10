@@ -28,7 +28,13 @@ void BossEnemy::RespownBoss()
 { 
 	pos_ = {float(WinApp::kWindowWidth), float(WinApp::kWindowHeight)};
 	isAlive_ = true;
+	isDead_ = false;
 	hp_ = 30;
+	animationTimer = 0;
+	animationNumber = 0;
+	animationScene = 4;
+	oneTime = 5;
+	isAnimation = true;
 }
 
 void BossEnemy::RandomActionManager() 
@@ -273,9 +279,10 @@ void BossEnemy::BulletUpdate() {
 		if (funnel->GetRadius() < deadZone_) {
 			funnel->SetIsDead(true);
 		}
-
 	}
-
+	if (funnels_.empty()) {
+		isFunnelAttackNow_ = false;
+	}
 }
 
 void BossEnemy::RushAttack() 
@@ -407,7 +414,10 @@ void BossEnemy::FunnelAttack()
 }
 
 void BossEnemy::FunnelAttackInitialize() 
-{ kModeEndTimer_ = 260; }
+{ 
+	kModeEndTimer_ = 260;
+	isFunnelAttackNow_ = true;
+}
 
 void BossEnemy::RootUpdate() 
 {
@@ -417,35 +427,39 @@ void BossEnemy::RootUpdate()
 			RushAttackSetup();
 		}
 	}
-
-	if (input_->TriggerKey(DIK_B)) {
+	/// 誘導
+	if (input_->TriggerKey(DIK_F)) {
 		if (behavior_ != Behavior::kGuided) {
 			behaviorRequest_ = Behavior::kGuided;
 		}
 	}
-
-	if (input_->TriggerKey(DIK_K)) {
+	/// 全方位
+	if (input_->TriggerKey(DIK_G)) {
 		if (behavior_ != Behavior::kBarrage) {
 			behaviorRequest_ = Behavior::kBarrage;
 		}
 	}
-	
-	if (input_->TriggerKey(DIK_G)) {
+	/// ファンネル
+	if (input_->TriggerKey(DIK_H)) {
 		if (behavior_ != Behavior::kFunnel) {
 			behaviorRequest_ = Behavior::kFunnel;
 		}
 	}
-
-	if (input_->TriggerKey(DIK_L)) {
+	/// 方向転換
+	if (input_->TriggerKey(DIK_J)) {
 		Vector2 directRotate = nowPlayerPos_ - pos_;
 		//directRotate += pos_;
 		sprite_->SetRotation(std::atan2(directRotate.y, directRotate.x));
+	}
+	/// リスポーン
+	if (input_->TriggerKey(DIK_K)) {
+		RespownBoss();
 	}
 
 	//RandomActionManager();
 
 	/// 突進までの処理
-	if (isRush_) {
+	if (isRush_ && !isFunnelAttackNow_) {
 		rushCount_ += 1;
 		if (behavior_ != Behavior::kRush && rushCount_ > kRushTimer_) {
 			behaviorRequest_ = Behavior::kRush;

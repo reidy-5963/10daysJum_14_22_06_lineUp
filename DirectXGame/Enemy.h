@@ -68,7 +68,7 @@ public: // 設定
 
 private: // 限界値
 	Vector2 kMinusLimits = {-250.0f, -250.0f};
-	Vector2 kPlusLimits = {2800.0f, 1700.0f};
+	Vector2 kPlusLimits = {5760.0f, 3240.0f};
 
 
 };

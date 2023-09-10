@@ -85,10 +85,10 @@ void GameScene::Update() {
 	}
 
 	// ボスの更新処理
-	if (!boss_->IsDead()) {
+	//if (!boss_->IsDead()) {
 		boss_->SetPlayer(player_->GetPosition());
 		boss_->Update();
-	}
+	//}
 	// 背景の更新処理
 	back->SetPosition(backPos - scroll->GetAddScroll() + sceneShakevelo_);
 }
