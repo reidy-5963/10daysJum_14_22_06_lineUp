@@ -28,6 +28,7 @@ void BossEnemy::RespownBoss()
 { 
 	pos_ = {float(WinApp::kWindowWidth), float(WinApp::kWindowHeight)};
 	isAlive_ = true;
+	hp_ = 30;
 }
 
 void BossEnemy::RandomActionManager() 
@@ -123,6 +124,11 @@ void BossEnemy::Initialize()
 
 void BossEnemy::Update() 
 {
+	if (isAlive_ && hp_ <= 0) {
+		isDead_ = true;
+		isAlive_ = false;
+	}
+
 	ScreenPosInitialize();
 
 	Animation::Anime(animationTimer, animationNumber, animationScene, oneTime);

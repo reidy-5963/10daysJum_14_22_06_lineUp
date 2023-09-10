@@ -116,7 +116,15 @@ public:	// 設定・取得
 
 	void RespownBoss();
 
-private:
+	void SetHp(int hp) { hp_ = hp; }
+
+	int GetHp() { return hp_; }
+
+	bool IsDead() { return isDead_; }
+
+	bool IsAlive() { return isAlive_; }
+
+	private:
 	// 入力
 	Input* input_ = nullptr;
 	// スプライト
@@ -156,6 +164,10 @@ private:
 	bool isFunnelAttackNow_ = false;
 
 	bool isAlive_ = false;
+
+	bool isDead_ = false;
+
+	int hp_ = 0;
 
 private: // 突進
 	// 補間レート

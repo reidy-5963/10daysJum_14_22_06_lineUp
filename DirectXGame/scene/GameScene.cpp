@@ -85,9 +85,10 @@ void GameScene::Update() {
 	}
 
 	// ボスの更新処理
-	boss_->SetPlayer(player_->GetPosition());
-	boss_->Update();
-
+	if (!boss_->IsDead()) {
+		boss_->SetPlayer(player_->GetPosition());
+		boss_->Update();
+	}
 	// 背景の更新処理
 	back->SetPosition(backPos - scroll->GetAddScroll() + sceneShakevelo_);
 }
@@ -144,7 +145,9 @@ void GameScene::Draw() {
 	player_->Draw();
 
 	// ボスの描画
-	boss_->Draw();
+	if (!boss_->IsDead()) {
+		boss_->Draw();
+	}
 
 	// スプライト描画後処理
 	Sprite::PostDraw();
@@ -336,10 +339,11 @@ void GameScene::CheckAllCollision() {
 
 		float radius = playerBullet_->GetRadius() + boss_->GetRadius();
 
-		if (distance <= radius) {
+		if (distance <= radius && boss_->IsAlive()) {
 			// コールバック
 			playerBullet_->OnCollision();
 			boss_->OnCollision();
+			boss_->SetHp(boss_->GetHp() - 1);
 		}
 	}
 #pragma endregion
