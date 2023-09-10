@@ -2,11 +2,13 @@
 #include "TextureManager.h"
 #include "MyMath.h"
 #include "ImGuiManager.h"
-#include <numbers>
-#include <cmath>
 #include "BossBullet.h"
 #include "WinApp.h"
 #include "Animation.h"
+#include "Scroll.h"
+
+#include <numbers>
+#include <cmath>
 
 BossEnemy::BossEnemy() {
 	// キャラ
@@ -15,6 +17,8 @@ BossEnemy::BossEnemy() {
 	bulletTex_ = TextureManager::Load("Bullet.png");
 	// ファンネル
 	funnelTex_ = TextureManager::Load("Fannel.png");
+	// 突進先
+	rushPointTex_ = TextureManager::Load("bossAttack.png");
 }
 
 void BossEnemy::RespownBoss() 
@@ -24,17 +28,17 @@ void BossEnemy::RespownBoss()
 
 void BossEnemy::RandomActionManager() 
 { 
-	if (behavior_ == Behavior::kRoot) {
+	if (behavior_ == Behavior::kRoot && !isRush_ && !isFunnelAttackNow_) {
 		actionTimer_++;
 	}
 	if (actionTimer_ == kActionCoolTime_) {
 		int behaviorRand = rand() % 5 + 1;
 		actionTimer_ = 0;
 		switch (behaviorRand) {
-		case 1:
-			behaviorRequest_ = Behavior::kRush;
-			break;
 		case 2:
+			RushAttackSetup();
+			break;
+		case 1:
 			behaviorRequest_ = Behavior::kGuided;
 			break;
 		case 3:
@@ -56,6 +60,7 @@ void BossEnemy::GenerateBullet(Vector2& velocity)
 	// 生成・初期化
 	BossBullet* newBullet = new BossBullet();
 	newBullet->Initialize(bulletTex_, GetPosition(), velocity);
+	newBullet->SetBulletSpeed(8.0f);
 	// リストに追加
 	bullets_.push_back(newBullet);
 }
@@ -94,6 +99,8 @@ void BossEnemy::Initialize()
 
 	sprite_.reset(
 	    Sprite::Create(charaTex_, {pos_.x, pos_.y}, {1.0f, 1.0f, 1.0f, 1.0f}, {0.5f, 0.5f}));
+	rushSprite_.reset(
+	    Sprite::Create(rushPointTex_, {0, 0}, {1.0f, 1.0f, 1.0f, 1.0f}, {0.5f, 0.5f}));
 	// 当たり判定用の半径（サイズに合わせる）
 	radius_ = 150.0f;
 	// 適当にサイズ
@@ -105,9 +112,6 @@ void BossEnemy::Update()
 {
 	ScreenPosInitialize();
 
-	ImGui::Begin("cc");
-	ImGui::Text("count : %d\nisRush : %d", rushCount_, rushFlag_);
-	ImGui::End();
 	Animation::Anime(animationTimer, animationNumber, animationScene, oneTime);
 
 	if (behaviorRequest_) {
@@ -185,6 +189,11 @@ void BossEnemy::Draw()
 	}
 	// 描画
 	BaseCharacter::Draw();
+
+	if (isRush_) {
+		rushSprite_->Draw();	
+	}
+
 }
 
 void BossEnemy::OnCollision() {}
@@ -255,8 +264,18 @@ void BossEnemy::RushAttackInitialize()
 { 
 	// 補間レート初期化
 	this->rushMove_t_ = 0;
+}
+
+void BossEnemy::RushAttackSetup() 
+{
+	isRush_ = true;
+	// 座標初期化
 	prevBossPos_ = pos_;
 	prevPlayerPos_ = nowPlayerPos_;
+	// スクロールのインスタンス取得
+	Scroll* scroll = Scroll::GetInstance();
+	ScPos = prevPlayerPos_ - scroll->GetAddScroll();
+	rushSprite_->SetPosition(ScPos);
 }
 
 void BossEnemy::GuidedAttack() 
@@ -362,10 +381,9 @@ void BossEnemy::RootUpdate()
 {
 	/// 突進起動キー処理
 	if (input_->TriggerKey(DIK_H)) {
-		rushFlag_ = true;
-		// 座標初期化
-		prevBossPos_ = pos_;
-		prevPlayerPos_ = nowPlayerPos_;
+		if (!isRush_) {
+			RushAttackSetup();
+		}
 	}
 
 	if (input_->TriggerKey(DIK_B)) {
@@ -392,18 +410,18 @@ void BossEnemy::RootUpdate()
 		sprite_->SetRotation(std::atan2(directRotate.y, directRotate.x));
 	}
 
-	RandomActionManager();
+	//RandomActionManager();
 
 	/// 突進までの処理
-	if (rushFlag_) {
+	if (isRush_) {
 		rushCount_ += 1;
 		if (behavior_ != Behavior::kRush && rushCount_ > kRushTimer_) {
 			behaviorRequest_ = Behavior::kRush;
 			// 突進カウント・フラグ初期化
 			rushCount_ = 0;
-			rushFlag_ = false;
+			isRush_ = false;
 		}
-	}	
+	}
 }
 
 void BossEnemy::RootInitialize() 

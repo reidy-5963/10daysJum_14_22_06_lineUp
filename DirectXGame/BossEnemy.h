@@ -6,6 +6,7 @@
 
 #include <list>
 #include <optional>
+#include <memory>
 
 class BossEnemy : public BaseCharacter
 {
@@ -55,6 +56,8 @@ private:	// 行動関数
 	void RushAttack();
 
 	void RushAttackInitialize();
+
+	void RushAttackSetup();
 
 	/// <summary>
 	/// 誘導弾
@@ -116,10 +119,14 @@ public:	// 設定・取得
 private:
 	// 入力
 	Input* input_ = nullptr;
+	// スプライト
+	std::unique_ptr<Sprite> rushSprite_;
 	// 弾用のテクスチャ
 	uint32_t bulletTex_ = 0u;
 	// ファンネル用のテクスチャ
 	uint32_t funnelTex_ = 0u;
+	// 突進先用のテクスチャ
+	uint32_t rushPointTex_ = 0u;
 	// 毎フレームプレイヤーの座標補間変数
 	Vector2 nowPlayerPos_ = {};
 	// 必要時のプレイヤーの座標変数
@@ -139,6 +146,7 @@ private:
 	// ミサイルファンネル
 	std::list<BossFunnel*> funnels_;
 	
+	bool isFunnelAttackNow_ = false;
 
 private: // 突進
 	// 補間レート
@@ -146,9 +154,11 @@ private: // 突進
 	// 突進のカウント
 	int rushCount_ = 0;
 	// 突進までの時間
-	int kRushTimer_ = 60;
+	int kRushTimer_ = 120;
 	// 突進カウント用フラグ
-	bool rushFlag_ = false;
+	bool isRush_ = false;
+
+	Vector2 ScPos = {};
 
 private: // 全方位
 	// 角度
