@@ -105,6 +105,7 @@ void BossEnemy::Initialize()
 	    Sprite::Create(charaTex_, {pos_.x, pos_.y}, {1.0f, 1.0f, 1.0f, 1.0f}, {0.5f, 0.5f}));
 	rushSprite_.reset(
 	    Sprite::Create(rushPointTex_, {0, 0}, {1.0f, 1.0f, 1.0f, 1.0f}, {0.5f, 0.5f}));
+
 	hpSprite_.reset(Sprite::Create(
 	    hpTex_, {float(WinApp::kWindowWidth / 2), 60.0f}, {1.0f, 1.0f, 1.0f, 1.0f}, {0.5f, 0.5f}));
 	hpShadowSprite_.reset(Sprite::Create(
@@ -211,8 +212,8 @@ void BossEnemy::Draw()
 		rushSprite_->Draw();	
 	}
 	if (isAlive_) {
-		hpSprite_->Draw();
 		hpShadowSprite_->Draw();
+		hpSprite_->Draw();
 	}
 
 }
