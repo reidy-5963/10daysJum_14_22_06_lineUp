@@ -15,6 +15,7 @@ TitleScene::TitleScene() {}
 TitleScene::~TitleScene() {}
 
 void TitleScene::Initialize() {
+	sceneNum = 0;
 	dxCommon_ = DirectXCommon::GetInstance();
 	input_ = Input::GetInstance();
 	audio_ = Audio::GetInstance();

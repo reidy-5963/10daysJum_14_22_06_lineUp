@@ -19,6 +19,7 @@ GameScene::~GameScene() {}
 /// 初期化
 /// </summary>
 void GameScene::Initialize() {
+	sceneNum = 1;
 
 	dxCommon_ = DirectXCommon::GetInstance();
 	input_ = Input::GetInstance();

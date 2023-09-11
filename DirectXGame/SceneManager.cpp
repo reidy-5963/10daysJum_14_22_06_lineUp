@@ -6,14 +6,14 @@ SceneManager::SceneManager()
 	sceneArray_[GAMESCENE] = std::make_unique<GameScene>();
 	sceneArray_[CLEAR] = std::make_unique<GameScene>();
 
-	sceneNum_ = TITLE;
+	sceneNum_ = GAMESCENE;
 	sceneArray_[sceneNum_]->Initialize();
 }
 
 SceneManager::~SceneManager() {}
 
 void SceneManager::Update() {
-	prevSceneNum_ = this->sceneNum_;
+	prevSceneNum_ = sceneNum_;
 	sceneNum_ = sceneArray_[sceneNum_]->GetSceneNum();
 
 	if (prevSceneNum_ != sceneNum_) {
