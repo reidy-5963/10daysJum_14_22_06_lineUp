@@ -19,7 +19,7 @@ GameScene::~GameScene() {}
 /// 初期化
 /// </summary>
 void GameScene::Initialize() {
-#pragma region dxCommonや入力、音の初期化
+#pragma region dxCommonや入力音の初期化
 
 	dxCommon_ = DirectXCommon::GetInstance();
 	input_ = Input::GetInstance();
