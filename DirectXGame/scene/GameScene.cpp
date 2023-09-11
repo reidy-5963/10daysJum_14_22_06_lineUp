@@ -391,6 +391,7 @@ void GameScene::CheckAllCollision() {
 		}
 	}
 #pragma endregion
+
 #pragma region プレイヤーとボス 
 	targetA = player_->GetPosition();
 	targetB = boss_->GetPosition();

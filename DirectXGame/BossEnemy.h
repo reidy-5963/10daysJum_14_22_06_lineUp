@@ -172,7 +172,7 @@ private:
 
 	bool isDead_ = false;
 
-	const int setHp = 50;
+	const int setHp = 250;
 	int hp_ = setHp;
 	Vector2 hpGaugeSize{};
 

@@ -217,7 +217,7 @@ void Tail::Fire() {
 		// 当たり判定の計算
 		float distance =
 		    std::sqrtf(std::powf(Tail2Marker_distance.x, 2) + std::powf(Tail2Marker_distance.y, 2));
-		float radius = (2 + 28.0f);
+		float radius = (2 + 10.0f);
 
 		if (!player_->IsMove()) {
 			// もし尻尾とマーカーが当たっていれば

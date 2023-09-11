@@ -64,6 +64,13 @@ void Player::Initialize() {
 	// マーカーの初期化
 	MarkerInitialize();
 
+	// プレイヤーののテクスチャ読み込み
+	yosokusenTex_ = TextureManager::Load("white1x1.png");
+	// プレイヤーのスプライトの生成
+	yosokusen_.reset(
+	    Sprite::Create(yosokusenTex_, yosokusenPos_, {0.5f, 1.0f, 0.5f, 0.45f}, {0.0f, 0.5f}));
+
+	yosokusen_->SetSize({1920.0f, 5.0f});
 	// 3本の尻尾の追加
 	AddTails();
 	AddTails();
@@ -277,7 +284,9 @@ void Player::Update() {
 
 	// もし左クリックしたら
 	if (input_->IsTriggerMouse(0) && !ismarkerMove_) {
-		LeftClickUpdate();
+		LeftClickUpdate();	
+		yosokusenSize = {0.0f, 3.0f};
+
 	}
 
 	// マーカーの動き処理
@@ -305,7 +314,8 @@ void Player::Update() {
 
 	// マーカーの位置を反映させる
 	markerSprite_->SetPosition(markerPos_ - scroll->GetAddScroll() + sceneVelo);
-
+	yosokusenPos_ = markerPos_;
+	yosokusen_->SetPosition(yosokusenPos_ - scroll->GetAddScroll() + sceneVelo);
 	// プレイヤーのアニメーション
 	Animation::Anime(animationTimer, animationNumber, animationScene, oneTime);
 	Animation::Anime(markerAniTimer, markerAniNumber, markerAniScene, markerAniOneTime);
@@ -354,6 +364,13 @@ void Player::Update() {
 	if (tails_.size() <= 0) {
 		isDead_ = true;
 	}
+	
+	if (!isMove_) {
+		if (yosokusenSize.x < 1920) {
+			yosokusenSize.x += 30.0f;
+		}
+	} 
+	yosokusen_->SetSize(yosokusenSize);
 }
 
 /// <summary>
@@ -523,6 +540,8 @@ void Player::MarkerMovement() {
 	//	markerSprite_->SetRotation(markerROtate - (0.5f * 3.14f));
 	// } else if (cross <= 0) {
 	markerSprite_->SetRotation(markerROtate + (0.5f * 3.14f));
+	yosokusen_->SetRotation(markerROtate );
+
 	//}
 }
 
@@ -855,6 +874,10 @@ void Player::ToMarkerMoveUpdate() {
 /// </summary>
 void Player::Draw() {
 	Scroll* scroll = Scroll::GetInstance();
+	if (!isMove_) {
+		yosokusen_->Draw();
+	}
+
 	if (markerPos_.x < 0 + scroll->GetAddScroll().x ||
 	    markerPos_.x > 1920 + scroll->GetAddScroll().x ||
 	    markerPos_.y < 0 + scroll->GetAddScroll().y ||

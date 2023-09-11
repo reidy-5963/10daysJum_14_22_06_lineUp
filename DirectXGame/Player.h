@@ -277,6 +277,19 @@ private: // メンバ変数
 	// マーカーを置ける位置の制限値
 	// (端から設定した値まではマーカーを置けない)
 	float markerLimit_ = 100.0f;
+
+#pragma region マーカーのアニメーション用 
+	int markerAniTimer = 0;
+	int markerAniNumber = 0;
+	int markerAniScene = 15;
+	int markerAniOneTime = 4;
+	bool ismarkerAnimation = false;
+#pragma endregion
+
+	uint32_t yosokusenTex_;
+	std::unique_ptr<Sprite> yosokusen_;
+	Vector2 yosokusenSize{};
+	Vector2 yosokusenPos_{};
 #pragma endregion
 
 #pragma region 通常時の動き用
@@ -356,13 +369,6 @@ private: // メンバ変数
 	int amplitNum = 30;
 #pragma endregion
 
-#pragma region マーカーのアニメーション用
-	int markerAniTimer = 0;
-	int markerAniNumber = 0;
-	int markerAniScene = 15;
-	int markerAniOneTime = 4;
-	bool ismarkerAnimation = false;
-#pragma endregion 
 
 #pragma region UI
 	// UIのスプライト
