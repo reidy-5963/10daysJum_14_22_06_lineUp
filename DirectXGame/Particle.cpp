@@ -17,12 +17,11 @@ void Particle::Initialize(uint32_t texture, Vector2 pos, Vector2 velo, Vector2 s
 	    Sprite::Create(texture_, {pos_.x, pos_.y}, {1.0f, 1.0f, 1.0f, 1.0f}, {0.5f, 0.5f}));
 
 	sprite_->SetSize({radius * 2, radius * 2});
-
+	color_ = {1.0f, 1.0f, 1.0f, 1.0f};
 }
 
 void Particle::Update() { 
-	Vector4 color = sprite_->GetColor();
-	if (color.w <= 0.0f) {
+	if (color_.w <= 0.0f) {
 		isDead_ = true;
 	}
 
@@ -32,10 +31,10 @@ void Particle::Update() {
 	sprite_->SetRotation(std::atan2(velosity_.y, velosity_.x));
 	// スクロールのインスタンス取得
 	Scroll* scroll = Scroll::GetInstance();
-	color.w -= 0.045f;
+	color_.w -= alphaoffset;
 	// スプライトの位置を設定
 	sprite_->SetPosition(pos_ - scroll->GetAddScroll() + sceneVelo);
-	sprite_->SetColor(color);
+	sprite_->SetColor(color_);
 }
 
 void Particle::Draw() {

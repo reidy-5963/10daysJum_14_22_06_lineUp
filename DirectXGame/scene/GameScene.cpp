@@ -332,9 +332,15 @@ void GameScene::CheckAllCollision() {
 
 			if (distance <= radius) {
 				// コールバック
-				enemy->OnCollision();
-				playerBullet_->OnCollision();
-				killCount_ += 1;
+				if (!enemy->IsParasite()) {
+					if (!playerBullet_->IsCollapse()) {
+						enemy->OnCollision();
+						killCount_ += 1;
+					}
+					playerBullet_->OnCollision();
+				}
+
+			
 			}
 		}
 	}
@@ -353,9 +359,12 @@ void GameScene::CheckAllCollision() {
 
 		if (distance <= radius && boss_->IsAlive()) {
 			// コールバック
+			if (!playerBullet_->IsCollapse()) {
+				boss_->OnCollision();
+				boss_->SetHp(boss_->GetHp() - 1);
+			}
 			playerBullet_->OnCollision();
-			boss_->OnCollision();
-			boss_->SetHp(boss_->GetHp() - 1);
+			
 		}
 	}
 #pragma endregion

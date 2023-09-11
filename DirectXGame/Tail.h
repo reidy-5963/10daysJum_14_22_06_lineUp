@@ -59,6 +59,10 @@ public: // メンバ関数
 	/// <returns>弾を打ち出す向き</returns>
 	Vector2 BulletDirectionInitialize(Vector2 move);
 
+	void SetIsCollapse(bool isColl) { isCollapse = isColl; }
+
+	bool IsCollapseAniEnd() { return isCollapseAniEnd; }
+
 public: // ゲッター
 #pragma region ゲッター
 	/// <summary>
@@ -130,7 +134,7 @@ private: // メンバ変数
 	const Vector2* parentPos_;
 	const bool* parentBool_;
 
-	uint32_t tex[3];
+	uint32_t tex[4];
 
 	// 線形補間するときの終わり位置
 	Vector2 lerpEndPos_;
@@ -175,4 +179,11 @@ private: // メンバ変数
 	float bulletRadius = 64.0f;
 
 	uint32_t particleTex_ = 0u;
+
+	bool isCollapse = false;
+	int CollapseAniTimer = 0;
+	int CollapseAniNumber = 0;
+	int CollapseAniScene = 7;
+	int CollapseAnioneTime = 3;
+	bool isCollapseAniEnd = false;
 };

@@ -33,8 +33,13 @@ public: // メンバ関数
 
 	void SetParticleTex(uint32_t tex) { particleTex_ = tex; }
 
+	bool IsCollapse() { return isCollapse; }
+
 private: // メンバ変数
 	std::unique_ptr<ParticleManager> particle_ = nullptr;
 	uint32_t particleTex_ = 0u;
 	
+	//std::unique_ptr<ParticleManager> particle_ = nullptr;
+	bool isCollapse = false;
+	Vector4 color_ = {1.0f, 1.0f, 1.0f, 1.0f};
 };

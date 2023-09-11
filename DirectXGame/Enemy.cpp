@@ -51,6 +51,7 @@ void Enemy::Update() {
 		particle_->SetTecture(particleTex_);
 		particle_->SetLenge(pos_, {radius_, radius_});
 		particle_->SetSceneVelo(sceneVelo);
+		particle_->SetColor(color_);
 		particle_->SetTime(17);
 		particle_->SetVelo({0.0f, -5.0f});
 

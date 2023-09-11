@@ -20,18 +20,40 @@ void PlayerBullet::Initialize(uint32_t texture, const Vector2& pos, Vector2 velo
 
 void PlayerBullet::Update() {
 	particle_->Update();
+	if (!isCollapse) {
+		pos_.x += direction_.x * bulletSpeed;
+		pos_.y += direction_.y * bulletSpeed;
+		sprite_->SetSize({radius_ * 2, radius_ * 2});
+		particle_->SetColor(color_);
+		particle_->SetTecture(particleTex_);
+		particle_->SetLenge(pos_, {radius_, radius_});
+		particle_->SetSceneVelo(sceneVelo);
+		particle_->SetTime(8);
+		particle_->SetVelo({0.0f, 0.0f});
+		particle_->SetPattern(ParticleManager::ParticlePattarn::Straight);
+		particle_->SetIsParticle(true);
 
-	pos_.x += direction_.x * bulletSpeed;
-	pos_.y += direction_.y * bulletSpeed;
+	} else if (isCollapse) {
+		color_.w -= 0.08f;
+		particle_->SetAlphaOffset(0.08f);
+		particle_->SetColor(color_);
+		particle_->SetEndTimer(30);
+		particle_->SetIsTimer(true);
+		particle_->SetPattern(ParticleManager::ParticlePattarn::Collapse);
+		sprite_->SetSize({radius_ * 2, radius_ * 2});
+		particle_->SetTecture(particleTex_);
+		particle_->SetLenge(pos_, {radius_, radius_});
+		particle_->SetSceneVelo(sceneVelo);
+		particle_->SetTime(1000);
+		particle_->SetVelo({0.0f, -4.0f});
+		particle_->SetIsParticle(true);
+		sprite_->SetColor(color_);
+		if (particle_->IsEnd()) {
+			isDead_ = true;
+		}
+	}
 
-	sprite_->SetSize({radius_ * 2, radius_ * 2});
 	BaseBullet::Update();
-	particle_->SetTecture(particleTex_);
-	particle_->SetLenge(pos_, {radius_, radius_});
-	particle_->SetSceneVelo(sceneVelo);
-	particle_->SetTime(8);
-	particle_->SetVelo({0.0f, 0.0f});
-	particle_->SetIsParticle(true);
 }
 
 void PlayerBullet::Draw() {
@@ -41,4 +63,8 @@ void PlayerBullet::Draw() {
 	sprite_->Draw();
 }
 
-void PlayerBullet::OnCollision() { isDead_ = true; }
+void PlayerBullet::OnCollision() {
+	if (!isCollapse) {
+		isCollapse = true;
+	}
+}

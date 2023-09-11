@@ -51,6 +51,9 @@ void Player::Initialize() {
 	tailTexture_[1] = TextureManager::Load("Cannon_ver2_Safe.png");
 	// キャラのテクスチャ読み込み
 	tailTexture_[2] = TextureManager::Load("Cannon_ver2_Worning.png");
+
+	tailTexture_[3] = TextureManager::Load("CollapseCannon.png");
+
 	// キャラのテクスチャ読み込み
 	bulletTexture_ = TextureManager::Load("Bullet.png");
 	bulletParticle_ = TextureManager::Load("bulletParticle.png");
@@ -192,6 +195,10 @@ void Player::Update() {
 
 	if (damageCount <= 0) {
 		damageCount = setDamageCount;
+		tails_.back()->SetIsCollapse(true);
+	}
+
+	if (tails_.back()->IsCollapseAniEnd()) {
 		DeleteTails();
 	}
 }

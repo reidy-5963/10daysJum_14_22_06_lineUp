@@ -8,22 +8,34 @@ void ParticleManager::Update() {
 
 	} 
 	else if (isParticle) {
-
+		if (isTimer_) {
+			if (--endParticleTimer_ < 0) {
+				isEnd_ = true;
+			}
+		}
 		if (--generateTimer_ < 0) {
-			if(pattern == Straight){
+			if (pattern_ == Straight) {
 				generateTimer_ = setGeneTIme_;
 				Vector2 pos;
 				pos.x = float(rand() % (int(radius_.x) * 2 - int(radius_.x)) + 1) + lengePos_.x;
 				pos.y = float(rand() % (int(radius_.y) * 2 - int(radius_.y)) + 1) + lengePos_.y;
 
 				AddParticle(pos);
-			} else /*if () */{
-				generateTimer_ = setGeneTIme_;
+			} 
+			else if (pattern_ == Collapse) {
 				Vector2 pos;
-				pos.x = float(rand() % (int(radius_.x) * 2 - int(radius_.x)) + 1) + lengePos_.x;
-				pos.y = float(rand() % (int(radius_.y) * 2 - int(radius_.y)) + 1) + lengePos_.y;
+				float rad = float(rand() % 5);
+				//for (int i = 0; i < 5; i++) {
+					pos = lengePos_;
+					Matrix3x3 moveMat = MyMath::MakeTranslateMatrix(velosity_);
+					Matrix3x3 rotateMat = MyMath::MakeRotateMatrix(rad + (3.14f * 0.25f));
+					moveMat = MyMath::Multiply(moveMat, rotateMat);
 
-				AddParticle(pos);
+					velosity_ = {moveMat.m[2][0], moveMat.m[2][1]};
+					AddParticle(pos);
+
+				//}
+
 			}
 		}
 		ParticleUpdate();
@@ -57,5 +69,7 @@ void ParticleManager::AddParticle(Vector2 particlePos) {
 	Particle* newParticle = new Particle;
 
 	newParticle->Initialize(tex_, particlePos, velosity_, sceneVelo);
+	newParticle->SetColor(color_);
+	newParticle->SetAlphaOffset(alphaoffset);
 	particles_.push_back(newParticle);
 }

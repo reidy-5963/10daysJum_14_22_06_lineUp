@@ -12,6 +12,16 @@ public:
 	void Draw();
 	bool IsDead() { return isDead_; }
 
+	void SetAlphaOffset(float offset) { 
+		if (alphaoffset != offset) {
+			alphaoffset = offset;
+		}
+	}
+	void SetColor(Vector4 color) {
+		if (color_.w != color.w) {
+			color_ = color;
+		}
+	}
 
 private:
 	std::unique_ptr<Sprite> sprite_ = nullptr;
@@ -21,9 +31,10 @@ private:
 	Vector2 velosity_{};
 
 	Vector2 sceneVelo{};
-
+	Vector4 color_{};
 	bool isDead_ = false;
 
+	float alphaoffset = 0.045f;
 	int animationTimer = 0;
 	int animationNumber = 0;
 	int animationScene = 5;

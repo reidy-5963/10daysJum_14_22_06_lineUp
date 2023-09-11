@@ -224,6 +224,7 @@ private: // 動きの管理
 
 	int ConvertSeconds(int second) { return int(second * 60); }
 
+	float MaxHpSize = 0.0f;
 
 private: // 揺らす系
 	Vector2 shakeVelo_{};

@@ -113,15 +113,15 @@ void BossEnemy::Initialize()
 	    Sprite::Create(rushPointTex_, {0, 0}, {1.0f, 1.0f, 1.0f, 1.0f}, {0.5f, 0.5f}));
 
 	hpSprite_.reset(Sprite::Create(
-	    hpTex_, {float(WinApp::kWindowWidth / 2), 60.0f}, {1.0f, 1.0f, 1.0f, 1.0f}, {0.0f, 0.0f}));
+	    hpTex_, {float(WinApp::kWindowWidth / 2), 60.0f}, {1.0f, 1.0f, 1.0f, 1.0f}, {0.5f, 0.5f}));
 	hpShadowSprite_.reset(Sprite::Create(
 	    hpShadowTex_, {float(WinApp::kWindowWidth / 2), 60.0f}, {1.0f, 1.0f, 1.0f, 1.0f},
-	    {0.0f, 0.0f}));
+	    {0.5f, 0.5f}));
 
+	hpSprite_->SetSize(Vector2(1400.0f, 60.0f));
+	hpShadowSprite_->SetSize(Vector2(1400.0f, 60.0f));
 	hpGaugeSize = hpSprite_->GetSize();
-	//hpSprite_->SetSize(Vector2(200.0f, 15.0f));
-	//hpShadowSprite_->SetSize(Vector2(200.0f, 15.0f));
-
+	MaxHpSize = hpSprite_->GetSize().x;
 	// 当たり判定用の半径（サイズに合わせる）
 	radius_ = 150.0f;
 	// 適当にサイズ
@@ -201,8 +201,10 @@ void BossEnemy::Update()
 	}
 	MyMath::ShakeUpdate(shakeVelo_, isDamageShake, amplitNum);
 
-	hpSprite_->SetSize({ (float(hp_) / float(setHp)) * hpGaugeSize.x, hpGaugeSize.y });
-	hpSprite_->SetPosition({1920 / 2, 60.0f});
+	float hpSize = (float(hp_) / float(setHp)) * hpGaugeSize.x;
+
+	hpSprite_->SetSize({hpSize, hpGaugeSize.y});
+	hpSprite_->SetPosition({(1920 / 2) - (MaxHpSize - hpSize) / 2, 60.0f});
 
 	ScreenPos += shakeVelo_;
 
