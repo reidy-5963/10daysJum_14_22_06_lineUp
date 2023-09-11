@@ -17,7 +17,7 @@ void ParticleManager::Update() {
 				pos.y = float(rand() % (int(radius_.y) * 2 - int(radius_.y)) + 1) + lengePos_.y;
 
 				AddParticle(pos);
-			} else if () {
+			} else /*if () */{
 				generateTimer_ = setGeneTIme_;
 				Vector2 pos;
 				pos.x = float(rand() % (int(radius_.x) * 2 - int(radius_.x)) + 1) + lengePos_.x;
