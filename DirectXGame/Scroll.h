@@ -52,8 +52,8 @@ private:
 
 	Vector2 edgePos_{};
 
-	int widthMax = 2;
-	int heightMax = 2;
+	int widthMax = 1;
+	int heightMax = 1;
 
 
 	int isScreenOut_ = UNKNOWN;

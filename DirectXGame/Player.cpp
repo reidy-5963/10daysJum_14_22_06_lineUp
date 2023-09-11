@@ -564,9 +564,9 @@ void Player::MarkerControl() {
 	}
 
 	else if (
-	    clickPos_.x > (WinApp::kWindowWidth * 2) + scroll->GetEdgePos().x +
+	    clickPos_.x > (WinApp::kWindowWidth * 1) + scroll->GetEdgePos().x +
 	                      (scroll->GetEdgePos().x - markerLimit_)) {
-		clickPos_.x = (WinApp::kWindowWidth * 2) + scroll->GetEdgePos().x +
+		clickPos_.x = (WinApp::kWindowWidth * 1) + scroll->GetEdgePos().x +
 		              (scroll->GetEdgePos().x - markerLimit_);
 	}
 
@@ -575,9 +575,9 @@ void Player::MarkerControl() {
 	}
 
 	else if (
-	    clickPos_.y > (WinApp::kWindowHeight * 2) + scroll->GetEdgePos().y +
+	    clickPos_.y > (WinApp::kWindowHeight * 1) + scroll->GetEdgePos().y +
 	                      (scroll->GetEdgePos().y - markerLimit_)) {
-		clickPos_.y = (WinApp::kWindowHeight * 2) + scroll->GetEdgePos().y +
+		clickPos_.y = (WinApp::kWindowHeight * 1) + scroll->GetEdgePos().y +
 		              (scroll->GetEdgePos().y - markerLimit_);
 	}
 }
