@@ -19,11 +19,14 @@ GameScene::~GameScene() {}
 /// 初期化
 /// </summary>
 void GameScene::Initialize() {
+#pragma region dxCommonや入力、音の初期化
 
 	dxCommon_ = DirectXCommon::GetInstance();
 	input_ = Input::GetInstance();
 	audio_ = Audio::GetInstance();
+#pragma endregion
 
+	// 乱数
 	unsigned int currentTime = (int)time(nullptr);
 	srand(currentTime);
 
@@ -46,10 +49,15 @@ void GameScene::Initialize() {
 	boss_ = std::make_unique<BossEnemy>();
 	// 初期化
 	boss_->Initialize();
+#pragma endregion
+
+#pragma region 雑魚敵管理クラス
 
 	enemyManager_ = EnemyManager::GetInstance();
 	enemyManager_->Initialize();
+#pragma endregion
 
+#pragma region 背景
 	backTex = TextureManager::Load("white1x1.png");
 	back.reset(Sprite::Create(backTex, {0.0f, 0.0f}, {0.01f, 0.01f, 0.01f, 1.0f}, {0.0f, 0.0f}));
 	Vector2 size = {1920 * 3, 1080 * 3};
@@ -75,6 +83,8 @@ void GameScene::Update() {
 
 	// 当たり判定
 	CheckAllCollision();
+
+	// 画面の揺れ更新処理
 	MyMath::ShakeUpdate(sceneShakevelo_, issceneShake, sceneaAmplitNum);
 	player_->SetSceneVelo(sceneShakevelo_);
 	boss_->SetSceneVelo(sceneShakevelo_);
@@ -89,8 +99,12 @@ void GameScene::Update() {
 		boss_->SetPlayer(player_->GetPosition());
 		boss_->Update();
 	//}
+	
+
+
+	
 	// 背景の更新処理
-	    back->SetPosition(backPos - scroll->GetAddScroll() + sceneShakevelo_);
+	back->SetPosition(backPos - scroll->GetAddScroll() + sceneShakevelo_);
 }
 
 /// <summary>

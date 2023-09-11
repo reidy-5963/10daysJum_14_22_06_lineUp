@@ -58,12 +58,13 @@ private: // メンバ変数
 	Input* input_ = nullptr;
 	Audio* audio_ = nullptr;
 
-	Vector2 gameScenePos{};
-
 	/// <summary>
 	/// ゲームシーン用
 	/// </summary>
-	
+
+	// 画面全体を揺らす、動かす時用
+	Vector2 gameScenePos{};
+
 	// プレイヤー
 	std::unique_ptr<Player> player_ = nullptr;
 
@@ -73,11 +74,16 @@ private: // メンバ変数
 	// ボス
 	std::unique_ptr<BossEnemy> boss_ = nullptr;
 
+	// 雑魚敵の倒した数
 	int killCount_ = 0;
 
+	// ボスの沸き
 	bool isBossRespown_ = false;
 	
+	// スクロールインスタンス
 	Scroll* scroll_;
+
+	// 画面の揺れ用
 	Vector2 sceneShakevelo_{};
 	bool issceneShake = false;
 	int sceneaAmplitNum = 40;
