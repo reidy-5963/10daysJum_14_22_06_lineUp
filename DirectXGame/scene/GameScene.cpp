@@ -61,13 +61,23 @@ void GameScene::Initialize() {
 	back.reset(Sprite::Create(backTex, {0.0f, 0.0f}, {0.01f, 0.01f, 0.01f, 1.0f}, {0.0f, 0.0f}));
 	Vector2 size = {1920 * 3, 1080 * 3};
 	back->SetSize(size);
-#pragma endregion
+#pragma endregion 
+	
+	
+	
+	BGMHandle_ = Audio::GetInstance()->LoadWave("GameScene.wav");
 }
 
 /// <summary>
 /// 毎フレーム処理
 /// </summary>
-void GameScene::Update() { 
+void GameScene::Update() { 	
+	// BGM再生
+	if (audio_->IsPlaying(BGMHandle_) == 0 || BGMHandle_ == -1) {
+		BGMHandle_ = audio_->PlayWave(BGMHandle_, true, bolume);
+	}
+
+
 	// スクロールの更新処理
 	//Scroll* scroll = Scroll::GetInstance();
 	scroll_->Update();
