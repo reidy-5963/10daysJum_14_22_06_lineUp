@@ -173,8 +173,10 @@ void GameScene::Draw() {
 void GameScene::CheckAllCollision() {
 	// 変数の用意
 	Vector2 targetA, targetB;
+
 #pragma region
 #pragma endregion
+
 	// プレイヤーの弾リストを取得
 	const std::list<PlayerBullet*>& playerBullet = player_->GetBullets();
 	// 敵
@@ -206,6 +208,8 @@ void GameScene::CheckAllCollision() {
 				}
 				if (!enemy->IsParasite()) {
 					player_->OnCollision();
+					issceneShake = true;
+					sceneaAmplitNum = 40;
 					enemy->SetIsDead(true);
 				}
 				//

@@ -27,6 +27,9 @@ public:	// 継承
 	/// </summary>
 	void OnCollision() override;
 
+	void ParasiteStateUpdate();
+	void RootStateUpdate();
+
 	void P2EOnCollision();
 
 

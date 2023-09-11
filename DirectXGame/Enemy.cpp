@@ -42,37 +42,10 @@ void Enemy::Update() {
 
 #endif // _DEBUG
 
-
 	if (!isParasite_) {
-		// 座標移動
-		pos_ += velocity_;
-		Vector2 normalize = MyMath::Normalize(velocity_);
-		sprite_->SetRotation(std::atan2(normalize.y, normalize.x));
-
-		if (pos_.x < kMinusLimits.x || pos_.x > kPlusLimits.x || pos_.y < kMinusLimits.y ||
-		    pos_.y > kPlusLimits.y) {
-			isDead_ = true;
-		}
-		Animation::Anime(animationTimer, animationNumber, animationScene, oneTime);
-
+		RootStateUpdate();
 	} else if (isParasite_) {
-		// パーティクルの設定
-		SetParticle();
-
-		if (!isPossiblePickUp) {
-			sprite_->SetTextureHandle(parasiteTex_);
-			Animation::Anime(animationTimer, animationNumber, animationScene, oneTime);
-
-			if (animationTimer == animationScene * oneTime) {
-				isPossiblePickUp = true;
-			}
-		}
-
-		if (isPossiblePickUp) {
-			if (--deleteTimer < 0) {
-				isDead_ = true;
-			}
-		}
+		ParasiteStateUpdate();
 	}
 	particle_->Update();
 	// 座標設定
@@ -101,6 +74,39 @@ void Enemy::OnCollision() {
 		isParasite_ = true;
 
 	}
+}
+
+void Enemy::ParasiteStateUpdate() { 
+	// パーティクルの設定
+	SetParticle();
+
+	if (!isPossiblePickUp) {
+		sprite_->SetTextureHandle(parasiteTex_);
+		Animation::Anime(animationTimer, animationNumber, animationScene, oneTime);
+
+		if (animationTimer == animationScene * oneTime) {
+			isPossiblePickUp = true;
+		}
+	}
+
+	if (isPossiblePickUp) {
+		if (--deleteTimer < 0) {
+			isDead_ = true;
+		}
+	}
+}
+
+void Enemy::RootStateUpdate() { 
+	// 座標移動
+	pos_ += velocity_;
+	Vector2 normalize = MyMath::Normalize(velocity_);
+	sprite_->SetRotation(std::atan2(normalize.y, normalize.x));
+
+	if (pos_.x < kMinusLimits.x || pos_.x > kPlusLimits.x || pos_.y < kMinusLimits.y ||
+	    pos_.y > kPlusLimits.y) {
+		isDead_ = true;
+	}
+	Animation::Anime(animationTimer, animationNumber, animationScene, oneTime);
 }
 
 void Enemy::P2EOnCollision() { isDead_ = true; }
