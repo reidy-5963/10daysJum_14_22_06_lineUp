@@ -106,19 +106,18 @@ private:
 	// シーンのシェイク
 	Vector2 sceneVelo_{};
 
-	int kEnemyLimit = 8;
-	int kRespawnTimer = 180;
-	int respawnCount = kRespawnTimer;
-
 	int ArrowCoolTime = 0;
 	// 矢印のフラグ
 	bool isArrowRespown_ = false;
+
+
+private:
 	// パターン湧きしているか
-	bool isPatternNow = false;
+	bool isPatternNow_ = false;
 	// パターンの時間
-	int patternInterval = 0;
+	int patternInterval_ = 0;
 	// パターン湧きの間隔
-	int kInterval = 60;
+	int kInterval_ = 60;
 
 private:	// Arrowの変数
 	enum Pattern 
@@ -134,7 +133,7 @@ private:	// Arrowの変数
 private: // ステージでの管理系
 	int autoSpawnSecond_ = 7;
 	int kRespownTimer_ = 60 * autoSpawnSecond_;
-	int respownTimer_ = 0;
+	int normalSpawnTimer_ = 0;
 	int spawnShiftFrame_ = 0;
 	
 	// リスポーンの座標
@@ -151,4 +150,10 @@ private: // ステージでの管理系
 	// マップ全体のサイズ
 	Vector2 screenSize_ = {1920 * 2, 1080 * 2};
 
+private: // 全体マップを縦横3分割ごと
+	float scWidthHalfSize = (float)1280 / 2;
+	float scHeightHalfSize = (float)720 / 2;
+	Vector2 areaLeft2Top = {screenSize_.x * (1.0f / 3.0f), 720.0f};
+	Vector2 areaMid2Mid = {screenSize_.x * (2.0f / 3.0f), 1440.0f};
+	Vector2 areaRight2Bottom = {screenSize_.x * (3.0f / 3.0f), 2160.0f};
 };

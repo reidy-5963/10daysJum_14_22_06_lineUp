@@ -33,7 +33,7 @@ void EnemyManager::Update()
 #endif // _DEBUG
 
 
-	respownTimer_++;
+	normalSpawnTimer_++;
 
 	FourPointsSpawn();
 
@@ -181,7 +181,7 @@ void EnemyManager::FourPointsSpawn()
 	Vector2 spawnPoint = {};
 	Vector2 ankerPoint = playerPos_;
 
-	if (respownTimer_ > kRespownTimer_) {
+	if (normalSpawnTimer_ > kRespownTimer_) {
 		spawnShiftFrame_++;
 		if (spawnShiftFrame_ == 10) {
 			spawnPoint = {
@@ -208,7 +208,7 @@ void EnemyManager::FourPointsSpawn()
 			AddEnemy(spawnPoint, RandomRadianVector());
 
 			spawnShiftFrame_ = 0;
-			respownTimer_ = 0;
+			normalSpawnTimer_ = 0;
 		}
 	}
 
@@ -676,76 +676,144 @@ void EnemyManager::ArrowBehaviorControl()
 
 void EnemyManager::VerticalSpawn() 
 { 
-	float scWidthHalfSize = (float)WinApp::kWindowWidth / 2;
-	//float scHeightHalfSize = (float)WinApp::kWindowHeight / 2;
-	Vector2 areaLeft2Top = {screenSize_.x * (1.0f / 3.0f), 0};
-	Vector2 areaMid2Mid = {screenSize_.x * (2.0f / 3.0f), 0};
-	Vector2 areaRight2Bottom = {screenSize_.x * (3.0f / 3.0f), 0};
 	// 左側だったら
 	if (playerPos_.x < areaLeft2Top.x) {
 		// mid
-		AddEnemy(Vector2(areaMid2Mid.x - scWidthHalfSize,240.0f), Vector2(-1.0f,0.0f));
-		AddEnemy(Vector2(areaMid2Mid.x - scWidthHalfSize, 720.0f), Vector2(-1.0f, 0.0f));
-		AddEnemy(Vector2(areaMid2Mid.x - scWidthHalfSize, 1200.0f), Vector2(-1.0f, 0.0f));
+		AddEnemy(
+		    Vector2(areaMid2Mid.x - scWidthHalfSize, areaLeft2Top.y - scHeightHalfSize)
+			, Vector2(-1.0f, 0.0f));
+		AddEnemy(
+		    Vector2(areaMid2Mid.x - scWidthHalfSize, areaMid2Mid.y - scHeightHalfSize)
+			, Vector2(-1.0f, 0.0f));
+		AddEnemy(
+		    Vector2(areaMid2Mid.x - scWidthHalfSize, areaRight2Bottom.y - scHeightHalfSize)
+			, Vector2(-1.0f, 0.0f));
 		// right
-		AddEnemy(Vector2(areaRight2Bottom.x - scWidthHalfSize, 240.0f), Vector2(-1.0f, 0.0f));
-		AddEnemy(Vector2(areaRight2Bottom.x - scWidthHalfSize, 720.0f), Vector2(-1.0f, 0.0f));
-		AddEnemy(Vector2(areaRight2Bottom.x - scWidthHalfSize, 1200.0f), Vector2(-1.0f, 0.0f));
+		AddEnemy(
+		    Vector2(areaRight2Bottom.x - scWidthHalfSize, areaLeft2Top.y - scHeightHalfSize),
+		    Vector2(-1.0f, 0.0f));
+		AddEnemy(
+		    Vector2(areaRight2Bottom.x - scWidthHalfSize, areaMid2Mid.y - scHeightHalfSize),
+		    Vector2(-1.0f, 0.0f));
+		AddEnemy(
+		    Vector2(areaRight2Bottom.x - scWidthHalfSize, areaRight2Bottom.y - scHeightHalfSize),
+		    Vector2(-1.0f, 0.0f));
 
 	} 
 	// 中央だったら
 	else if (playerPos_.x >= areaLeft2Top.x && playerPos_.x < areaMid2Mid.x) {
-		AddEnemy(Vector2(areaLeft2Top.x - scWidthHalfSize, 240.0f), Vector2(-1.0f, 0.0f));
-		AddEnemy(Vector2(areaLeft2Top.x - scWidthHalfSize, 720.0f), Vector2(-1.0f, 0.0f));
-		AddEnemy(Vector2(areaLeft2Top.x - scWidthHalfSize, 1200.0f), Vector2(-1.0f, 0.0f));
+		AddEnemy(
+		    Vector2(areaLeft2Top.x - scWidthHalfSize, areaLeft2Top.y - scHeightHalfSize),
+		    Vector2(-1.0f, 0.0f));
+		AddEnemy(
+		    Vector2(areaLeft2Top.x - scWidthHalfSize, areaMid2Mid.y - scHeightHalfSize),
+		    Vector2(-1.0f, 0.0f));
+		AddEnemy(
+		    Vector2(areaLeft2Top.x - scWidthHalfSize, areaRight2Bottom.y - scHeightHalfSize),
+		    Vector2(-1.0f, 0.0f));
 
-		AddEnemy(Vector2(areaRight2Bottom.x - scWidthHalfSize, 240.0f), Vector2(-1.0f, 0.0f));
-		AddEnemy(Vector2(areaRight2Bottom.x - scWidthHalfSize, 720.0f), Vector2(-1.0f, 0.0f));
-		AddEnemy(Vector2(areaRight2Bottom.x - scWidthHalfSize, 1200.0f), Vector2(-1.0f, 0.0f));
+		AddEnemy(
+		    Vector2(areaRight2Bottom.x - scWidthHalfSize, areaLeft2Top.y - scHeightHalfSize),
+		    Vector2(-1.0f, 0.0f));
+		AddEnemy(
+		    Vector2(areaRight2Bottom.x - scWidthHalfSize, areaMid2Mid.y - scHeightHalfSize),
+		    Vector2(-1.0f, 0.0f));
+		AddEnemy(
+		    Vector2(areaRight2Bottom.x - scWidthHalfSize, areaRight2Bottom.y - scHeightHalfSize),
+		    Vector2(-1.0f, 0.0f));
 	} 
 	// 右側だったら
 	else {
-		AddEnemy(Vector2(areaLeft2Top.x - scWidthHalfSize, 240.0f), Vector2(1.0f, 0.0f));
-		AddEnemy(Vector2(areaLeft2Top.x - scWidthHalfSize, 720.0f), Vector2(1.0f, 0.0f));
-		AddEnemy(Vector2(areaLeft2Top.x - scWidthHalfSize, 1200.0f), Vector2(1.0f, 0.0f));
+		AddEnemy(
+		    Vector2(areaLeft2Top.x - scWidthHalfSize, areaLeft2Top.y - scHeightHalfSize),
+		    Vector2(1.0f, 0.0f));
+		AddEnemy(
+		    Vector2(areaLeft2Top.x - scWidthHalfSize, areaMid2Mid.y - scHeightHalfSize),
+		    Vector2(1.0f, 0.0f));
+		AddEnemy(
+		    Vector2(areaLeft2Top.x - scWidthHalfSize, areaRight2Bottom.y - scHeightHalfSize),
+		    Vector2(1.0f, 0.0f));
 
-		AddEnemy(Vector2(areaMid2Mid.x - scWidthHalfSize, 240.0f), Vector2(1.0f, 0.0f));
-		AddEnemy(Vector2(areaMid2Mid.x - scWidthHalfSize, 720.0f), Vector2(1.0f, 0.0f));
-		AddEnemy(Vector2(areaMid2Mid.x - scWidthHalfSize, 1200.0f), Vector2(1.0f, 0.0f));
+		AddEnemy(
+		    Vector2(areaMid2Mid.x - scWidthHalfSize, areaLeft2Top.y - scHeightHalfSize),
+		    Vector2(1.0f, 0.0f));
+		AddEnemy(
+		    Vector2(areaMid2Mid.x - scWidthHalfSize, areaMid2Mid.y - scHeightHalfSize),
+		    Vector2(1.0f, 0.0f));
+		AddEnemy(
+		    Vector2(areaMid2Mid.x - scWidthHalfSize, areaRight2Bottom.y - scHeightHalfSize),
+		    Vector2(1.0f, 0.0f));
 	}
 }
 
 void EnemyManager::HorizontalSpawn() 
 {
-	// 上側だったら
-	if (playerPos_.y < 480.0f) {
-		AddEnemy(Vector2(425.0f, 720.0f), Vector2(0.0f, -1.0f));
-		AddEnemy(Vector2(1250.0f, 720.0f), Vector2(0.0f, -1.0f));
-		AddEnemy(Vector2(2125.0f, 720.0f), Vector2(0.0f, -1.0f));
 
-		AddEnemy(Vector2(425.0f, 1200.0f), Vector2(0.0f, -1.0f));
-		AddEnemy(Vector2(1250.0f, 1200.0f), Vector2(0.0f, -1.0f));
-		AddEnemy(Vector2(2125.0f, 1200.0f), Vector2(0.0f, -1.0f));
+	// 上側だったら
+	if (playerPos_.y < areaLeft2Top.y) {
+		AddEnemy(
+		    Vector2(areaLeft2Top.x - scWidthHalfSize, areaMid2Mid.y - scHeightHalfSize),
+		    Vector2(0.0f, -1.0f));
+		AddEnemy(
+		    Vector2(areaMid2Mid.x - scWidthHalfSize, areaMid2Mid.y - scHeightHalfSize),
+		    Vector2(0.0f, -1.0f));
+		AddEnemy(
+		    Vector2(areaRight2Bottom.x - scWidthHalfSize, areaMid2Mid.y - scHeightHalfSize),
+		    Vector2(0.0f, -1.0f));
+
+		AddEnemy(
+		    Vector2(areaLeft2Top.x - scWidthHalfSize, areaRight2Bottom.y - scHeightHalfSize),
+		    Vector2(0.0f, -1.0f));
+		AddEnemy(
+		    Vector2(areaMid2Mid.x - scWidthHalfSize, areaRight2Bottom.y - scHeightHalfSize),
+		    Vector2(0.0f, -1.0f));
+		AddEnemy(
+		    Vector2(areaRight2Bottom.x - scWidthHalfSize, areaRight2Bottom.y - scHeightHalfSize),
+		    Vector2(0.0f, -1.0f));
 
 	}
 	// 中央だったら
-	else if (playerPos_.x >= 480.0f && playerPos_.x < 960.0f) {
-		AddEnemy(Vector2(425.0f, 240.0f), Vector2(0.0f, 1.0f));
-		AddEnemy(Vector2(1250.0f, 240.0f), Vector2(0.0f, 1.0f));
-		AddEnemy(Vector2(2125.0f, 240.0f), Vector2(0.0f, 1.0f));
+	else if (playerPos_.x >= areaLeft2Top.y && playerPos_.x < areaMid2Mid.y) {
+		AddEnemy(
+		    Vector2(areaLeft2Top.x - scWidthHalfSize, areaLeft2Top.y - scHeightHalfSize),
+		    Vector2(0.0f, 1.0f));
+		AddEnemy(
+		    Vector2(areaMid2Mid.x - scWidthHalfSize, areaLeft2Top.y - scHeightHalfSize),
+		    Vector2(0.0f, 1.0f));
+		AddEnemy(
+		    Vector2(areaRight2Bottom.x - scWidthHalfSize, areaLeft2Top.y - scHeightHalfSize),
+		    Vector2(0.0f, 1.0f));
 
-		AddEnemy(Vector2(425.0f, 1200.0f), Vector2(0.0f, -1.0f));
-		AddEnemy(Vector2(1250.0f, 1200.0f), Vector2(0.0f, -1.0f));
-		AddEnemy(Vector2(2125.0f, 1200.0f), Vector2(0.0f, -1.0f));
+		AddEnemy(
+		    Vector2(areaLeft2Top.x - scWidthHalfSize, areaRight2Bottom.y - scHeightHalfSize),
+		    Vector2(0.0f, -1.0f));
+		AddEnemy(
+		    Vector2(areaMid2Mid.x - scWidthHalfSize, areaRight2Bottom.y - scHeightHalfSize),
+		    Vector2(0.0f, -1.0f));
+		AddEnemy(
+		    Vector2(areaRight2Bottom.x - scWidthHalfSize, areaRight2Bottom.y - scHeightHalfSize),
+		    Vector2(0.0f, -1.0f));
 	}
 	// 下側だったら
 	else {
-		AddEnemy(Vector2(425.0f, 240.0f), Vector2(0.0f, 1.0f));
-		AddEnemy(Vector2(1250.0f, 240.0f), Vector2(0.0f, 1.0f));
-		AddEnemy(Vector2(2125.0f, 240.0f), Vector2(0.0f, 1.0f));
+		AddEnemy(
+		    Vector2(areaLeft2Top.x - scWidthHalfSize, areaLeft2Top.y - scHeightHalfSize),
+		    Vector2(0.0f, 1.0f));
+		AddEnemy(
+		    Vector2(areaMid2Mid.x - scWidthHalfSize, areaLeft2Top.y - scHeightHalfSize),
+		    Vector2(0.0f, 1.0f));
+		AddEnemy(
+		    Vector2(areaRight2Bottom.x - scWidthHalfSize, areaLeft2Top.y - scHeightHalfSize),
+		    Vector2(0.0f, 1.0f));
 
-		AddEnemy(Vector2(425.0f, 720.0f), Vector2(0.0f, 1.0f));
-		AddEnemy(Vector2(1250.0f, 720.0f), Vector2(0.0f, 1.0f));
-		AddEnemy(Vector2(2125.0f, 720.0f), Vector2(0.0f, 1.0f));
+		AddEnemy(
+		    Vector2(areaLeft2Top.x - scWidthHalfSize, areaMid2Mid.y - scHeightHalfSize),
+		    Vector2(0.0f, 1.0f));
+		AddEnemy(
+		    Vector2(areaMid2Mid.x - scWidthHalfSize, areaMid2Mid.y - scHeightHalfSize),
+		    Vector2(0.0f, 1.0f));
+		AddEnemy(
+		    Vector2(areaRight2Bottom.x - scWidthHalfSize, areaMid2Mid.y - scHeightHalfSize),
+		    Vector2(0.0f, 1.0f));
 	}
 }

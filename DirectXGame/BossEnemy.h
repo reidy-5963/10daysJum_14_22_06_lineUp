@@ -37,6 +37,11 @@ public:
 	void BulletUpdate();
 
 	/// <summary>
+	/// 行動の管理
+	/// </summary>
+	void ActionControl();
+
+	/// <summary>
 	/// 弾のリスト取得
 	/// </summary>
 	/// <returns></returns>

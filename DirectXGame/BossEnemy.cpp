@@ -199,6 +199,7 @@ void BossEnemy::Update()
 		FunnelAttack();
 		break;
 	}
+
 	MyMath::ShakeUpdate(shakeVelo_, isDamageShake, amplitNum);
 
 	float hpSize = (float(hp_) / float(setHp)) * hpGaugeSize.x;
@@ -294,9 +295,7 @@ void BossEnemy::BulletUpdate() {
 	}
 }
 
-void BossEnemy::RootInitialize() { actionTimer_ = 0; }
-
-void BossEnemy::RootUpdate() 
+void BossEnemy::ActionControl() 
 {
 	/// 突進起動キー処理
 	if (input_->TriggerKey(DIK_D)) {
@@ -325,16 +324,28 @@ void BossEnemy::RootUpdate()
 	/// 方向転換
 	if (input_->TriggerKey(DIK_J)) {
 		Vector2 directRotate = nowPlayerPos_ - pos_;
-		//directRotate += pos_;
+		// directRotate += pos_;
 		sprite_->SetRotation(std::atan2(directRotate.y, directRotate.x));
 	}
 	/// リスポーン
 	if (input_->TriggerKey(DIK_K)) {
 		RespownBoss();
 	}
+
+
+}
+
+void BossEnemy::RootInitialize() { actionTimer_ = 0; }
+
+void BossEnemy::RootUpdate() 
+{
+	ActionControl();
+
 	if (isAlive_) {
 		RandomActionManager();
 	}
+
+#pragma region 突進の警告から開始まで
 	/// 突進までの処理
 	if (isRush_ && !isFunnelAttackNow_) {
 		rushCount_ += 1;
@@ -345,4 +356,7 @@ void BossEnemy::RootUpdate()
 			isRush_ = false;
 		}
 	}
+#pragma endregion
+
+
 }
