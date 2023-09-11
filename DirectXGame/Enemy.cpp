@@ -19,6 +19,8 @@ void Enemy::Initialize() {
 	animationScene = 3;
 	oneTime = 4;
 	isAnimation = true;
+	particle_ = std::make_unique<ParticleManager>();
+	particle_->Initialize(particleTex_);
 }
 
 void Enemy::Update() {
@@ -45,6 +47,13 @@ void Enemy::Update() {
 		Animation::Anime(animationTimer, animationNumber, animationScene, oneTime);
 
 	} else if (isParasite_) {
+		particle_->SetIsParticle(true);
+		particle_->SetTecture(particleTex_);
+		particle_->SetLenge(pos_, {radius_, radius_});
+		particle_->SetSceneVelo(sceneVelo);
+		particle_->SetTime(17);
+		particle_->SetVelo({0.0f, -5.0f});
+
 		if (!isPopUpPlayer) {
 			sprite_->SetTextureHandle(parasiteTex_);
 			Animation::Anime(animationTimer, animationNumber, animationScene, oneTime);
@@ -61,12 +70,13 @@ void Enemy::Update() {
 			}
 		}
 	}
-
+	particle_->Update();
 	// 座標設定
 	BaseCharacter::Update();
 }
 
 void Enemy::Draw() {
+	particle_->Draw();
 	// 敵の描画
 	BaseCharacter::Draw();
 }

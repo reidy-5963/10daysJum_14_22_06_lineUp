@@ -1,5 +1,6 @@
 ﻿#pragma once
 #include "BaseCharacter.h"
+#include "ParticleManager.h"
 
 class Enemy : public BaseCharacter
 {
@@ -52,8 +53,9 @@ public: // 設定
 	bool IsParasite() { return isParasite_; }
 	
 	void SetIsDead(bool isDead) { isDead_ = isDead; }
+	void SetParticleTex(uint32_t tex) { particleTex_ = tex; }
 
-	private:
+private:
 
 	Vector2 velocity_ = {};
 
@@ -65,6 +67,9 @@ public: // 設定
 	int deleteTimer = setTimer;
 
 	uint32_t parasiteTex_ = 0u;
+	uint32_t particleTex_ = 0u;
+
+	std::unique_ptr<ParticleManager> particle_ = nullptr;
 
 private: // 限界値
 	Vector2 kMinusLimits = {-250.0f, -250.0f};

@@ -19,6 +19,7 @@ void EnemyManager::Initialize() {
 
 	charaTex_ = TextureManager::Load("Enemy_ver2.png");
 	parasiteTex_ = TextureManager::Load("Parasite.png");
+	particleTex_ = TextureManager::Load("Particle.png");
 }
 
 void EnemyManager::Update() 
@@ -123,6 +124,7 @@ void EnemyManager::TentRes()
 		    float(rand() % 720 + newEnemy->GetRadius())};
 		newEnemy->SetPosition(res);
 		newEnemy->SetParasiteTexture(parasiteTex_);
+		newEnemy->SetParticleTex(particleTex_);
 
 		enemys_.push_back(newEnemy);
 		respawnCount = kRespawnTimer;
@@ -164,6 +166,8 @@ void EnemyManager::CreateEnemy(int spownPoint)
 	//newEnemy->SetVelocity(MyMath::Normalize(playerPos_ - newEnemy->GetPosition()));
 	newEnemy->SetVelocity(RandomRadianVector());
 	newEnemy->SetParasiteTexture(parasiteTex_);
+	newEnemy->SetParticleTex(particleTex_);
+
 	enemys_.push_back(newEnemy);
 	
 }
@@ -177,6 +181,7 @@ void EnemyManager::AddEnemy(const Vector2& position, const Vector2& velocity) {
 	newEnemy->SetPosition(pos);
 	newEnemy->SetVelocity(velo);
 	newEnemy->SetParasiteTexture(parasiteTex_);
+	newEnemy->SetParticleTex(particleTex_);
 
 	enemys_.push_back(newEnemy);
 }
@@ -223,6 +228,7 @@ void EnemyManager::DiagonalBehavior()
 		// 速さ設定
 		newEnemy->SetVelocity(Vector2(norm.x * moveSpeed, norm.y * moveSpeed));
 		newEnemy->SetParasiteTexture(parasiteTex_);
+		newEnemy->SetParticleTex(particleTex_);
 
 		// リストに追加
 		enemys_.push_back(newEnemy);
@@ -256,6 +262,7 @@ void EnemyManager::DiagonalBehavior()
 		// 速さ設定
 		newEnemy->SetVelocity(Vector2(norm.x * moveSpeed, norm.y * moveSpeed));
 		newEnemy->SetParasiteTexture(parasiteTex_);
+		newEnemy->SetParticleTex(particleTex_);
 
 		// リストに追加
 		enemys_.push_back(newEnemy);
@@ -289,6 +296,7 @@ void EnemyManager::DiagonalBehavior()
 		// 速さ設定
 		newEnemy->SetVelocity(Vector2(norm.x * moveSpeed, norm.y * moveSpeed));
 		newEnemy->SetParasiteTexture(parasiteTex_);
+		newEnemy->SetParticleTex(particleTex_);
 
 		// リストに追加
 		enemys_.push_back(newEnemy);
@@ -322,6 +330,7 @@ void EnemyManager::DiagonalBehavior()
 		// 速さ設定
 		newEnemy->SetVelocity(Vector2(norm.x * moveSpeed, norm.y * moveSpeed));
 		newEnemy->SetParasiteTexture(parasiteTex_);
+		newEnemy->SetParticleTex(particleTex_);
 
 		// リストに追加
 		enemys_.push_back(newEnemy);
@@ -354,6 +363,7 @@ void EnemyManager::DiagonalClockWiseBehavior()
 		// 速さ設定
 		newEnemy->SetVelocity(Vector2(moveSpeed, 0));
 		newEnemy->SetParasiteTexture(parasiteTex_);
+		newEnemy->SetParticleTex(particleTex_);
 
 		// リストに追加
 		enemys_.push_back(newEnemy);
@@ -379,6 +389,7 @@ void EnemyManager::DiagonalClockWiseBehavior()
 		// 速さ設定
 		newEnemy->SetVelocity(Vector2(0, -moveSpeed));
 		newEnemy->SetParasiteTexture(parasiteTex_);
+		newEnemy->SetParticleTex(particleTex_);
 
 		// リストに追加
 		enemys_.push_back(newEnemy);
@@ -404,6 +415,7 @@ void EnemyManager::DiagonalClockWiseBehavior()
 		// 速さ設定
 		newEnemy->SetVelocity(Vector2(0, moveSpeed));
 		newEnemy->SetParasiteTexture(parasiteTex_);
+		newEnemy->SetParticleTex(particleTex_);
 
 		// リストに追加
 		enemys_.push_back(newEnemy);
@@ -429,6 +441,7 @@ void EnemyManager::DiagonalClockWiseBehavior()
 		// 速さ設定
 		newEnemy->SetVelocity(Vector2(-moveSpeed, 0));
 		newEnemy->SetParasiteTexture(parasiteTex_);
+		newEnemy->SetParticleTex(particleTex_);
 
 		// リストに追加
 		enemys_.push_back(newEnemy);
@@ -463,7 +476,7 @@ void EnemyManager::ArrowBehavior(int switchPatt)
 			// 速さ設定
 			newEnemy->SetVelocity(Vector2(0, moveSpeed));
 			newEnemy->SetParasiteTexture(parasiteTex_);
-
+			newEnemy->SetParticleTex(particleTex_);
 			// リストに追加
 			enemys_.push_back(newEnemy);
 		}
@@ -480,6 +493,7 @@ void EnemyManager::ArrowBehavior(int switchPatt)
 			// 速さ設定
 			newEnemy->SetVelocity(Vector2(0, moveSpeed));
 			newEnemy->SetParasiteTexture(parasiteTex_);
+			newEnemy->SetParticleTex(particleTex_);
 
 			// リストに追加
 			enemys_.push_back(newEnemy);
@@ -502,6 +516,7 @@ void EnemyManager::ArrowBehavior(int switchPatt)
 			// 速さ設定
 			newEnemy->SetVelocity(Vector2(0, -moveSpeed));
 			newEnemy->SetParasiteTexture(parasiteTex_);
+			newEnemy->SetParticleTex(particleTex_);
 
 			// リストに追加
 			enemys_.push_back(newEnemy);
@@ -519,6 +534,7 @@ void EnemyManager::ArrowBehavior(int switchPatt)
 			// 速さ設定
 			newEnemy->SetVelocity(Vector2(0, -moveSpeed));
 			newEnemy->SetParasiteTexture(parasiteTex_);
+			newEnemy->SetParticleTex(particleTex_);
 
 			// リストに追加
 			enemys_.push_back(newEnemy);
@@ -541,6 +557,7 @@ void EnemyManager::ArrowBehavior(int switchPatt)
 			// 速さ設定
 			newEnemy->SetVelocity(Vector2(moveSpeed, 0));
 			newEnemy->SetParasiteTexture(parasiteTex_);
+			newEnemy->SetParticleTex(particleTex_);
 
 			// リストに追加
 			enemys_.push_back(newEnemy);
@@ -558,6 +575,7 @@ void EnemyManager::ArrowBehavior(int switchPatt)
 			// 速さ設定
 			newEnemy->SetVelocity(Vector2(moveSpeed, 0));
 			newEnemy->SetParasiteTexture(parasiteTex_);
+			newEnemy->SetParticleTex(particleTex_);
 
 			// リストに追加
 			enemys_.push_back(newEnemy);
@@ -581,6 +599,7 @@ void EnemyManager::ArrowBehavior(int switchPatt)
 			// 速さ設定
 			newEnemy->SetVelocity(Vector2(-moveSpeed, 0));
 			newEnemy->SetParasiteTexture(parasiteTex_);
+			newEnemy->SetParticleTex(particleTex_);
 
 			// リストに追加
 			enemys_.push_back(newEnemy);
@@ -598,6 +617,7 @@ void EnemyManager::ArrowBehavior(int switchPatt)
 			// 速さ設定
 			newEnemy->SetVelocity(Vector2(-moveSpeed, 0));
 			newEnemy->SetParasiteTexture(parasiteTex_);
+			newEnemy->SetParticleTex(particleTex_);
 
 			// リストに追加
 			enemys_.push_back(newEnemy);

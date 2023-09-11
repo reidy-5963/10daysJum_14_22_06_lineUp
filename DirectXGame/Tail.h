@@ -123,6 +123,7 @@ public: // セッター
 	void SetIsPlayersTail(bool flag) { isPlayersTail = flag; }
 #pragma endregion
 	void SetHp(int hp) { tailHp = hp; }
+	void SetParticleTex(uint32_t particletex) { particleTex_ = particletex; }
 
 private: // メンバ変数
 	// 親の位置
@@ -170,4 +171,8 @@ private: // メンバ変数
 	bool isDead_ = false;
 	
 	int tailHp = 3;
+
+	float bulletRadius = 64.0f;
+
+	uint32_t particleTex_ = 0u;
 };

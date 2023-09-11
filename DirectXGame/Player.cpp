@@ -53,7 +53,7 @@ void Player::Initialize() {
 	tailTexture_[2] = TextureManager::Load("Cannon_ver2_Worning.png");
 	// キャラのテクスチャ読み込み
 	bulletTexture_ = TextureManager::Load("Bullet.png");
-
+	bulletParticle_ = TextureManager::Load("bulletParticle.png");
 	// スプライトの生成
 	sprite_.reset(Sprite::Create(charaTex_, pos_, {1.0f, 1.0f, 1.0f, 1.0f}, {0.5f, 0.5f}));
 
@@ -186,7 +186,9 @@ void Player::Update() {
 		isInvisible_ = false;
 		color_ = {1.0f, 1.0f, 1.0f, 1.0f};
 	}
-	tails_.back()->SetHp(damageCount);
+	if (tails_.size() > 0) {
+		tails_.back()->SetHp(damageCount);
+	}
 
 	if (damageCount <= 0) {
 		damageCount = setDamageCount;
@@ -277,7 +279,7 @@ void Player::AddTails() {
 
 		// プレイヤーのポインタを設定
 		newTail->SetPlayer(this);
-
+		newTail->SetParticleTex(bulletParticle_);
 		// リストに追加
 		tails_.push_back(newTail);
 	}
@@ -676,10 +678,8 @@ void Player::RootRotateMove2() {
 	Mark2Pla.x = Mark2Pla.x / 2;
 	Mark2Pla.y = Mark2Pla.y / 2;
 	
-	
-
 		
-		 if (cross > 0) {
+	if (cross > 0) {
 
 		Matrix3x3 Mark2PlaRotateMat = MyMath::MakeRotateMatrix(-(3.14f * 0.75f));
 		Matrix3x3 Mark2PlaMat = MyMath::MakeTranslateMatrix(Mark2Pla);

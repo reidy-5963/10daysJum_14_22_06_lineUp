@@ -132,28 +132,32 @@ void Tail::Fire() {
 		float bulletDistance = offsetRadian / float(tailNo_ + 2);
 
 		for (int i = 0; i < tailNo_ + 1; i++) {
-			Vector2 move = {0.0f, -1.0f};
+		{
+				Vector2 move = {0.0f, -1.0f};
 
-			// 尻尾の進行方向から弾の撃つ向きを計算
+				// 尻尾の進行方向から弾の撃つ向きを計算
 
-			Matrix3x3 rotateMat =
-			    MyMath::MakeRotateMatrix(minrad + (float(i + 1) * bulletDistance));
-			// 実際に動く値で平行移動行列を生成
-			Matrix3x3 moveMat = MyMath::MakeTranslateMatrix(move);
-			// 回転行列と平行移動行列を合成
-			// rotateTailMat = MyMath::Multiply(rotateTailMat, rotateMat);
-			moveMat = MyMath::Multiply(moveMat, rotateMat);
-			// 合成した行列から移動成分のみ取得
-			move = {moveMat.m[2][0], moveMat.m[2][1]};
+				Matrix3x3 rotateMat =
+				    MyMath::MakeRotateMatrix(minrad + (float(i + 1) * bulletDistance));
+				// 実際に動く値で平行移動行列を生成
+				Matrix3x3 moveMat = MyMath::MakeTranslateMatrix(move);
+				// 回転行列と平行移動行列を合成
+				// rotateTailMat = MyMath::Multiply(rotateTailMat, rotateMat);
+				moveMat = MyMath::Multiply(moveMat, rotateMat);
+				// 合成した行列から移動成分のみ取得
+				move = {moveMat.m[2][0], moveMat.m[2][1]};
 
-			// 弾の生成
-			PlayerBullet* newBullet = new PlayerBullet();
-			// 弾の初期化処理
-			newBullet->Initialize(player_->GetBulletTex(), GetPosition(), move);
-			newBullet->SetBulletSpeed(player_->GetBulletSpeed());
-			//newBullet->SetRadius(float((64 / tailNo_ + 1)));
-			// 弾をリストに追加
-			player_->AddBullets(newBullet);
+				// 弾の生成
+				PlayerBullet* newBullet = new PlayerBullet();
+				// 弾の初期化処理
+				float tmp = float(player_->GetTails().back()->GetTailNo());
+				newBullet->SetRadius((bulletRadius / (tmp + 1.0f)));
+				newBullet->Initialize(player_->GetBulletTex(), GetPosition(), move);
+				newBullet->SetBulletSpeed(player_->GetBulletSpeed());
+				newBullet->SetParticleTex(particleTex_);
+				// 弾をリストに追加
+				player_->AddBullets(newBullet);
+			}
 		}
 
 		//*****************************************//
@@ -172,7 +176,7 @@ void Tail::Fire() {
 		// 当たり判定の計算
 		float distance =
 		    std::sqrtf(std::powf(Tail2Marker_distance.x, 2) + std::powf(Tail2Marker_distance.y, 2));
-		float radius = (2 + GetRadius());
+		float radius = (2 + 28.0f);
 
 		if (!player_->IsMove()) {
 			// もし尻尾とマーカーが当たっていれば

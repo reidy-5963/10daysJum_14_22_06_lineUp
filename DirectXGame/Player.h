@@ -235,7 +235,7 @@ private: // メンバ変数
 
 	// 弾の速さ
 	float bulletSpeed_ = 20.0f;
-
+	uint32_t bulletParticle_ = 0u;
 #pragma endregion
 
 #pragma region 尻尾
