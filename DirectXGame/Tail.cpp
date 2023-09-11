@@ -41,6 +41,12 @@ void Tail::Initialize(
 	animationScene = 3;
 	oneTime = 6;
 	isAnimation = true;
+	isCollapse = false;
+	CollapseAniTimer = 0;
+	CollapseAniNumber = 0;
+	CollapseAniScene = 7;
+	CollapseAnioneTime = 4;
+	isCollapseAniEnd = false;
 
 	// スプライトの生成
 	sprite_.reset(
@@ -49,53 +55,67 @@ void Tail::Initialize(
 	// 半径
 	radius_ = 48.0f;
 	sprite_->SetSize({radius_ * 2, radius_ * 2});
+
+	particle_ = std::make_unique<ParticleManager>();
+	particle_->Initialize(particleTex_);
 }
 
 void Tail::Update() {
 	ScreenPosInitialize();
+	if (!isCollapse) {
+		if (isPlayersTail) {
+			// もしプレイヤーが動いていたら
+			if (isPlayerMove_) {
+				isMove_ = true;
+			}
 
-	if (isPlayersTail) {
-		// もしプレイヤーが動いていたら
-		if (isPlayerMove_) {
-			isMove_ = true;
+			// 尻尾の動き更新処理
+			//
+
+			MoveUpdate();
+
+			// 進行方向の更新処理
+			DirectionUpdate();
 		}
-
-		// 尻尾の動き更新処理
 		//
+		else if (!isPlayersTail) {
 
-		MoveUpdate();
+			if (--deleteTimer < 0) {
+				isDead_ = true;
+			}
+		}
+		if (tailHp == 3) {
+			sprite_->SetTextureHandle(tex[0]);
+		} else if (tailHp == 2) {
+			sprite_->SetTextureHandle(tex[1]);
 
-		// 進行方向の更新処理
-		DirectionUpdate();
+		} else if (tailHp == 1) {
+			sprite_->SetTextureHandle(tex[2]);
+		}
+		Animation::Anime(animationTimer, animationNumber, animationScene, oneTime);
+		// 位置の更新処理
+		BaseCharacter::Update();
+		sprite_->SetRotation(std::atan2(direction_.y, direction_.x));
+
+		// 弾の発射処理
+		Fire();
+
 	}
 	//
-	else if (!isPlayersTail) {
+	else if (isCollapse) {
+		color_.w -= 0.03f;
 		
-		if (--deleteTimer < 0) {
-			isDead_ = true;
+
+		sprite_->SetColor(color_);
+
+		sprite_->SetTextureHandle(charaTex_);
+		if (CollapseAniTimer >= CollapseAnioneTime * CollapseAniScene) {
+			isCollapseAniEnd = true;
 		}
+		Animation::Anime(CollapseAniTimer, CollapseAniNumber, CollapseAniScene, CollapseAnioneTime);
 
 	}
-	Animation::Anime(animationTimer, animationNumber, animationScene, oneTime);
 
-	if (tailHp == 3) {
-		sprite_->SetTextureHandle(tex[0]);
-	} else if (tailHp == 2) {
-		sprite_->SetTextureHandle(tex[1]);
-
-	} else if (tailHp == 1) {
-		sprite_->SetTextureHandle(tex[2]);
-	}
-	if (isCollapse) {
-		Animation::Anime(animationTimer, animationNumber, animationScene, oneTime);
-	}
-
-	// 位置の更新処理
-	BaseCharacter::Update();
-	sprite_->SetRotation(std::atan2(direction_.y, direction_.x));
-
-	// 弾の発射処理
-	Fire();
 
 #ifdef _DEBUG
 	ImGui::Begin("debug");
@@ -107,19 +127,27 @@ void Tail::Update() {
 }
 
 void Tail::Draw() {
+	particle_->Draw();
 	// 尻尾の描画
-	BaseCharacter::Draw();
+	if (isCollapse) {
+		Animation::DrawAnimation(sprite_.get(), pos_, CollapseAniNumber, charaTex_);
+	}
+	//
+	else if(!isCollapse) {
+		BaseCharacter::Draw();
+	}
 }
 
-void Tail::OnCollision() {
-	if (!isPlayersTail) {
-		isPlayersTail = true;
-		std::list<Tail*> tails_ = player_->GetTails();
+void Tail::DrawUI() {}
 
-		tailNo_ = tails_.back()->GetTailNo() + 1;
-		parentPos_ = &tails_.back()->GetPosition();
-		tails_.push_back(this);
-	}
+void Tail::OnCollision() {
+	//if (!isPlayersTail) {
+	//	isPlayersTail = true;
+	//	std::list<Tail*> tails_ = player_->GetTails();
+	//	tailNo_ = tails_.back()->GetTailNo() + 1;
+	//	parentPos_ = &tails_.back()->GetPosition();
+	//	tails_.push_back(this);
+	//}
 }
 
 void Tail::Fire() {

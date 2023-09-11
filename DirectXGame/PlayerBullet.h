@@ -38,8 +38,8 @@ public: // メンバ関数
 private: // メンバ変数
 	std::unique_ptr<ParticleManager> particle_ = nullptr;
 	uint32_t particleTex_ = 0u;
-	
+	Vector4 color_ = {1.0f, 1.0f, 1.0f, 1.0f};
+
 	//std::unique_ptr<ParticleManager> particle_ = nullptr;
 	bool isCollapse = false;
-	Vector4 color_ = {1.0f, 1.0f, 1.0f, 1.0f};
 };

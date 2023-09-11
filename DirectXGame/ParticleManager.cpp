@@ -17,10 +17,14 @@ void ParticleManager::Update() {
 			if (pattern_ == Straight) {
 				generateTimer_ = setGeneTIme_;
 				Vector2 pos;
-				pos.x = float(rand() % (int(radius_.x) * 2 - int(radius_.x)) + 1) + lengePos_.x;
-				pos.y = float(rand() % (int(radius_.y) * 2 - int(radius_.y)) + 1) + lengePos_.y;
+				if (radius_.x == 0 || radius_.y == 0) {
+				} else {
+					pos.x = float(rand() % (int(radius_.x) * 2 - int(radius_.x)) + 1) + lengePos_.x;
+					pos.y = float(rand() % (int(radius_.y) * 2 - int(radius_.y)) + 1) + lengePos_.y;
+					AddParticle(pos);
 
-				AddParticle(pos);
+				}
+
 			} 
 			else if (pattern_ == Collapse) {
 				Vector2 pos;

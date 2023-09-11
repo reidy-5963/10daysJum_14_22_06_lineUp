@@ -124,6 +124,17 @@ void GameScene::Draw() {
 	// 背景の描画
 	back->Draw();
 
+	// 敵の描画
+	enemyManager_->Draw();
+
+	// プレイヤーの描画処理
+	player_->Draw();
+
+	// ボスの描画
+	if (!boss_->IsDead()) {
+		boss_->Draw();
+	}
+
 	// スプライト描画後処理
 	Sprite::PostDraw();
 	// 深度バッファクリア
@@ -149,17 +160,7 @@ void GameScene::Draw() {
 	/// <summary>
 	/// ここに前景スプライトの描画処理を追加できる
 	/// </summary>
-
-	// 敵の描画
-	enemyManager_->Draw();
-
-	// プレイヤーの描画処理
-	player_->Draw();
-
-	// ボスの描画
-	if (!boss_->IsDead()) {
-		boss_->Draw();
-	}
+	player_->DrawUI();
 
 	// スプライト描画後処理
 	Sprite::PostDraw();
@@ -271,9 +272,9 @@ void GameScene::CheckAllCollision() {
 			if (distance <= radius) {
 				if (!player_->GetIsInvisible()) {
 					// コールバック
-					enemy->OnCollision();
-					tail->OnCollision();
-					killCount_ += 1;
+					//enemy->OnCollision();
+					//tail->OnCollision();
+					//killCount_ += 1;
 
 				}
 			}
@@ -359,11 +360,11 @@ void GameScene::CheckAllCollision() {
 
 		if (distance <= radius && boss_->IsAlive()) {
 			// コールバック
+			playerBullet_->OnCollision();
 			if (!playerBullet_->IsCollapse()) {
 				boss_->OnCollision();
 				boss_->SetHp(boss_->GetHp() - 1);
 			}
-			playerBullet_->OnCollision();
 			
 		}
 	}

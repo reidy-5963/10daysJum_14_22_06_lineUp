@@ -1,6 +1,7 @@
 ﻿#pragma once
 #include "BaseCharacter.h"
 #include <list>
+#include "ParticleManager.h"
 
 class Player;
 
@@ -15,7 +16,7 @@ public: // メンバ関数
 	/// <param name="texture">テクスチャ</param>
 	/// <param name="parent">親になるスプライトの位置</param>
 	/// <param name="tailNo">尻尾番号</param>
-	void Initialize(uint32_t texture[3], const Vector2* parent, int tailNo, const bool* ParentBool);
+	void Initialize(uint32_t texture[4], const Vector2* parent, int tailNo, const bool* ParentBool);
 
 	/// <summary>
 	/// 更新処理	
@@ -26,7 +27,7 @@ public: // メンバ関数
 	/// 描画処理
 	/// </summary>
 	void Draw();
-
+	void DrawUI();
 	/// <summary>
 	/// 衝突処理
 	/// </summary>
@@ -62,6 +63,7 @@ public: // メンバ関数
 	void SetIsCollapse(bool isColl) { isCollapse = isColl; }
 
 	bool IsCollapseAniEnd() { return isCollapseAniEnd; }
+	bool IsCollapse() { return isCollapse; }
 
 public: // ゲッター
 #pragma region ゲッター
@@ -179,11 +181,15 @@ private: // メンバ変数
 	float bulletRadius = 64.0f;
 
 	uint32_t particleTex_ = 0u;
-
+	Vector4 color_ = {1.0f, 1.0f, 1.0f, 1.0f};
 	bool isCollapse = false;
 	int CollapseAniTimer = 0;
 	int CollapseAniNumber = 0;
 	int CollapseAniScene = 7;
 	int CollapseAnioneTime = 3;
 	bool isCollapseAniEnd = false;
+	std::unique_ptr<ParticleManager> particle_ = nullptr;
+	
+	std::unique_ptr<Sprite> playerUI_;
+	Vector2 UIPlayerPos_{100.0f, 100.0f};
 };

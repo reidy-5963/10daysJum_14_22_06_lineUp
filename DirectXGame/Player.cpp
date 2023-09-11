@@ -59,9 +59,13 @@ void Player::Initialize() {
 	bulletParticle_ = TextureManager::Load("bulletParticle.png");
 	// スプライトの生成
 	sprite_.reset(Sprite::Create(charaTex_, pos_, {1.0f, 1.0f, 1.0f, 1.0f}, {0.5f, 0.5f}));
+	playerUI_.reset(
+	    Sprite::Create(charaTex_, UIPlayerPos_, {1.0f, 1.0f, 1.0f, 1.0f}, {0.5f, 0.5f}));
 
 	radius_ = 64.0f;
 	sprite_->SetSize({radius_ * 2, radius_ * 2});
+	playerUI_->SetSize({radius_ * 2, radius_ * 2});
+	playerUI_->SetRotation(1.0f * 3.14f);
 	// マーカーのテクスチャ読み込み
 	markerTex_ = TextureManager::Load("Marker_ver2_0.png");
 	ismarkerAnimation = true;
@@ -201,6 +205,15 @@ void Player::Update() {
 	if (tails_.back()->IsCollapseAniEnd()) {
 		DeleteTails();
 	}
+	// 弾の消去
+	tails_.remove_if([](Tail* tail) {
+		if (tail->IsCollapseAniEnd()) {
+			delete tail;
+			return true;
+		}
+		return false;
+	});
+	playerUI_->SetPosition(UIPlayerPos_ + sceneVelo + shakeVelo_);
 }
 
 void Player::KeyMove() { // 移動距離
@@ -271,24 +284,35 @@ void Player::AddTails() {
 		// そうでなければ
 		if (tails_.size() != 0) {
 			// 一個前の尻尾の位置を親として初期化
-			newTail->Initialize(
-			    tailTexture_, &tails_.back()->GetPosition(), (tails_.back()->GetTailNo() + 1),
-			    tails_.back()->IsFirePtr());
-			tails_.back()->SetHp(setDamageCount);
+			if (!tails_.back()->IsCollapse()) {
+				newTail->Initialize(
+				    tailTexture_, &tails_.back()->GetPosition(), (tails_.back()->GetTailNo() + 1),
+				    tails_.back()->IsFirePtr());
+				tails_.back()->SetHp(setDamageCount);
+			}
+			//
+			else if (tails_.back()->IsCollapse()) {
+				newTail->Initialize(
+				    tailTexture_, &(tails_.back() - 1)->GetPosition(),
+				    ((tails_.back() - 1)->GetTailNo() + 1), (tails_.back() - 1)->IsFirePtr());
+				(tails_.back() - 1)->SetHp(setDamageCount);
+
+			}
 		}
 		// もし最初の尻尾なら
 		else {
 			// プレイヤーの位置を親として初期化
 			newTail->Initialize(tailTexture_, &pos_, 0, &isMove_);
-
 		}
 		newTail->SetIsPlayersTail(true);
-
 		// プレイヤーのポインタを設定
 		newTail->SetPlayer(this);
 		newTail->SetParticleTex(bulletParticle_);
 		// リストに追加
 		tails_.push_back(newTail);
+	}
+	if (tails_.size() == kMaxTail_) {
+		damageCount = setDamageCount;
 	}
 	/*else if (tails_.size() == kMaxTail_) {
 		tails_.back()->SetHp(setDamageCount);
@@ -436,6 +460,10 @@ void Player::ToMarkerMoveUpdate() {
 
 		MyMath::CountT(root_t_, 0.0f, isM1tM2, true, rootRotate_t_offset);
 	}
+}
+
+void Player::DrawUI() { 
+	Animation::DrawAnimation(playerUI_.get(), UIPlayerPos_, animationNumber, charaTex_);
 }
 
 void Player::TailUpdate() {

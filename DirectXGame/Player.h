@@ -117,6 +117,8 @@ public: // メンバ関数
 
 	void ToMarkerMoveUpdate();
 
+	void DrawUI();
+
 public: // Setter & Getter
 	/// <summary>
 	/// 弾テクスチャの取得
@@ -153,6 +155,8 @@ public: // Setter & Getter
 	/// </summary>
 	/// <returns></returns>
 	const std::list<Tail*>& GetTails() { return tails_; }
+
+	const int GetTail() { return int(tails_.size()); }
 
 private: // メンバ変数
 	// 入力
@@ -298,5 +302,9 @@ private: // メンバ変数
 #endif // _DEBUG
 	const int setDamageCount = 3;
 	int damageCount = setDamageCount;
+
+	std::unique_ptr<Sprite> playerUI_;
+
+	Vector2 UIPlayerPos_{100.0f, 100.0f};
 
 };
