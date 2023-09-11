@@ -27,8 +27,10 @@ void BaseCharacter::Update() {
 /// </summary>
 void BaseCharacter::Draw() {
 	Scroll* scroll = Scroll::GetInstance();
-	if (pos_.x < 0 + scroll->GetAddScroll().x || pos_.x > 1920 + scroll->GetAddScroll().x ||
-	    pos_.y < 0 + scroll->GetAddScroll().y || pos_.y > 1080 + scroll->GetAddScroll().y) {
+	if (pos_.x < 0 + scroll->GetAddScroll().x- radius_ ||
+	    pos_.x > 1920 + scroll->GetAddScroll().x + radius_ ||
+	    pos_.y < 0 + scroll->GetAddScroll().y - radius_ ||
+	    pos_.y > 1080 + scroll->GetAddScroll().y + radius_) {
 	} else {
 		// スプライトの描画
 		if (!isAnimation) {

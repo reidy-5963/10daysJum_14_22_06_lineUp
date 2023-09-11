@@ -130,7 +130,8 @@ void BossEnemy::Initialize()
 	radius_ = 150.0f;
 	// 適当にサイズ
 	sprite_->SetSize(Vector2(radius_ * 2, radius_ * 2));
-
+	particle_ = std::make_unique<ParticleManager>();
+	particle_->Initialize(particleTex);
 }
 
 void BossEnemy::Update() 
@@ -220,13 +221,16 @@ void BossEnemy::Update()
 	rushSprite_->SetPosition(ScPos);
 
 	BulletUpdate();
+	particle_->Update();
 
 	// 座標設定
 	BaseCharacter::Update();
 }
 
 void BossEnemy::Draw() 
-{ 
+{
+	particle_->Draw();
+
 	if (isRush_ || isRushNow_) {
 		rushSprite_->Draw();
 	}

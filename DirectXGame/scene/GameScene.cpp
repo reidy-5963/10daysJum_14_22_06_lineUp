@@ -31,6 +31,7 @@ void GameScene::Initialize() {
 #pragma region プレイヤー
 	// プレイヤー生成
 	player_ = std::make_unique<Player>();
+	player_->SetIsGameStart(true);
 	// プレイヤーの初期化処理
 	player_->Initialize();
 #pragma endregion
@@ -68,7 +69,7 @@ void GameScene::Initialize() {
 /// </summary>
 void GameScene::Update() { 
 	// スクロールの更新処理
-	Scroll* scroll = Scroll::GetInstance();
+	//Scroll* scroll = Scroll::GetInstance();
 	scroll_->Update();
 
 	// 敵の更新処理
@@ -102,7 +103,7 @@ void GameScene::Update() {
 
 	
 	// 背景の更新処理
-	back->SetPosition(backPos - scroll->GetAddScroll() + sceneShakevelo_);
+	//back->SetPosition(backPos - scroll->GetAddScroll() + sceneShakevelo_);
 }
 
 /// <summary>

@@ -217,6 +217,10 @@ public: // Setter & Getter
 	/// </summary>
 	/// <returns>尻尾の数</returns>
 	const int GetTail() { return int(tails_.size()); }
+
+	bool IsDead() { return isDead_; }
+
+	void SetIsGameStart(bool isStart) { isGameStart = isStart; }
 #pragma endregion
 
 private: // メンバ変数
@@ -238,7 +242,7 @@ private: // メンバ変数
 	// プレイヤーの残機(尻尾の数)
 	const int setDamageCount = 3;
 	int damageCount = setDamageCount;
-
+	int scoreCOunt = 0;
 #pragma region 当たり判定処理系
 
 	int kInvisibleTimer_ = 90;
@@ -377,4 +381,7 @@ private: // メンバ変数
 	std::unique_ptr<Sprite> origin_ = nullptr;
 	//
 #endif // _DEBUG
+	bool isDead_ = false;
+
+	bool isGameStart = false;
 };

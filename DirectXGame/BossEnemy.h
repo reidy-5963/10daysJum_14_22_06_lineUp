@@ -129,7 +129,7 @@ public:	// 設定・取得
 
 	bool IsAlive() { return isAlive_; }
 
-	private:
+private:
 	// 入力
 	Input* input_ = nullptr;
 	// スプライト
@@ -238,4 +238,6 @@ private: // 揺らす系
 	Vector2 shakeVelo_{};
 	bool isDamageShake = false;
 	int amplitNum = 12;
+	std::unique_ptr<ParticleManager> particle_ = nullptr;
+	Vector4 color_ = {1.0f, 1.0f, 1.0f, 1.0f};
 };

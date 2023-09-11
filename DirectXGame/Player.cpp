@@ -30,7 +30,7 @@ void Player::Initialize() {
 	input_ = Input::GetInstance();
 
 	// 初期位置(仮)
-	pos_ = {760, 320};
+	pos_ = {-200.0f, WinApp::kWindowHeight / 2};
 	clickPlayerPos_ = pos_;
 	markerPos_ = pos_;
 	preMarkerPos_ = markerPos_;
@@ -80,6 +80,41 @@ void Player::Initialize() {
 
 	// グローバル変数の初期化処理
 	InitializeGrobalVariables();
+	if (isGameStart) {
+		clickPos_ = {700.0f, WinApp::kWindowHeight / 2};
+		MarkerControl();
+
+		// クリックしたときの位置を取得
+		clickPlayerPos_ = pos_;
+
+		//
+		ToMarkerMoveInitialize();
+
+		//
+		RootRotateMoveInitialize();
+
+		RootRotateMove2();
+
+		ismarkerMove_ = true;
+	}
+	else if (!isGameStart) {
+		clickPos_ = {700.0f, WinApp::kWindowHeight / 2};
+		MarkerControl();
+
+		// クリックしたときの位置を取得
+		clickPlayerPos_ = pos_;
+
+		//
+		ToMarkerMoveInitialize();
+
+		//
+		RootRotateMoveInitialize();
+
+		RootRotateMove2();
+
+		ismarkerMove_ = true;
+
+	}
 }
 
 /// <summary>
@@ -227,6 +262,7 @@ void Player::Update() {
 	ImGui::Text("%f", root_t_);
 	ImGui::DragFloat("radian", &BulletRadian, 0.1f, 2.0f);
 	ImGui::Text("%d Timer : %d", isInvisible_, invisibleTimeCount_);
+	ImGui::Text("score : %d", scoreCOunt);
 	ImGui::End();
 
 #endif
@@ -291,18 +327,20 @@ void Player::Update() {
 		isInvisible_ = false;
 		color_ = {1.0f, 1.0f, 1.0f, 1.0f};
 	}
+
 	if (tails_.size() > 0) {
 		tails_.back()->SetHp(damageCount);
+		if (damageCount <= 0) {
+			damageCount = setDamageCount;
+			tails_.back()->SetIsCollapse(true);
+		}
+		if (tails_.back()->IsCollapseAniEnd()) {
+			DeleteTails();
+		}
+
 	}
 
-	if (damageCount <= 0) {
-		damageCount = setDamageCount;
-		tails_.back()->SetIsCollapse(true);
-	}
 
-	if (tails_.back()->IsCollapseAniEnd()) {
-		DeleteTails();
-	}
 	// 弾の消去
 	tails_.remove_if([](Tail* tail) {
 		if (tail->IsCollapseAniEnd()) {
@@ -312,6 +350,10 @@ void Player::Update() {
 		return false;
 	});
 	playerUI_->SetPosition(UIPlayerPos_ + sceneVelo + shakeVelo_);
+
+	if (tails_.size() <= 0) {
+		isDead_ = true;
+	}
 }
 
 /// <summary>
@@ -899,12 +941,12 @@ void Player::AddTails() {
 		// リストに追加
 		tails_.push_back(newTail);
 	}
-	if (tails_.size() == kMaxTail_) {
+	else if (tails_.size() == kMaxTail_) {
 		damageCount = setDamageCount;
+		scoreCOunt += 1;
+
 	}
-	/*else if (tails_.size() == kMaxTail_) {
-	    tails_.back()->SetHp(setDamageCount);
-	}*/
+	
 }
 
 /// <summary>
