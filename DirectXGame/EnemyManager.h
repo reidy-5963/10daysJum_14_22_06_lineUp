@@ -79,13 +79,15 @@ public:	// リスポーンタイプ
 	/// <summary>
 	/// 適当湧き
 	/// </summary>
-	void TentRes();
+	void FormationSpawnUpdate();
 
 	void CreateEnemy(int spownPoint);
 
 	void AddEnemy(const Vector2& position, const Vector2& velocity);
 
 	Vector2 RandomRadianVector();
+
+	void FourPointsSpawn();
 
 private:
 
@@ -99,9 +101,9 @@ private:
 
 	// エネミー
 	std::list<Enemy*> enemys_;
-
+	// プレイヤーの座標の入れ物
 	Vector2 playerPos_ = {};
-
+	// シーンのシェイク
 	Vector2 sceneVelo_{};
 
 	int kEnemyLimit = 8;
@@ -109,10 +111,14 @@ private:
 	int respawnCount = kRespawnTimer;
 
 	int ArrowCoolTime = 0;
-
-	bool isRespown = false;
-
-	int resPattern;
+	// 矢印のフラグ
+	bool isArrowRespown_ = false;
+	// パターン湧きしているか
+	bool isPatternNow = false;
+	// パターンの時間
+	int patternInterval = 0;
+	// パターン湧きの間隔
+	int kInterval = 60;
 
 private:	// Arrowの変数
 	enum Pattern 
@@ -126,18 +132,23 @@ private:	// Arrowの変数
 	Vector2 plPrevPos_ = {};
 
 private: // ステージでの管理系
-	int kRespownTimer_ = 60 * 10;
+	int autoSpawnSecond_ = 7;
+	int kRespownTimer_ = 60 * autoSpawnSecond_;
 	int respownTimer_ = 0;
 	int spawnShiftFrame_ = 0;
 	
+	// リスポーンの座標
 	Vector2 resCircle_ = {};
 	float resCircleRadius_ = 0;
 
-	enum SpownPoint {
+	enum SpawnPoint {
 		kLeftTop,
 		kLeftBottom,
 		kRightTop,
 		kRightBottom,
 	};
+
+	// マップ全体のサイズ
+	Vector2 screenSize_ = {1920 * 2, 1080 * 2};
 
 };

@@ -113,6 +113,7 @@
     <ClCompile Include="BaseScene.cpp" />
     <ClCompile Include="base\DirectXCommon.cpp" />
     <ClCompile Include="base\WinApp.cpp" />
+    <ClCompile Include="BossAction.cpp" />
     <ClCompile Include="BossBullet.cpp" />
     <ClCompile Include="BossEnemy.cpp" />
     <ClCompile Include="BossFunnel.cpp" />

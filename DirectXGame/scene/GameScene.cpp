@@ -19,12 +19,10 @@ GameScene::~GameScene() {}
 /// 初期化
 /// </summary>
 void GameScene::Initialize() {
-#pragma region dxCommonや入力音の初期化
 
 	dxCommon_ = DirectXCommon::GetInstance();
 	input_ = Input::GetInstance();
 	audio_ = Audio::GetInstance();
-#pragma endregion
 
 	// 乱数
 	unsigned int currentTime = (int)time(nullptr);

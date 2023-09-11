@@ -29,6 +29,8 @@ void BossEnemy::RespownBoss()
 	pos_ = {float(WinApp::kWindowWidth), float(WinApp::kWindowHeight)};
 	isAlive_ = true;
 	isDead_ = false;
+	prevBossPos_ = pos_;
+	prevPlayerPos_ = nowPlayerPos_;
 	hp_ = setHp;
 	animationTimer = 0;
 	animationNumber = 0;
@@ -43,13 +45,13 @@ void BossEnemy::RandomActionManager()
 		actionTimer_++;
 	}
 	if (actionTimer_ == kActionCoolTime_) {
-		int behaviorRand = rand() % 5 + 1;
+		int behaviorRand = rand() % 4 + 1;
 		actionTimer_ = 0;
 		switch (behaviorRand) {
-		case 2:
+		case 1:
 			RushAttackSetup();
 			break;
-		case 1:
+		case 2:
 			behaviorRequest_ = Behavior::kGuided;
 			break;
 		case 3:
@@ -57,9 +59,6 @@ void BossEnemy::RandomActionManager()
 			break;
 		case 4:
 			behaviorRequest_ = Behavior::kFunnel;
-			break;
-		case 5:
-			behaviorRequest_ = Behavior::kRush;
 			break;
 		}
 	}
@@ -101,7 +100,7 @@ void BossEnemy::Initialize()
 
 	pos_ = {-3000.0f, -3000.0f};
 
-	RespownBoss();
+	//RespownBoss();
 	animationTimer = 0;
 	animationNumber = 0;
 	animationScene = 4;
@@ -221,6 +220,10 @@ void BossEnemy::Update()
 
 void BossEnemy::Draw() 
 { 
+	if (isRush_ || isRushNow_) {
+		rushSprite_->Draw();
+	}
+
 	for (BossBullet* bullet : bullets_) {
 		bullet->Draw();
 	}
@@ -230,9 +233,6 @@ void BossEnemy::Draw()
 	// 描画
 	BaseCharacter::Draw();
 
-	if (isRush_) {
-		rushSprite_->Draw();	
-	}
 	if (isAlive_) {
 		hpShadowSprite_->Draw();
 		hpSprite_->Draw();
@@ -292,139 +292,7 @@ void BossEnemy::BulletUpdate() {
 	}
 }
 
-void BossEnemy::RushAttack() 
-{
-	// 補間レート処理
-	if (rushMove_t_ >= 1.0f) {
-		rushMove_t_ = 1.0f;
-		behaviorRequest_ = Behavior::kRoot;
-	} else {
-		rushMove_t_ += 0.02f;
-	}
-	// 座標移動ー線形補間
-	float distance = MyMath::Length(prevPlayerPos_ - prevBossPos_);
-	if (distance >= easeInRange_) {
-		pos_ = MyMath::EaseOutQuadF(rushMove_t_, prevBossPos_, prevPlayerPos_);	
-	} else {
-		pos_ = MyMath::EaseInQuadF(rushMove_t_, prevBossPos_, prevPlayerPos_);
-	}
-}
-
-void BossEnemy::RushAttackInitialize() 
-{ 
-	// 補間レート初期化
-	this->rushMove_t_ = 0;
-}
-
-void BossEnemy::RushAttackSetup() 
-{
-	isRush_ = true;
-	// 座標初期化
-	prevBossPos_ = pos_;
-	prevPlayerPos_ = nowPlayerPos_;
-}
-
-void BossEnemy::GuidedAttack() 
-{
-	modeCount_ += 1;
-	if (modeCount_ == kModeEndTimer_) {
-		behaviorRequest_ = Behavior::kRoot;
-	}
-	
-	if (modeCount_ % 30 == 0) {
-		Vector2 velocity = MyMath::Normalize(nowPlayerPos_ - pos_);
-		GenerateBullet(velocity);
-	}
-}
-
-void BossEnemy::GuidedAttackInitialize() 
-{
-	kModeEndTimer_ = ConvertSeconds(5);
-
-}
-
-void BossEnemy::BarrageAttack() 
-{	
-	modeCount_ += 1;
-	if (modeCount_ == kModeEndTimer_) {
-		behaviorRequest_ = Behavior::kRoot;
-	}
-	if (modeCount_ % 30 == 0) {
-		// 右
-		float radian = rotateDegree * ((float)std::numbers::pi / 180.0f);
-		// 角度に合わせて正規化
-		Vector2 norm = {std::cosf(radian), -std::sinf(radian)};
-		norm = MyMath::Normalize(norm);
-		GenerateBullet(norm);
-
-		// 上
-		radian = (rotateDegree + 90.0f) * ((float)std::numbers::pi / 180.0f);
-		// 角度に合わせて正規化
-		norm = {std::cosf(radian), -std::sinf(radian)};
-		norm = MyMath::Normalize(norm);
-		GenerateBullet(norm);
-
-		// 左
-		radian = (rotateDegree + 180.0f) * ((float)std::numbers::pi / 180.0f);
-		// 角度に合わせて正規化
-		norm = {std::cosf(radian), -std::sinf(radian)};
-		norm = MyMath::Normalize(norm);
-		GenerateBullet(norm);
-		
-		// 下
-		radian = (rotateDegree + 270.0f) * ((float)std::numbers::pi / 180.0f);
-		// 角度に合わせて正規化
-		norm = {std::cosf(radian), -std::sinf(radian)};
-		norm = MyMath::Normalize(norm);
-		GenerateBullet(norm);
-		rotateRadian_ = rotateDegree * ((float)std::numbers::pi / 180.0f);
-		// 回転
-		rotateDegree += 10.0f;
-		rotate_t_ = 0;
-	}
-	//if (rotate_t_ >= 1.0f) {
-	//	rotate_t_ += (1.0f / 30.0f);
-	//	sprite_->SetRotation(MyMath::lerp(rotate_t_, sprite_->GetRotation(), rotateRadian_));
-	//} else {
-	//	rotate_t_ = 1.0f;
-	//}
-}
-
-void BossEnemy::BarrageAttackInitialize() 
-{
-
-	kModeEndTimer_ = 150;
-	rotateDegree = 180.0f / float(std::numbers::pi) * sprite_->GetRotation();
-
-}
-
-void BossEnemy::BeamAttack() {
-	
-}
-
-void BossEnemy::BeamAttackInitialize() 
-{ 
-
-}
-
-void BossEnemy::FunnelAttack() 
-{ 
-	modeCount_ += 1;
-
-	if (modeCount_ % 120 == 0) {
-		GenerateFunnel(BossFunnel::kHorizontal);
-		GenerateFunnel(BossFunnel::kVertical);
-	}
-	if (modeCount_ == kModeEndTimer_) {
-		behaviorRequest_ = Behavior::kRoot;
-	}
-}
-
-void BossEnemy::FunnelAttackInitialize() 
-{ 
-	kModeEndTimer_ = 260;
-	isFunnelAttackNow_ = true;
-}
+void BossEnemy::RootInitialize() { actionTimer_ = 0; }
 
 void BossEnemy::RootUpdate() 
 {
@@ -462,9 +330,9 @@ void BossEnemy::RootUpdate()
 	if (input_->TriggerKey(DIK_K)) {
 		RespownBoss();
 	}
-
-	//RandomActionManager();
-
+	if (isAlive_) {
+		RandomActionManager();
+	}
 	/// 突進までの処理
 	if (isRush_ && !isFunnelAttackNow_) {
 		rushCount_ += 1;
@@ -476,8 +344,3 @@ void BossEnemy::RootUpdate()
 		}
 	}
 }
-
-void BossEnemy::RootInitialize() 
-{ actionTimer_ = 0; }
-
-

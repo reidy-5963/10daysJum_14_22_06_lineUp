@@ -181,6 +181,8 @@ private: // 突進
 	// 突進カウント用フラグ
 	bool isRush_ = false;
 
+	bool isRushNow_ = false;
+
 	Vector2 ScPos = {};
 
 private: // 全方位
@@ -216,7 +218,7 @@ private: // 行動管理用変数
 
 private: // 動きの管理
 	int actionTimer_ = 0;
-	int kActionCoolTime_ = 60 * 2;
+	int kActionCoolTime_ = 60 * 5;
 
 	void RandomActionManager();
 
