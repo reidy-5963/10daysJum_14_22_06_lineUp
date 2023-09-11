@@ -5,6 +5,12 @@
 
 class ParticleManager {
 public:
+	enum ParticlePattarn {
+		Straight,
+
+	};
+
+public:
 	void Initialize(uint32_t tex);
 
 	void Update();
@@ -38,4 +44,6 @@ public:
 	int setGeneTIme_ = 60;
 	int generateTimer_ = setGeneTIme_;
 	bool isParticle = false;
+
+	int pattern = 0;
 };
