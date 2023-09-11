@@ -269,6 +269,23 @@ private: // メンバ変数
 #pragma endregion
 	bool ismarkerMove_ = false;
 	float markerMove_t = 0.0f;
+	
+	Vector2 originPos_{};
+
+#pragma region プレイヤーの揺れ用
+	Vector2 shakeVelo_{};
+	bool isDamageShake = false;
+	int amplitNum = 30;
+#pragma endregion
+
+#pragma region マーカーのアニメーション用
+	int markerAniTimer = 0;
+	int markerAniNumber = 0;
+	int markerAniScene = 15;
+	int markerAniOneTime = 4;
+	bool ismarkerAnimation = false;
+#pragma endregion 
+
 #ifdef _DEBUG
 	// test
 	std::unique_ptr<Sprite> m1 = nullptr;
@@ -279,15 +296,7 @@ private: // メンバ変数
 	//
 
 #endif // _DEBUG
-	Vector2 originPos_{};
+	const int setDamageCount = 3;
+	int damageCount = setDamageCount;
 
-	Vector2 shakeVelo_{};
-	bool isDamageShake = false;
-	int amplitNum = 30;
-
-	int markerAniTimer = 0;
-	int markerAniNumber = 0;
-	int markerAniScene = 15;
-	int markerAniOneTime = 4;
-	bool ismarkerAnimation = false;
 };

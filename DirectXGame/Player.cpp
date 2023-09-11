@@ -182,6 +182,11 @@ void Player::Update() {
 		isInvisible_ = false;
 		color_ = {1.0f, 1.0f, 1.0f, 1.0f};
 	}
+
+	if (damageCount <= 0) {
+		damageCount = setDamageCount;
+		DeleteTails();
+	}
 }
 
 void Player::KeyMove() { // 移動距離
@@ -455,10 +460,11 @@ void Player::OnCollision() {
 	if (!isInvisible_) {
 		// もし当たったらシェイクフラグを有効に
 		isDamageShake = true;
+		damageCount--;
 		// 揺れ幅を設定
 		amplitNum = 30;
 		// 尻尾を減らす
-		DeleteTails();
+		//DeleteTails();
 		isInvisible_ = true;
 		color_ = {1.0f, 0.1f, 0.1f, 1.0f};
 	}
