@@ -227,7 +227,7 @@ void GameScene::CheckAllCollision() {
 	}
 #pragma endregion
 
-#pragma region ボスの弾
+#pragma region ボスの弾とプレイヤー
 
 	for (BossBullet* bossBullet_ : bossBullet) {
 		// エネミーの位置取得
@@ -247,7 +247,7 @@ void GameScene::CheckAllCollision() {
 
 #pragma endregion
 
-#pragma region ボスのファンネル
+#pragma region ボスのファンネルとプレイヤー
 
 	for (BossFunnel* bossFunnel_ : bossFunnel) {
 		// エネミーの位置取得
@@ -369,13 +369,33 @@ void GameScene::CheckAllCollision() {
 		float radius = playerBullet_->GetRadius() + boss_->GetRadius();
 
 		if (distance <= radius && boss_->IsAlive()) {
-			// コールバック
-			playerBullet_->OnCollision();
 			if (!playerBullet_->IsCollapse()) {
+				// コールバック
+				playerBullet_->OnCollision();
 				boss_->OnCollision();
 				boss_->SetHp(boss_->GetHp() - 1);
 			}
 			
+		}
+	}
+#pragma endregion
+#pragma region プレイヤーとボス 
+	targetA = player_->GetPosition();
+	targetB = boss_->GetPosition();
+
+	float distance = std::sqrtf(
+			    std::powf(targetA.x - targetB.x, 2) + std::powf(targetA.y - targetB.y, 2));
+
+	float radius = player_->GetRadius() + boss_->GetRadius();
+
+	// 交差判定
+	if (distance <= radius) {
+		if (!player_->GetIsInvisible()) {
+			// コールバック
+			player_->OnCollision();
+			issceneShake = true;
+			sceneaAmplitNum = 40;
+			//boss_->OnCollision();
 		}
 	}
 #pragma endregion

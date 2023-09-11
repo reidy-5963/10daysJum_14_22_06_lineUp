@@ -176,6 +176,9 @@ public:	// 設定・取得
 	int hp_ = setHp;
 	Vector2 hpGaugeSize{};
 
+	//
+	uint32_t particleTex = 0u;
+
 private: // 突進
 	// 補間レート
 	float rushMove_t_ = 0;

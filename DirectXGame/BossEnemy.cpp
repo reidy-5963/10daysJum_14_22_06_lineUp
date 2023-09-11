@@ -17,6 +17,8 @@ BossEnemy::BossEnemy() {
 	bulletTex_ = TextureManager::Load("BossBullet.png");
 	// ファンネル
 	funnelTex_ = TextureManager::Load("Fannel.png");
+	particleTex = TextureManager::Load("FunnelParticle.png");
+
 	// 突進先
 	rushPointTex_ = TextureManager::Load("bossAttack.png");
 	// HP
@@ -83,10 +85,12 @@ void BossEnemy::GenerateFunnel(int type)
 	switch (type) {
 	case BossFunnel::kHorizontal:
 		endPoint = {nowPlayerPos_.x, pos_.y};
+		newFunnel->SetParticleTex(particleTex);
 		newFunnel->Initialize(funnelTex_, type, GetPosition(), endPoint);
 		break;
 	case BossFunnel::kVertical:
 		endPoint = {pos_.x, nowPlayerPos_.y};
+		newFunnel->SetParticleTex(particleTex);
 		newFunnel->Initialize(funnelTex_, type, GetPosition(), endPoint);
 		break;
 	}

@@ -1,5 +1,6 @@
 ﻿#pragma once
 #include "BaseBullet.h"
+#include "ParticleManager.h"
 
 class BossFunnel : public BaseBullet
 {
@@ -23,6 +24,8 @@ public: // メンバ関数
 	/// 衝突処理
 	/// </summary>
 	void OnCollision() override;
+
+	void SetParticleTex(uint32_t tex) { particleTex_ = tex; }
 
 public:
 	enum FunnelType {
@@ -53,4 +56,8 @@ private: // ファンネル用変数
 	// 直進時の速さ変数
 	float kMoveSpeed_ = 7.5f;
 	float kInitSpeed = 15.0f;
+
+	std::unique_ptr<ParticleManager> particle_ = nullptr;
+	uint32_t particleTex_ = 0u;
+	Vector4 color_ = {1.0f, 1.0f, 1.0f, 1.0f};
 };
