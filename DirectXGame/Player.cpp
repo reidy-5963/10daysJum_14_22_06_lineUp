@@ -46,7 +46,11 @@ void Player::Initialize() {
 	isInvisible_ = false;
 
 	// キャラのテクスチャ読み込み
-	tailTexture_ = TextureManager::Load("Cannon_ver2.png");
+	tailTexture_[0] = TextureManager::Load("Cannon_ver2.png");
+	// キャラのテクスチャ読み込み
+	tailTexture_[1] = TextureManager::Load("Cannon_ver2_Safe.png");
+	// キャラのテクスチャ読み込み
+	tailTexture_[2] = TextureManager::Load("Cannon_ver2_Worning.png");
 	// キャラのテクスチャ読み込み
 	bulletTexture_ = TextureManager::Load("Bullet.png");
 
@@ -182,6 +186,7 @@ void Player::Update() {
 		isInvisible_ = false;
 		color_ = {1.0f, 1.0f, 1.0f, 1.0f};
 	}
+	tails_.back()->SetHp(damageCount);
 
 	if (damageCount <= 0) {
 		damageCount = setDamageCount;
@@ -260,6 +265,7 @@ void Player::AddTails() {
 			newTail->Initialize(
 			    tailTexture_, &tails_.back()->GetPosition(), (tails_.back()->GetTailNo() + 1),
 			    tails_.back()->IsFirePtr());
+			tails_.back()->SetHp(setDamageCount);
 		}
 		// もし最初の尻尾なら
 		else {
@@ -275,6 +281,9 @@ void Player::AddTails() {
 		// リストに追加
 		tails_.push_back(newTail);
 	}
+	/*else if (tails_.size() == kMaxTail_) {
+		tails_.back()->SetHp(setDamageCount);
+	}*/
 }
 
 void Player::DeleteTails() {
@@ -463,8 +472,6 @@ void Player::OnCollision() {
 		damageCount--;
 		// 揺れ幅を設定
 		amplitNum = 30;
-		// 尻尾を減らす
-		//DeleteTails();
 		isInvisible_ = true;
 		color_ = {1.0f, 0.1f, 0.1f, 1.0f};
 	}

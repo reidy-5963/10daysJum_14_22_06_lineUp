@@ -11,8 +11,13 @@
 /// <param name="texture">テクスチャ</param>
 /// <param name="parent">親になるスプライトの位置</param>
 /// <param name="tailNo">尻尾番号</param>
-void Tail::Initialize(uint32_t texture, const Vector2* parent, int tailNo, const bool* ParentBool) {
-	charaTex_ = texture;
+void Tail::Initialize(
+    uint32_t texture[3], const Vector2* parent, int tailNo, const bool* ParentBool) {
+	
+	tex[0] = texture[0];
+	tex[1] = texture[1];
+	tex[2] = texture[2];
+	charaTex_ = texture[0];
 	// 親の座標
 	parentPos_ = parent;
 	parentBool_ = ParentBool;
@@ -71,6 +76,15 @@ void Tail::Update() {
 
 	}
 	Animation::Anime(animationTimer, animationNumber, animationScene, oneTime);
+
+	if (tailHp == 3) {
+		sprite_->SetTextureHandle(tex[0]);
+	} else if (tailHp == 2) {
+		sprite_->SetTextureHandle(tex[1]);
+
+	} else if (tailHp == 1) {
+		sprite_->SetTextureHandle(tex[2]);
+	}
 
 	// 位置の更新処理
 	BaseCharacter::Update();

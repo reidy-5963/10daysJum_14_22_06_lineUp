@@ -15,7 +15,7 @@ public: // メンバ関数
 	/// <param name="texture">テクスチャ</param>
 	/// <param name="parent">親になるスプライトの位置</param>
 	/// <param name="tailNo">尻尾番号</param>
-	void Initialize(uint32_t texture, const Vector2* parent, int tailNo, const bool* ParentBool);
+	void Initialize(uint32_t texture[3], const Vector2* parent, int tailNo, const bool* ParentBool);
 
 	/// <summary>
 	/// 更新処理	
@@ -122,11 +122,14 @@ public: // セッター
 
 	void SetIsPlayersTail(bool flag) { isPlayersTail = flag; }
 #pragma endregion
+	void SetHp(int hp) { tailHp = hp; }
 
 private: // メンバ変数
 	// 親の位置
 	const Vector2* parentPos_;
 	const bool* parentBool_;
+
+	uint32_t tex[3];
 
 	// 線形補間するときの終わり位置
 	Vector2 lerpEndPos_;
@@ -165,5 +168,6 @@ private: // メンバ変数
 	const int setDelTimer = 120;
 	int deleteTimer = setDelTimer;
 	bool isDead_ = false;
-
+	
+	int tailHp = 3;
 };
