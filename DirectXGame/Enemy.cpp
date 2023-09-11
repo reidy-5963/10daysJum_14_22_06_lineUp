@@ -6,21 +6,30 @@
 #include <numbers>
 
 void Enemy::Initialize() {
+	// 変数系初期化
 	pos_ = {300, 300};
+	radius_ = 48;
+	velocity_ = {};
 
+	// スプライトの初期化
 	sprite_.reset(
 	    Sprite::Create(charaTex_, {pos_.x, pos_.y}, {1.0f, 1.0f, 1.0f, 1.0f}, {0.5f, 0.5f}));
-
-	radius_ = 48;
 	sprite_->SetSize({radius_ * 2, radius_ * 2});
-	velocity_ = {};
+
+	// アニメーションの変数初期化
+	AnimationValueInitialize();
+
+	// パーティクルの初期化
+	particle_ = std::make_unique<ParticleManager>();
+	particle_->Initialize(particleTex_);
+}
+
+void Enemy::AnimationValueInitialize() {
 	animationTimer = 0;
 	animationNumber = 0;
 	animationScene = 3;
 	oneTime = 4;
 	isAnimation = true;
-	particle_ = std::make_unique<ParticleManager>();
-	particle_->Initialize(particleTex_);
 }
 
 void Enemy::Update() {
@@ -47,25 +56,19 @@ void Enemy::Update() {
 		Animation::Anime(animationTimer, animationNumber, animationScene, oneTime);
 
 	} else if (isParasite_) {
-		particle_->SetIsParticle(true);
-		particle_->SetTecture(particleTex_);
-		particle_->SetLenge(pos_, {radius_, radius_});
-		particle_->SetSceneVelo(sceneVelo);
-		particle_->SetColor(color_);
-		particle_->SetTime(17);
-		particle_->SetVelo({0.0f, -5.0f});
+		// パーティクルの設定
+		SetParticle();
 
-		if (!isPopUpPlayer) {
+		if (!isPossiblePickUp) {
 			sprite_->SetTextureHandle(parasiteTex_);
 			Animation::Anime(animationTimer, animationNumber, animationScene, oneTime);
 
 			if (animationTimer == animationScene * oneTime) {
-
-				isPopUpPlayer = true;
+				isPossiblePickUp = true;
 			}
 		}
 
-		if (isPopUpPlayer) {
+		if (isPossiblePickUp) {
 			if (--deleteTimer < 0) {
 				isDead_ = true;
 			}
@@ -74,6 +77,16 @@ void Enemy::Update() {
 	particle_->Update();
 	// 座標設定
 	BaseCharacter::Update();
+}
+
+void Enemy::SetParticle() {
+	particle_->SetIsParticle(true);
+	particle_->SetTecture(particleTex_);
+	particle_->SetLenge(pos_, {radius_, radius_});
+	particle_->SetSceneVelo(sceneVelo);
+	particle_->SetColor(color_);
+	particle_->SetTime(17);
+	particle_->SetVelo({0.0f, -5.0f});
 }
 
 void Enemy::Draw() {

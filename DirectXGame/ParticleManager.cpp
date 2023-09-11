@@ -2,12 +2,11 @@
 
 void ParticleManager::Initialize(uint32_t tex) { tex_ = tex; }
 
-void ParticleManager::Update() { 
+void ParticleManager::Update() {
 	if (!isParticle) {
 		generateTimer_ = 0;
 
-	} 
-	else if (isParticle) {
+	} else if (isParticle) {
 		if (isTimer_) {
 			if (--endParticleTimer_ < 0) {
 				isEnd_ = true;
@@ -22,31 +21,25 @@ void ParticleManager::Update() {
 					pos.x = float(rand() % (int(radius_.x) * 2 - int(radius_.x)) + 1) + lengePos_.x;
 					pos.y = float(rand() % (int(radius_.y) * 2 - int(radius_.y)) + 1) + lengePos_.y;
 					AddParticle(pos);
-
 				}
 
-			} 
-			else if (pattern_ == Collapse) {
+			} else if (pattern_ == Collapse) {
 				Vector2 pos;
 				float rad = float(rand() % 5);
-				//for (int i = 0; i < 5; i++) {
-					pos = lengePos_;
-					Matrix3x3 moveMat = MyMath::MakeTranslateMatrix(velosity_);
-					Matrix3x3 rotateMat = MyMath::MakeRotateMatrix(rad + (3.14f * 0.25f));
-					moveMat = MyMath::Multiply(moveMat, rotateMat);
+				// for (int i = 0; i < 5; i++) {
+				pos = lengePos_;
+				Matrix3x3 moveMat = MyMath::MakeTranslateMatrix(velosity_);
+				Matrix3x3 rotateMat = MyMath::MakeRotateMatrix(rad + (3.14f * 0.25f));
+				moveMat = MyMath::Multiply(moveMat, rotateMat);
 
-					velosity_ = {moveMat.m[2][0], moveMat.m[2][1]};
-					AddParticle(pos);
+				velosity_ = {moveMat.m[2][0], moveMat.m[2][1]};
+				AddParticle(pos);
 
 				//}
-
 			}
 		}
 		ParticleUpdate();
 	}
-
-	
-
 }
 
 void ParticleManager::ParticleUpdate() {
@@ -69,7 +62,7 @@ void ParticleManager::Draw() {
 	}
 }
 
-void ParticleManager::AddParticle(Vector2 particlePos) { 
+void ParticleManager::AddParticle(Vector2 particlePos) {
 	Particle* newParticle = new Particle;
 
 	newParticle->Initialize(tex_, particlePos, velosity_, sceneVelo);

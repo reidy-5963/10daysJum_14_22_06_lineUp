@@ -38,10 +38,15 @@ void Particle::Update() {
 }
 
 void Particle::Draw() {
-	if (!isAnimation) {
-		sprite_->Draw();
-	} else if (isAnimation) {
-		Animation::DrawAnimation(sprite_.get(), pos_, animationNumber, texture_);
-	
+	Scroll* scroll = Scroll::GetInstance();
+	if (pos_.x < 0 + scroll->GetAddScroll().x || pos_.x > 1920 + scroll->GetAddScroll().x ||
+	    pos_.y < 0 + scroll->GetAddScroll().y || pos_.y > 1080 + scroll->GetAddScroll().y) {
+	} else {
+		if (!isAnimation) {
+			sprite_->Draw();
+		} else if (isAnimation) {
+			Animation::DrawAnimation(sprite_.get(), pos_, animationNumber, texture_);
+		}
+
 	}
 }

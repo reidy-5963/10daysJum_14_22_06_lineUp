@@ -10,11 +10,13 @@ public:	// 継承
 	/// </summary>
 	void Initialize() override;
 
+	void AnimationValueInitialize();
 	/// <summary>
 	/// 更新処理
 	/// </summary>
 	void Update() override;
 
+	void SetParticle();
 	/// <summary>
 	/// 描画処理
 	/// </summary>
@@ -27,7 +29,7 @@ public:	// 継承
 
 	void P2EOnCollision();
 
-	void SetParasiteTexture(uint32_t tex) { parasiteTex_ = tex; }
+
 	void ParasiteAnimationInitialize();
 
 public: // 設定
@@ -37,6 +39,8 @@ public: // 設定
 	/// </summary>
 	/// <returns></returns>
 	bool GetIsDead() { return isDead_; }
+
+	bool IsParasite() { return isParasite_; }
 
 	/// <summary>
 	/// テクスチャの設定
@@ -50,17 +54,17 @@ public: // 設定
 	/// <param name="velocity"></param>
 	void SetVelocity(Vector2 velocity) { velocity_ = velocity; }
 
-	bool IsParasite() { return isParasite_; }
 	
 	void SetIsDead(bool isDead) { isDead_ = isDead; }
 	void SetParticleTex(uint32_t tex) { particleTex_ = tex; }
+	void SetParasiteTexture(uint32_t tex) { parasiteTex_ = tex; }
 
 private:
 
 	Vector2 velocity_ = {};
 
 	bool isDead_ = false;
-	bool isPopUpPlayer = false;
+	bool isPossiblePickUp = false;
 	bool isParasite_ = false;
 
 	int setTimer = 120;

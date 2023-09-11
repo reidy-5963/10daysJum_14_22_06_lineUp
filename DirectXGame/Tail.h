@@ -10,6 +10,8 @@ class Player;
 /// </summary>
 class Tail : public BaseCharacter {
 public: // メンバ関数
+
+#pragma region 初期化系
 	/// <summary>
 	/// 初期化処理
 	/// </summary>
@@ -18,16 +20,25 @@ public: // メンバ関数
 	/// <param name="tailNo">尻尾番号</param>
 	void Initialize(uint32_t texture[4], const Vector2* parent, int tailNo, const bool* ParentBool);
 
+	void AnimationValueInitialize();
+#pragma endregion
+
 	/// <summary>
 	/// 更新処理	
 	/// </summary>
 	void Update();
-
+#pragma region 描画系
 	/// <summary>
 	/// 描画処理
 	/// </summary>
 	void Draw();
+	
+	/// <summary>
+	/// UI系の描画処理
+	/// </summary>
 	void DrawUI();
+#pragma endregion
+
 	/// <summary>
 	/// 衝突処理
 	/// </summary>
@@ -60,10 +71,7 @@ public: // メンバ関数
 	/// <returns>弾を打ち出す向き</returns>
 	Vector2 BulletDirectionInitialize(Vector2 move);
 
-	void SetIsCollapse(bool isColl) { isCollapse = isColl; }
 
-	bool IsCollapseAniEnd() { return isCollapseAniEnd; }
-	bool IsCollapse() { return isCollapse; }
 
 public: // ゲッター
 #pragma region ゲッター
@@ -100,6 +108,9 @@ public: // ゲッター
 	bool IsHitOut() { return isHitOut_; }
 	bool IsDead() { return isDead_; }
 	bool IsPlayersTail() { return isPlayersTail; }
+	bool IsCollapseAniEnd() { return isCollapseAniEnd; }
+	bool IsCollapse() { return isCollapse; }
+
 #pragma endregion
 
 public: // セッター
@@ -127,9 +138,13 @@ public: // セッター
 	void SetTailNo(int tailNo) { tailNo_ = tailNo; }
 
 	void SetIsPlayersTail(bool flag) { isPlayersTail = flag; }
-#pragma endregion
+
 	void SetHp(int hp) { tailHp = hp; }
+
 	void SetParticleTex(uint32_t particletex) { particleTex_ = particletex; }
+	
+	void SetIsCollapse(bool isColl) { isCollapse = isColl; }
+#pragma endregion
 
 private: // メンバ変数
 	// 親の位置

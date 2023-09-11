@@ -20,6 +20,8 @@ Player::Player() {}
 /// </summary>
 Player::~Player() {}
 
+#pragma region 初期化系
+
 /// <summary>
 /// 初期化処理
 /// </summary>
@@ -32,53 +34,40 @@ void Player::Initialize() {
 	clickPlayerPos_ = pos_;
 	markerPos_ = pos_;
 	preMarkerPos_ = markerPos_;
-	animationTimer = 0;
-	animationNumber = 0;
-	animationScene = 4;
-	oneTime = 20;
-	isAnimation = true;
-	// キャラのテクスチャ読み込み
-	// charaTex_ = TextureManager::Load("Player.png");
-	charaTex_ = TextureManager::Load("Player_ver2.png");
+
+	// 半径の設定
+	radius_ = 64.0f;
 
 	// 無敵関係の初期化
 	invisibleTimeCount_ = 0;
 	isInvisible_ = false;
 
-	// キャラのテクスチャ読み込み
-	tailTexture_[0] = TextureManager::Load("Cannon_ver2.png");
-	// キャラのテクスチャ読み込み
-	tailTexture_[1] = TextureManager::Load("Cannon_ver2_Safe.png");
-	// キャラのテクスチャ読み込み
-	tailTexture_[2] = TextureManager::Load("Cannon_ver2_Worning.png");
+	// アニメーションで使う変数の初期化
+	AnimationValueInitialize();
 
-	tailTexture_[3] = TextureManager::Load("CollapseCannon.png");
-
-	// キャラのテクスチャ読み込み
-	bulletTexture_ = TextureManager::Load("Bullet.png");
-	bulletParticle_ = TextureManager::Load("bulletParticle.png");
-	// スプライトの生成
+	// プレイヤーののテクスチャ読み込み
+	charaTex_ = TextureManager::Load("Player_ver2.png");
+	// プレイヤーのスプライトの生成
 	sprite_.reset(Sprite::Create(charaTex_, pos_, {1.0f, 1.0f, 1.0f, 1.0f}, {0.5f, 0.5f}));
-	playerUI_.reset(
-	    Sprite::Create(charaTex_, UIPlayerPos_, {1.0f, 1.0f, 1.0f, 1.0f}, {0.5f, 0.5f}));
-
-	radius_ = 64.0f;
+	// プレイヤーのサイズ設定
 	sprite_->SetSize({radius_ * 2, radius_ * 2});
-	playerUI_->SetSize({radius_ * 2, radius_ * 2});
-	playerUI_->SetRotation(1.0f * 3.14f);
-	// マーカーのテクスチャ読み込み
-	markerTex_ = TextureManager::Load("Marker_ver2_0.png");
-	ismarkerAnimation = true;
-	// マーカーのスプライトの生成
-	markerSprite_.reset(
-	    Sprite::Create(markerTex_, markerPos_, {1.0f, 1.0f, 1.0f, 1.0f}, {0.5f, 0.5f}));
-	float markerradius = 32.0f;
-	markerSprite_->SetSize({markerradius * 2, markerradius * 2});
-	// 1本目の追加
-	AddTails();
-	AddTails();
-	AddTails();
 
+	// 弾系の初期化
+	BulletInitialize();
+
+	// 尻尾系の初期化
+	TailInitialize();
+
+	// UI系の初期化
+	UIInitialize();
+
+	// マーカーの初期化
+	MarkerInitialize();
+
+	// 3本の尻尾の追加
+	AddTails();
+	AddTails();
+	AddTails();
 	//
 #ifdef _DEBUG
 	m1.reset(Sprite::Create(markerTex_, markerPos_, {1.0f, 0.0f, 0.0f, 1.0f}, {0.5f, 0.5f}));
@@ -89,10 +78,120 @@ void Player::Initialize() {
 
 #endif // _DEBUG
 
-	//
+	// グローバル変数の初期化処理
 	InitializeGrobalVariables();
 }
 
+/// <summary>
+/// 尻尾に関する初期化処理
+/// </summary>
+void Player::TailInitialize() {
+	tails_.resize(0);
+	// ミドリ尻尾のテクスチャ読み込み
+	tailTexture_[0] = TextureManager::Load("Cannon_ver2.png");
+	// 黄色尻尾のテクスチャ読み込み
+	tailTexture_[1] = TextureManager::Load("Cannon_ver2_Safe.png");
+	// 赤尻尾のテクスチャ読み込み
+	tailTexture_[2] = TextureManager::Load("Cannon_ver2_Worning.png");
+	// 崩れ尻尾のテクスチャ読み込み
+	tailTexture_[3] = TextureManager::Load("CollapseCannon.png");
+}
+
+/// <summary>
+/// 弾に関する初期化処理
+/// </summary>
+void Player::BulletInitialize() {
+	bullets_.resize(0);
+	// 弾のテクスチャ読み込み
+	bulletTexture_ = TextureManager::Load("Bullet.png");
+	// 弾パーティクルのテクスチャ読み込み
+	bulletParticle_ = TextureManager::Load("bulletParticle.png");
+}
+
+/// <summary>
+///  アニメーションに使う変数の初期化処理
+/// </summary>
+void Player::AnimationValueInitialize() {
+	animationTimer = 0;
+	animationNumber = 0;
+	animationScene = 4;
+	oneTime = 20;
+	isAnimation = true;
+}
+
+/// <summary>
+/// UIに関する初期化処理
+/// </summary>
+void Player::UIInitialize() {
+	// (仮) プレイヤーのuiスプライト生成
+	playerUI_.reset(
+	    Sprite::Create(charaTex_, UIPlayerPos_, {1.0f, 1.0f, 1.0f, 1.0f}, {0.5f, 0.5f}));
+
+	// uiプレイヤーのサイズ設定
+	playerUI_->SetSize({radius_ * 2, radius_ * 2});
+	playerUI_->SetRotation(1.0f * 3.14f);
+}
+
+/// <summary>
+/// マーカーに関する初期化処理
+/// </summary>
+void Player::MarkerInitialize() {
+	// マーカーのテクスチャ読み込み
+	markerTex_ = TextureManager::Load("Marker_ver2_0.png");
+	ismarkerAnimation = true;
+	// マーカーのスプライトの生成
+	markerSprite_.reset(
+	    Sprite::Create(markerTex_, markerPos_, {1.0f, 1.0f, 1.0f, 1.0f}, {0.5f, 0.5f}));
+	markerRadius_ = 32.0f;
+	markerSprite_->SetSize({markerRadius_ * 2, markerRadius_ * 2});
+}
+
+/// <summary>
+/// グローバル変数の初期化処理
+/// </summary>
+void Player::RootRotateMoveInitialize() {
+	isMtM1 = false;
+	isM1tM2 = false;
+	isM2tP = false;
+	isPtP1 = false;
+	isP1tP2 = false;
+	isP2tM = false;
+
+	root_t_ = 0.0f;
+	isRootMove_ = false;
+}
+
+/// <summary>
+/// 通常状態の回転の初期化処理
+/// </summary>
+void Player::ToMarkerMoveInitialize() {
+	move_t_ = 0.0f;
+
+	// 移動フラグの初期化
+	isMove_ = true;
+}
+
+/// <summary>
+/// マーカーへ向かう動きの初期化処理
+/// </summary>
+void Player::InitializeGrobalVariables() {
+	// グローバル変数系のシングルトンインスタンスを取得
+	GlobalVariables* gloVars = GlobalVariables::GetInstance();
+	// グループ名の設定
+	const char* groupName = "Player";
+
+	// 作ったグループにそれぞれアイテムを追加
+	gloVars->CreateGroup(groupName);
+	gloVars->AddItem(groupName, "Move_t_offset", move_t_offset);
+	gloVars->AddItem(groupName, "MarkerLimit_", markerLimit_);
+	gloVars->AddItem(groupName, "RootRotate_t_offset", rootRotate_t_offset);
+	gloVars->AddItem(groupName, "Bullet_shot_Radian", BulletRadian);
+	gloVars->AddItem(groupName, "bulletSpeed_", bulletSpeed_);
+	gloVars->AddItem(groupName, "oneTime", oneTime);
+}
+#pragma endregion
+
+#pragma region 更新系
 /// <summary>
 /// 更新処理
 /// </summary>
@@ -114,7 +213,6 @@ void Player::Update() {
 
 #ifdef _DEBUG
 	////////////////////////////////////////////////////
-
 
 	////////////////////////////////////////////////////
 	// 通常状態の回転用の道順
@@ -164,7 +262,7 @@ void Player::Update() {
 	TailUpdate();
 
 	// 弾の削除処理
-	DeleteBullet();
+	DeleteBulletUpdate();
 
 	// 弾の更新処理
 	BulletUpdate();
@@ -216,6 +314,49 @@ void Player::Update() {
 	playerUI_->SetPosition(UIPlayerPos_ + sceneVelo + shakeVelo_);
 }
 
+/// <summary>
+/// 衝突処理
+/// </summary>
+void Player::OnCollision() {
+	if (!isInvisible_) {
+		// もし当たったらシェイクフラグを有効に
+		isDamageShake = true;
+		damageCount--;
+		// 揺れ幅を設定
+		amplitNum = 30;
+		isInvisible_ = true;
+		color_ = {1.0f, 0.1f, 0.1f, 1.0f};
+	}
+}
+// void Player::OnCollision() {
+//	// もし当たったらシェイクフラグを有効に
+//	isDamageShake = true;
+//	// 揺れ幅を設定
+//	amplitNum = 30;
+//	// 尻尾を減らす
+//	DeleteTails();
+// }
+
+/// <summary>
+/// グローバル変数の更新処理
+/// </summary>
+void Player::ApplyGrobalVariables() {
+	// グローバル変数系のシングルトンインスタンスを取得
+	GlobalVariables* gloVars = GlobalVariables::GetInstance();
+	// グループ名の設定
+	const char* groupName = "Player";
+	// 作ったグループにあるアイテムから値を取得
+	move_t_offset = gloVars->GetFloatValue(groupName, "Move_t_offset");
+	markerLimit_ = gloVars->GetFloatValue(groupName, "MarkerLimit_");
+	rootRotate_t_offset = gloVars->GetFloatValue(groupName, "RootRotate_t_offset");
+	BulletRadian = gloVars->GetFloatValue(groupName, "Bullet_shot_Radian");
+	bulletSpeed_ = gloVars->GetFloatValue(groupName, "bulletSpeed_");
+	oneTime = gloVars->GetIntValue(groupName, "oneTime");
+}
+
+/// <summary>
+/// キー入力での移動処理
+/// </summary>
 void Player::KeyMove() { // 移動距離
 	Vector2 move{};
 	// 移動速度定数
@@ -243,105 +384,157 @@ void Player::KeyMove() { // 移動距離
 }
 
 /// <summary>
-/// 描画処理
+/// 左クリックの処理
 /// </summary>
-void Player::Draw() {
-	// クリックした位置マーカーの描画
-	if (ismarkerAnimation) {
-		Animation::DrawAnimation(markerSprite_.get(), markerPos_, markerAniNumber, markerTex_);
-	} else if (!ismarkerAnimation) {
-		markerSprite_->Draw();
+void Player::LeftClickUpdate() {
+	// 前フレームのマーカー位置を取得
+	preMarkerPos_ = markerPos_;
+
+	// マーカーの位置を現在のマウス位置に設定
+	clickPos_.x = float(mousePos.x);
+	clickPos_.y = float(mousePos.y);
+
+	MarkerControl();
+
+	// クリックしたときの位置を取得
+	clickPlayerPos_ = pos_;
+
+	//
+	ToMarkerMoveInitialize();
+
+	//
+	RootRotateMoveInitialize();
+
+	RootRotateMove2();
+
+	ismarkerMove_ = true;
+}
+
+/// <summary>
+/// カーソルの更新処理
+/// </summary>
+void Player::GetCursor() {
+	// カーソルの位置の取得
+	GetCursorPos(&mousePos);
+	// クライアントエリア座標に変換する
+	HWND hwnd = WinApp::GetInstance()->GetHwnd();
+	ScreenToClient(hwnd, &mousePos);
+	Scroll* scroll = Scroll::GetInstance();
+	mousePos.x = mousePos.x + LONG(scroll->GetAddScroll().x);
+	mousePos.y = mousePos.y + LONG(scroll->GetAddScroll().y);
+}
+
+/// <summary>
+/// カーソルの制限処理
+/// </summary>
+void Player::MarkerControl() {
+	// スクロールのインスタンス取得
+	Scroll* scroll = Scroll::GetInstance();
+
+	if (clickPos_.x < 0 + markerLimit_) {
+		clickPos_.x = markerLimit_ + scroll->GetAddScroll().x;
 	}
 
-	// 弾の描画
+	else if (
+	    clickPos_.x > (WinApp::kWindowWidth * 1) + scroll->GetEdgePos().x +
+	                      (scroll->GetEdgePos().x - markerLimit_)) {
+		clickPos_.x = (WinApp::kWindowWidth * 1) + scroll->GetEdgePos().x +
+		              (scroll->GetEdgePos().x - markerLimit_);
+	}
+
+	if (clickPos_.y < 0 + markerLimit_) {
+		clickPos_.y = markerLimit_ + scroll->GetAddScroll().y;
+	}
+
+	else if (
+	    clickPos_.y > (WinApp::kWindowHeight * 1) + scroll->GetEdgePos().y +
+	                      (scroll->GetEdgePos().y - markerLimit_)) {
+		clickPos_.y = (WinApp::kWindowHeight * 1) + scroll->GetEdgePos().y +
+		              (scroll->GetEdgePos().y - markerLimit_);
+	}
+}
+
+/// <summary>
+/// マーカーの動きの処理
+/// </summary>
+void Player::MarkerMovement() {
+	if (!ismarkerMove_) {
+		markerMove_t = 0.0f;
+
+	}
+	//
+	else if (ismarkerMove_) {
+		markerPos_ = MyMath::EaseInQuadF(markerMove_t, preMarkerPos_, clickPos_);
+
+		MyMath::CountT(markerMove_t, 1.0f, ismarkerMove_, false, 0.1f);
+	}
+
+	Vector2 Mark2Pla = clickPlayerPos_ - clickPos_;
+	Vector2 PMark2Pla = clickPlayerPos_ - preMarkerPos_;
+
+	// float cross = MyMath::Cross(Mark2Pla, PMark2Pla);
+	////
+
+	Vector2 FireBulletDirection = markerPos_ - originPos_;
+	float markerROtate = std::atan2(FireBulletDirection.y, FireBulletDirection.x);
+	// if (cross > 0) {
+	//	markerSprite_->SetRotation(markerROtate - (0.5f * 3.14f));
+	// } else if (cross <= 0) {
+	markerSprite_->SetRotation(markerROtate + (0.5f * 3.14f));
+	//}
+}
+
+/// <summary>
+/// 弾の更新処理
+/// </summary>
+void Player::BulletUpdate() {
+	// 弾の更新処理
 	for (PlayerBullet* bullet : bullets_) {
-		bullet->Draw();
-	}
-	// しっぽの描画
-	tails_.reverse();
+		bullet->SetSceneVelo(sceneVelo);
+		bullet->Update();
 
+		/*ImGui::Begin("bullet");
+		ImGui::Text("%d", bullet->GetIsDead());
+		ImGui::End();*/
+
+		if (pos_.x + kDeadOffset < bullet->GetPosition().x ||
+		    pos_.x - kDeadOffset > bullet->GetPosition().x ||
+		    pos_.y + kDeadOffset < bullet->GetPosition().y ||
+		    pos_.y - kDeadOffset > bullet->GetPosition().y) {
+			bullet->SetIsDead(true);
+		}
+	}
+}
+
+/// <summary>
+/// 弾を削除する処理
+/// </summary>
+void Player::DeleteBulletUpdate() {
+	// 弾の消去
+	bullets_.remove_if([](PlayerBullet* bullet) {
+		if (bullet->GetIsDead()) {
+			delete bullet;
+			return true;
+		}
+		return false;
+	});
+}
+
+/// <summary>
+/// 尻尾の更新処理
+/// </summary>
+void Player::TailUpdate() {
+	// 尻尾の更新処理
 	for (Tail* tail : tails_) {
-		tail->Draw();
-	}
-	tails_.reverse();
-
-	// スプライトの描画
-	BaseCharacter::Draw();
-#ifdef _DEBUG
-	// m1->Draw();
-	// m2->Draw();
-	// p1->Draw();
-	// p2->Draw();
-	// origin_->Draw();
-#endif // _DEBUG
-}
-
-void Player::AddTails() {
-	if (tails_.size() < kMaxTail_) {
-		// 新しい尻尾の生成
-		Tail* newTail = new Tail();
-
-		// そうでなければ
-		if (tails_.size() != 0) {
-			// 一個前の尻尾の位置を親として初期化
-			if (!tails_.back()->IsCollapse()) {
-				newTail->Initialize(
-				    tailTexture_, &tails_.back()->GetPosition(), (tails_.back()->GetTailNo() + 1),
-				    tails_.back()->IsFirePtr());
-				tails_.back()->SetHp(setDamageCount);
-			}
-			//
-			else if (tails_.back()->IsCollapse()) {
-				newTail->Initialize(
-				    tailTexture_, &(tails_.back() - 1)->GetPosition(),
-				    ((tails_.back() - 1)->GetTailNo() + 1), (tails_.back() - 1)->IsFirePtr());
-				(tails_.back() - 1)->SetHp(setDamageCount);
-
-			}
-		}
-		// もし最初の尻尾なら
-		else {
-			// プレイヤーの位置を親として初期化
-			newTail->Initialize(tailTexture_, &pos_, 0, &isMove_);
-		}
-		newTail->SetIsPlayersTail(true);
-		// プレイヤーのポインタを設定
-		newTail->SetPlayer(this);
-		newTail->SetParticleTex(bulletParticle_);
-		// リストに追加
-		tails_.push_back(newTail);
-	}
-	if (tails_.size() == kMaxTail_) {
-		damageCount = setDamageCount;
-	}
-	/*else if (tails_.size() == kMaxTail_) {
-		tails_.back()->SetHp(setDamageCount);
-	}*/
-}
-
-void Player::DeleteTails() {
-	if (tails_.size() > 0) {
-		tails_.pop_back();
+		tail->SetSceneVelo(sceneVelo);
+		tail->SetBulletRad(BulletRadian);
+		tail->Update();
 	}
 }
 
-void Player::AddBullets(PlayerBullet* bullet) {
-	// 弾をリストに追加
-	bullets_.push_back(bullet);
-}
-
-void Player::RootRotateMoveInitialize() {
-	isMtM1 = false;
-	isM1tM2 = false;
-	isM2tP = false;
-	isPtP1 = false;
-	isP1tP2 = false;
-	isP2tM = false;
-
-	root_t_ = 0.0f;
-	isRootMove_ = false;
-}
-
+/// <summary>
+/// 通常状態の回転処理
+/// </summary>
 void Player::RootRotateMoveUpdate() {
 	if (isMtM1) {
 
@@ -425,226 +618,9 @@ void Player::RootRotateMoveUpdate() {
 	}
 }
 
-void Player::ToMarkerMoveInitialize() {
-	move_t_ = 0.0f;
-
-	// 移動フラグの初期化
-	isMove_ = true;
-}
-
-void Player::ToMarkerMoveUpdate() {
-	RootRotateMoveInitialize();
-
-	// ベジエ曲線のスタート位置計算
-	bezierStartPos_ = MyMath::lerp(move_t_, clickPlayerPos_, preMarkerPos_);
-
-	// ベジエ曲線の終わり位置計算
-	bezierEndPos_ = MyMath::lerp(move_t_, preMarkerPos_, markerPos_);
-	direction_ = bezierEndPos_ - bezierStartPos_;
-
-	// 実際にプレイヤーの位置を計算
-	pos_ = MyMath::lerp(move_t_, bezierStartPos_, bezierEndPos_);
-	for (Tail* tail : tails_) {
-		tail->SetIsMove(isMove_);
-	}
-	// 1.0になるまで加算
-	MyMath::CountT(move_t_, 1.0f, isMove_, false, move_t_offset);
-
-	if (!isMove_) {
-		isMtM1 = true;
-	}
-	if (isMtM1) {
-		pos_ = MyMath::CatmullRom(
-		    W2AddRadian[2], M2AddRadian[0], M2AddRadian[1], M2AddRadian[2], root_t_);
-		direction_ = pos_ - prePos_;
-
-		MyMath::CountT(root_t_, 0.0f, isM1tM2, true, rootRotate_t_offset);
-	}
-}
-
-void Player::DrawUI() { 
-	Animation::DrawAnimation(playerUI_.get(), UIPlayerPos_, animationNumber, charaTex_);
-}
-
-void Player::TailUpdate() {
-	// 尻尾の更新処理
-	for (Tail* tail : tails_) {
-		tail->SetSceneVelo(sceneVelo);
-		tail->SetBulletRad(BulletRadian);
-		tail->Update();
-	}
-}
-
-void Player::MarkerMovement() {
-	if (!ismarkerMove_) {
-		markerMove_t = 0.0f;
-
-	}
-	//
-	else if (ismarkerMove_) {
-		markerPos_ = MyMath::EaseInQuadF(markerMove_t, preMarkerPos_, clickPos_);
-
-		MyMath::CountT(markerMove_t, 1.0f, ismarkerMove_, false, 0.1f);
-	}
-
-	Vector2 Mark2Pla = clickPlayerPos_ - clickPos_;
-	Vector2 PMark2Pla = clickPlayerPos_ - preMarkerPos_;
-
-	//float cross = MyMath::Cross(Mark2Pla, PMark2Pla);
-	////
-
-	Vector2 FireBulletDirection = markerPos_ - originPos_;
-	float markerROtate = std::atan2(FireBulletDirection.y, FireBulletDirection.x);
-	//if (cross > 0) {
-	//	markerSprite_->SetRotation(markerROtate - (0.5f * 3.14f));
-	//} else if (cross <= 0) {
-		markerSprite_->SetRotation(markerROtate + (0.5f * 3.14f));
-	//}
-}
-
-void Player::OnCollision() {
-	if (!isInvisible_) {
-		// もし当たったらシェイクフラグを有効に
-		isDamageShake = true;
-		damageCount--;
-		// 揺れ幅を設定
-		amplitNum = 30;
-		isInvisible_ = true;
-		color_ = {1.0f, 0.1f, 0.1f, 1.0f};
-	}
-}
-
-// void Player::OnCollision() {
-//	// もし当たったらシェイクフラグを有効に
-//	isDamageShake = true;
-//	// 揺れ幅を設定
-//	amplitNum = 30;
-//	// 尻尾を減らす
-//	DeleteTails();
-// }
-
-void Player::InitializeGrobalVariables() {
-	// グローバル変数系のシングルトンインスタンスを取得
-	GlobalVariables* gloVars = GlobalVariables::GetInstance();
-	// グループ名の設定
-	const char* groupName = "Player";
-
-	// 作ったグループにそれぞれアイテムを追加
-	gloVars->CreateGroup(groupName);
-	gloVars->AddItem(groupName, "Move_t_offset", move_t_offset);
-	gloVars->AddItem(groupName, "MarkerLimit_", markerLimit_);
-	gloVars->AddItem(groupName, "RootRotate_t_offset", rootRotate_t_offset);
-	gloVars->AddItem(groupName, "Bullet_shot_Radian", BulletRadian);
-	gloVars->AddItem(groupName, "bulletSpeed_", bulletSpeed_);
-	gloVars->AddItem(groupName, "oneTime", oneTime);
-}
-
-void Player::ApplyGrobalVariables() {
-	// グローバル変数系のシングルトンインスタンスを取得
-	GlobalVariables* gloVars = GlobalVariables::GetInstance();
-	// グループ名の設定
-	const char* groupName = "Player";
-	// 作ったグループにあるアイテムから値を取得
-	move_t_offset = gloVars->GetFloatValue(groupName, "Move_t_offset");
-	markerLimit_ = gloVars->GetFloatValue(groupName, "MarkerLimit_");
-	rootRotate_t_offset = gloVars->GetFloatValue(groupName, "RootRotate_t_offset");
-	BulletRadian = gloVars->GetFloatValue(groupName, "Bullet_shot_Radian");
-	bulletSpeed_ = gloVars->GetFloatValue(groupName, "bulletSpeed_");
-	oneTime = gloVars->GetIntValue(groupName, "oneTime");
-}
-
-void Player::GetCursor() {
-	// カーソルの位置の取得
-	GetCursorPos(&mousePos);
-	// クライアントエリア座標に変換する
-	HWND hwnd = WinApp::GetInstance()->GetHwnd();
-	ScreenToClient(hwnd, &mousePos);
-	Scroll* scroll = Scroll::GetInstance();
-	mousePos.x = mousePos.x + LONG(scroll->GetAddScroll().x);
-	mousePos.y = mousePos.y + LONG(scroll->GetAddScroll().y);
-}
-
-void Player::BulletUpdate() {
-	// 弾の更新処理
-	for (PlayerBullet* bullet : bullets_) {
-		bullet->SetSceneVelo(sceneVelo);
-		bullet->Update();
-
-		/*ImGui::Begin("bullet");
-		ImGui::Text("%d", bullet->GetIsDead());
-		ImGui::End();*/
-
-		if (pos_.x + kDeadOffset < bullet->GetPosition().x ||
-		    pos_.x - kDeadOffset > bullet->GetPosition().x ||
-		    pos_.y + kDeadOffset < bullet->GetPosition().y ||
-		    pos_.y - kDeadOffset > bullet->GetPosition().y) {
-			bullet->SetIsDead(true);
-		}
-	}
-}
-
-void Player::MarkerControl() {
-	// スクロールのインスタンス取得
-	Scroll* scroll = Scroll::GetInstance();
-
-	if (clickPos_.x < 0 + markerLimit_) {
-		clickPos_.x = markerLimit_ + scroll->GetAddScroll().x;
-	}
-
-	else if (
-	    clickPos_.x > (WinApp::kWindowWidth * 1) + scroll->GetEdgePos().x +
-	                      (scroll->GetEdgePos().x - markerLimit_)) {
-		clickPos_.x = (WinApp::kWindowWidth * 1) + scroll->GetEdgePos().x +
-		              (scroll->GetEdgePos().x - markerLimit_);
-	}
-
-	if (clickPos_.y < 0 + markerLimit_) {
-		clickPos_.y = markerLimit_ + scroll->GetAddScroll().y;
-	}
-
-	else if (
-	    clickPos_.y > (WinApp::kWindowHeight * 1) + scroll->GetEdgePos().y +
-	                      (scroll->GetEdgePos().y - markerLimit_)) {
-		clickPos_.y = (WinApp::kWindowHeight * 1) + scroll->GetEdgePos().y +
-		              (scroll->GetEdgePos().y - markerLimit_);
-	}
-}
-
-void Player::LeftClickUpdate() {
-	// 前フレームのマーカー位置を取得
-	preMarkerPos_ = markerPos_;
-
-	// マーカーの位置を現在のマウス位置に設定
-	clickPos_.x = float(mousePos.x);
-	clickPos_.y = float(mousePos.y);
-
-	MarkerControl();
-
-	// クリックしたときの位置を取得
-	clickPlayerPos_ = pos_;
-
-	//
-	ToMarkerMoveInitialize();
-
-	//
-	RootRotateMoveInitialize();
-
-	RootRotateMove2();
-
-	ismarkerMove_ = true;
-}
-
-void Player::DeleteBullet() {
-	// 弾の消去
-	bullets_.remove_if([](PlayerBullet* bullet) {
-		if (bullet->GetIsDead()) {
-			delete bullet;
-			return true;
-		}
-		return false;
-	});
-}
-
+/// <summary>
+/// 通常時の回転パターン1
+/// </summary>
 void Player::RootRotateMove1() {
 	// クリックしたときのプレイヤーの位置->前回押した位置のマーカー
 	Vector2 preMark2Pos_distance;
@@ -704,6 +680,9 @@ void Player::RootRotateMove1() {
 	}
 }
 
+/// <summary>
+/// 通常時の回転パターン2
+/// </summary>
 void Player::RootRotateMove2() {
 	Vector2 Mark2Pla = clickPlayerPos_ - clickPos_;
 	Vector2 PMark2Pla = clickPlayerPos_ - preMarkerPos_;
@@ -712,8 +691,7 @@ void Player::RootRotateMove2() {
 	Vector2 Ple2Mark = clickPos_ - clickPlayerPos_;
 	Mark2Pla.x = Mark2Pla.x / 2;
 	Mark2Pla.y = Mark2Pla.y / 2;
-	
-		
+
 	if (cross > 0) {
 
 		Matrix3x3 Mark2PlaRotateMat = MyMath::MakeRotateMatrix(-(3.14f * 0.75f));
@@ -753,7 +731,6 @@ void Player::RootRotateMove2() {
 		M2AddRadian[2] = {
 		    originPos_.x + Origin2WRotateMat.m[2][0], originPos_.y + Origin2WRotateMat.m[2][1]};
 	}
-	
 
 	else if (cross <= 0) {
 
@@ -795,3 +772,156 @@ void Player::RootRotateMove2() {
 		    originPos_.x + Origin2WRotateMat.m[2][0], originPos_.y + Origin2WRotateMat.m[2][1]};
 	}
 }
+
+/// <summary>
+/// マーカーへ向かう動きの処理
+/// </summary>
+void Player::ToMarkerMoveUpdate() {
+	RootRotateMoveInitialize();
+
+	// ベジエ曲線のスタート位置計算
+	bezierStartPos_ = MyMath::lerp(move_t_, clickPlayerPos_, preMarkerPos_);
+
+	// ベジエ曲線の終わり位置計算
+	bezierEndPos_ = MyMath::lerp(move_t_, preMarkerPos_, markerPos_);
+	direction_ = bezierEndPos_ - bezierStartPos_;
+
+	// 実際にプレイヤーの位置を計算
+	pos_ = MyMath::lerp(move_t_, bezierStartPos_, bezierEndPos_);
+	for (Tail* tail : tails_) {
+		tail->SetIsMove(isMove_);
+	}
+	// 1.0になるまで加算
+	MyMath::CountT(move_t_, 1.0f, isMove_, false, move_t_offset);
+
+	if (!isMove_) {
+		isMtM1 = true;
+	}
+	if (isMtM1) {
+		pos_ = MyMath::CatmullRom(
+		    W2AddRadian[2], M2AddRadian[0], M2AddRadian[1], M2AddRadian[2], root_t_);
+		direction_ = pos_ - prePos_;
+
+		MyMath::CountT(root_t_, 0.0f, isM1tM2, true, rootRotate_t_offset);
+	}
+}
+#pragma endregion
+
+#pragma region 描画系
+/// <summary>
+/// 描画処理
+/// </summary>
+void Player::Draw() {
+	Scroll* scroll = Scroll::GetInstance();
+	if (markerPos_.x < 0 + scroll->GetAddScroll().x ||
+	    markerPos_.x > 1920 + scroll->GetAddScroll().x ||
+	    markerPos_.y < 0 + scroll->GetAddScroll().y ||
+	    markerPos_.y > 1080 + scroll->GetAddScroll().y) {
+	} else {
+		// クリックした位置マーカーの描画
+		if (ismarkerAnimation) {
+			Animation::DrawAnimation(markerSprite_.get(), markerPos_, markerAniNumber, markerTex_);
+		}
+		// もしアニメーションしないなら
+		else if (!ismarkerAnimation) {
+			markerSprite_->Draw();
+		}
+	}
+
+	// 弾の描画
+	for (PlayerBullet* bullet : bullets_) {
+		bullet->Draw();
+	}
+
+	// しっぽの描画
+	tails_.reverse();
+	for (Tail* tail : tails_) {
+		tail->Draw();
+	}
+	tails_.reverse();
+
+	// スプライトの描画
+	BaseCharacter::Draw();
+#ifdef _DEBUG
+	// m1->Draw();
+	// m2->Draw();
+	// p1->Draw();
+	// p2->Draw();
+	// origin_->Draw();
+#endif // _DEBUG
+}
+
+/// <summary>
+/// UI系の描画処理
+/// </summary>
+void Player::DrawUI() {
+	// UIプレイヤーの描画
+	Animation::DrawAnimation(playerUI_.get(), UIPlayerPos_, animationNumber, charaTex_);
+}
+
+#pragma endregion
+
+#pragma region 追加や削除の関数
+/// <summary>
+/// 尻尾の追加
+/// </summary>
+void Player::AddTails() {
+	if (tails_.size() < kMaxTail_) {
+		// 新しい尻尾の生成
+		Tail* newTail = new Tail();
+
+		// そうでなければ
+		if (tails_.size() != 0) {
+			// 一個前の尻尾の位置を親として初期化
+			if (!tails_.back()->IsCollapse()) {
+				newTail->Initialize(
+				    tailTexture_, &tails_.back()->GetPosition(), (tails_.back()->GetTailNo() + 1),
+				    tails_.back()->IsFirePtr());
+				tails_.back()->SetHp(setDamageCount);
+			}
+			//
+			else if (tails_.back()->IsCollapse()) {
+				newTail->Initialize(
+				    tailTexture_, &(tails_.back() - 1)->GetPosition(),
+				    ((tails_.back() - 1)->GetTailNo() + 1), (tails_.back() - 1)->IsFirePtr());
+				(tails_.back() - 1)->SetHp(setDamageCount);
+			}
+		}
+		// もし最初の尻尾なら
+		else {
+			// プレイヤーの位置を親として初期化
+			newTail->Initialize(tailTexture_, &pos_, 0, &isMove_);
+		}
+		newTail->SetIsPlayersTail(true);
+		// プレイヤーのポインタを設定
+		newTail->SetPlayer(this);
+		newTail->SetParticleTex(bulletParticle_);
+		// リストに追加
+		tails_.push_back(newTail);
+	}
+	if (tails_.size() == kMaxTail_) {
+		damageCount = setDamageCount;
+	}
+	/*else if (tails_.size() == kMaxTail_) {
+	    tails_.back()->SetHp(setDamageCount);
+	}*/
+}
+
+/// <summary>
+/// 尻尾の削除
+/// </summary>
+void Player::DeleteTails() {
+	if (tails_.size() > 0) {
+		tails_.pop_back();
+	}
+}
+
+/// <summary>
+/// 弾の追加
+/// </summary>
+/// <param name="bullet">追加する弾</param>
+void Player::AddBullets(PlayerBullet* bullet) {
+	// 弾をリストに追加
+	bullets_.push_back(bullet);
+}
+#pragma endregion

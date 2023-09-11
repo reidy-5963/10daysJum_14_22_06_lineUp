@@ -5,6 +5,7 @@
 #include <cmath>
 #include "Animation.h"
 
+#pragma region 初期化系
 /// <summary>
 /// 初期化処理
 /// </summary>
@@ -18,6 +19,8 @@ void Tail::Initialize(
 	tex[1] = texture[1];
 	tex[2] = texture[2];
 	charaTex_ = texture[3];
+
+
 	// 親の座標
 	parentPos_ = parent;
 	parentBool_ = ParentBool;
@@ -36,6 +39,24 @@ void Tail::Initialize(
 	lerpEndPos_.x = parentPos_->x;
 	lerpEndPos_.y = parentPos_->y;
 
+	// アニメーション系の初期化
+	AnimationValueInitialize();
+
+	// スプライトの生成
+	sprite_.reset(
+	    Sprite::Create(charaTex_, {-10.0f, -10.0f}, {1.0f, 1.0f, 1.0f, 1.0f}, {0.5f, 0.5f}));
+
+	// 半径
+	radius_ = 48.0f;
+	sprite_->SetSize({radius_ * 2, radius_ * 2});
+
+	// パーティクル管理クラスの生成
+	particle_ = std::make_unique<ParticleManager>();
+	// パーティクル管理クラスの初期化
+	particle_->Initialize(particleTex_);
+}
+
+void Tail::AnimationValueInitialize() {
 	animationTimer = 0;
 	animationNumber = 0;
 	animationScene = 3;
@@ -47,18 +68,9 @@ void Tail::Initialize(
 	CollapseAniScene = 7;
 	CollapseAnioneTime = 4;
 	isCollapseAniEnd = false;
-
-	// スプライトの生成
-	sprite_.reset(
-	    Sprite::Create(charaTex_, {-10.0f, -10.0f}, {1.0f, 1.0f, 1.0f, 1.0f}, {0.5f, 0.5f}));
-
-	// 半径
-	radius_ = 48.0f;
-	sprite_->SetSize({radius_ * 2, radius_ * 2});
-
-	particle_ = std::make_unique<ParticleManager>();
-	particle_->Initialize(particleTex_);
 }
+
+#pragma endregion
 
 void Tail::Update() {
 	ScreenPosInitialize();
@@ -70,8 +82,6 @@ void Tail::Update() {
 			}
 
 			// 尻尾の動き更新処理
-			//
-
 			MoveUpdate();
 
 			// 進行方向の更新処理
@@ -84,14 +94,13 @@ void Tail::Update() {
 				isDead_ = true;
 			}
 		}
-		if (tailHp == 3) {
-			sprite_->SetTextureHandle(tex[0]);
-		} else if (tailHp == 2) {
-			sprite_->SetTextureHandle(tex[1]);
 
-		} else if (tailHp == 1) {
-			sprite_->SetTextureHandle(tex[2]);
+		for (int i = 0; i < 3; i++) {
+			if (tailHp == (3 - i)) {
+				sprite_->SetTextureHandle(tex[i]);
+			}
 		}
+
 		Animation::Anime(animationTimer, animationNumber, animationScene, oneTime);
 		// 位置の更新処理
 		BaseCharacter::Update();
@@ -132,7 +141,7 @@ void Tail::Draw() {
 	if (isCollapse) {
 		Animation::DrawAnimation(sprite_.get(), pos_, CollapseAniNumber, charaTex_);
 	}
-	//
+	// 
 	else if(!isCollapse) {
 		BaseCharacter::Draw();
 	}
