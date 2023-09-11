@@ -63,6 +63,8 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	// ゲームシーンの初期化
 	sceneManager = new SceneManager();
 
+	win->SetFullscreen(true);
+
 	// メインループ
 	while (true) {
 		// メッセージ処理

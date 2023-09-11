@@ -87,9 +87,9 @@ void GameScene::Update() {
 	player_->SetSceneVelo(sceneShakevelo_);
 	boss_->SetSceneVelo(sceneShakevelo_);
 
-	if (killCount_ > 10 && !isBossRespown_) {
-		//isBossRespown_ = true;
-		//boss_->RespownBoss();
+	if (killCount_ > 30 && !isBossRespown_) {
+		isBossRespown_ = true;
+		boss_->RespownBoss();
 	}
 
 	// ボスの更新処理

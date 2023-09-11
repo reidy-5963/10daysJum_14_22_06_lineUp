@@ -70,6 +70,8 @@ public: // 沸きパターン
 	/// </summary>
 	void ArrowBehaviorControl();
 
+	void ArrowBehaviorPlay();
+
 	void VerticalSpawn();
 
 	void HorizontalSpawn();
@@ -116,8 +118,10 @@ private:
 	bool isPatternNow_ = false;
 	// パターンの時間
 	int patternInterval_ = 0;
+	// 湧き間隔の秒数
+	int kIntervalSecond_ = 10;
 	// パターン湧きの間隔
-	int kInterval_ = 60;
+	int kInterval_ = 60 * kIntervalSecond_;
 
 private:	// Arrowの変数
 	enum Pattern 
@@ -131,7 +135,7 @@ private:	// Arrowの変数
 	Vector2 plPrevPos_ = {};
 
 private: // ステージでの管理系
-	int autoSpawnSecond_ = 7;
+	int autoSpawnSecond_ = 4;
 	int kRespownTimer_ = 60 * autoSpawnSecond_;
 	int normalSpawnTimer_ = 0;
 	int spawnShiftFrame_ = 0;

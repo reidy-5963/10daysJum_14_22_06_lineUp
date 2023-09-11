@@ -37,26 +37,9 @@ void EnemyManager::Update()
 
 	FourPointsSpawn();
 
-	//if (respownTimer_ > kRespownTimer_) {
-	//	spawnShiftFrame_++;
-	//	if (spawnShiftFrame_ == 10) {
-	//		CreateEnemy(kLeftTop);
-	//		HorizontalSpawn();
+	FormationSpawnUpdate();
 
-	//	} else if (spawnShiftFrame_ == 20) {
-	//		CreateEnemy(kLeftBottom);
-
-	//	} else if (spawnShiftFrame_ == 30) {
-	//		CreateEnemy(kRightTop);
-	//		VerticalSpawn();
-
-	//	} else if (spawnShiftFrame_ == 40) {
-	//		CreateEnemy(kRightBottom);
-
-	//		spawnShiftFrame_ = 0;
-	//		respownTimer_ = 0;
-	//	}
-	//}
+	ArrowBehaviorControl();
 
 	if (input_->TriggerKey(DIK_4)) {
 		CreateEnemy(kLeftTop);
@@ -80,8 +63,6 @@ void EnemyManager::Update()
 	if (input_->TriggerKey(DIK_8)) {
 		VerticalSpawn();
 	}
-
-	ArrowBehaviorControl();
 
 	// 消去処理
 	enemys_.remove_if([](Enemy* enemy) {
@@ -109,6 +90,38 @@ void EnemyManager::Draw()
 
 void EnemyManager::FormationSpawnUpdate() 
 {
+	if (!isPatternNow_) {
+		patternInterval_++;
+	}
+
+	if (patternInterval_ == kInterval_) {
+		int random = rand() % 6;
+		patternInterval_ = 0;
+		switch (random) {
+		case 0:
+			DiagonalBehavior();
+			break;
+		case 1:
+			DiagonalClockWiseBehavior();
+			break;
+		case 2:
+			ArrowBehaviorPlay();
+			break;
+		case 3:
+			DiagonalBehavior();
+			DiagonalClockWiseBehavior();
+			break;
+		case 4:
+			ArrowBehaviorPlay();
+			VerticalSpawn();
+			break;
+		case 5:
+			ArrowBehaviorPlay();
+			HorizontalSpawn();
+			break;
+		}
+	}
+
 
 }
 
@@ -651,10 +664,7 @@ void EnemyManager::ArrowBehavior(int switchPatt)
 void EnemyManager::ArrowBehaviorControl() 
 {
 	if (input_->TriggerKey(DIK_7)) {
-		if (!isArrowRespown_)
-			plPrevPos_ = playerPos_;
-			isArrowRespown_ = true;
-			ArrowBehavior(kDown);
+		ArrowBehaviorPlay();
 	}
 
 	if (isArrowRespown_) {
@@ -671,6 +681,15 @@ void EnemyManager::ArrowBehaviorControl()
 			isArrowRespown_ = false;
 			ArrowCoolTime = 0;
 		}
+	}
+}
+
+void EnemyManager::ArrowBehaviorPlay() 
+{
+	if (!isArrowRespown_) {
+		plPrevPos_ = playerPos_;
+		isArrowRespown_ = true;
+		ArrowBehavior(kDown);
 	}
 }
 
