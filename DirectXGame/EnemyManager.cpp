@@ -43,6 +43,14 @@ void EnemyManager::Update()
 	if (!isArrowRespown_) {
 		patternInterval_++;
 	}
+	int maxInterVal = 13;
+	int minInterVal = 9;
+
+	if (tailSize_ == 6) {
+		kIntervalSecond_ = maxInterVal;
+	} else {
+		kIntervalSecond_ = minInterVal;
+	}
 
 	FourPointsSpawn();
 

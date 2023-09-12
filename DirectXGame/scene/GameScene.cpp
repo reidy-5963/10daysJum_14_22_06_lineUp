@@ -146,6 +146,7 @@ void GameScene::Update() {
 	enemyManager_->SetBoss(boss_->GetPosition());
 	enemyManager_->SetSceneVelo(sceneShakevelo_);
 	enemyManager_->SetIsBossAlive(boss_->IsAlive());
+	enemyManager_->SetTailSize(player_->GetTail());
 	enemyManager_->Update();
 	//enemyManager_->FourPointsSpawn();
 

@@ -32,6 +32,9 @@ public:
 
 	void SetSceneVelo(Vector2 velo) { sceneVelo_ = velo; }
 
+	/// <summary>
+	/// 敵の更新処理
+	/// </summary>
 	void EnemyUpdate();
 
 public:	// 設定、取得
@@ -43,11 +46,15 @@ public:	// 設定、取得
 	const std::list<Enemy*>& GetEnemyLists() { return enemys_; }
 
 	/// <summary>
-	/// プレイヤーの位置取得
+	/// プレイヤーの座標設定
 	/// </summary>
 	/// <param name="pos"></param>
 	void SetPlayer(Vector2 pos) { playerPos_ = pos; }
 
+	/// <summary>
+	/// ボスの座標設定
+	/// </summary>
+	/// <param name="pos"></param>
 	void SetBoss(Vector2 pos) { bossPos_ = pos; }
 
 	//BossEnemy* GetBossEnemy() { return boss_; }
@@ -74,10 +81,19 @@ public: // 沸きパターン
 	/// </summary>
 	void ArrowBehaviorControl();
 
+	/// <summary>
+	/// 矢印の開始
+	/// </summary>
 	void ArrowBehaviorPlay();
 
+	/// <summary>
+	/// 縦湧き
+	/// </summary>
 	void VerticalSpawn();
 
+	/// <summary>
+	/// 横湧き
+	/// </summary>
 	void HorizontalSpawn();
 
 
@@ -87,8 +103,15 @@ public:	// リスポーンタイプ
 	/// </summary>
 	void FormationSpawnUpdate();
 
+	/// <summary>
+	/// 角度ランダム関数
+	/// </summary>
+	/// <returns></returns>
 	Vector2 RandomRadianVector();
 
+	/// <summary>
+	/// プレイヤーをアンカーポイントにした四隅スポーン関数
+	/// </summary>
 	void FourPointsSpawn();
 
 	/// <summary>
@@ -96,6 +119,9 @@ public:	// リスポーンタイプ
 	/// </summary>
 	void RushSpawn();
 
+	/// <summary>
+	/// 開始時のスポーン関数
+	/// </summary>
 	void StartSpawn();
 
 public: // 敵の生成関数
@@ -116,7 +142,17 @@ public: // 敵の生成関数
 	/// <param name="velocity"></param>
 	void AddEnemy(const Vector2& position, const Vector2& velocity, const Vector2& direction);
 
+	/// <summary>
+	/// ボスの生存フラグ設定
+	/// </summary>
+	/// <param name="isAlive"></param>
 	void SetIsBossAlive(bool isAlive) { isBossAlive_ = isAlive; }
+
+	/// <summary>
+	/// 尻尾の数の設定
+	/// </summary>
+	/// <param name="size"></param>
+	void SetTailSize(int size) { tailSize_ = size; }
 
 private:
 
@@ -136,14 +172,18 @@ private:
 	Vector2 bossPos_ = {};
 	// シーンのシェイク
 	Vector2 sceneVelo_{};
+	// ボスの生存フラグ
+	bool isBossAlive_ = false;
+	// 尻尾のサイズ
+	int tailSize_ = 0;
 
+private: // 矢印湧き関係
+	// 矢印のクールタイム
 	int ArrowCoolTime = 0;
 	// 矢印のフラグ
 	bool isArrowRespown_ = false;
-
+	// 矢印の間隔
 	int kArrowDelay_ = 120;
-
-	bool isBossAlive_ = false;
 
 private:
 	// パターン湧きしているか
@@ -163,7 +203,7 @@ private:	// Arrowの変数
 		kLeft,
 		kRight,
 	};
-
+	// プレイヤーの前座標
 	Vector2 plPrevPos_ = {};
 
 private: // ステージでの管理系

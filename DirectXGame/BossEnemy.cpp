@@ -319,13 +319,22 @@ void BossEnemy::BulletUpdate() {
 
 void BossEnemy::ActionControl() 
 {
+	if (hp_ <= this->SetMaxHp / 2) {
+		int coolTimeSecond = 4;
+		kActionCoolTime_ = 60 * coolTimeSecond;
+	} else {
+		int coolTimeSecond = 6;
+		kActionCoolTime_ = 60 * coolTimeSecond;
+	}
+
 	if (behavior_ == Behavior::kRoot && isAlive_) {
 		actionTimer_++;
-		if (actionTimer_ == kActionCoolTime_) {
+		if (actionTimer_ >= kActionCoolTime_) {
 			ActionTable();
 			actionTimer_ = 0;			
 		}
 	}
+
 	if (input_->TriggerKey(DIK_A)) {
 		//actions_.push_back(Behavior::kRoot);
 		actions_.push_back(Behavior::kFunnel);
@@ -336,7 +345,6 @@ void BossEnemy::ActionControl()
 		actions_.push_back(Behavior::kRushAlert);
 		actions_.push_back(Behavior::kFunnel);
 	}
-
 	/// 突進起動キー処理
 	if (input_->TriggerKey(DIK_D)) {
 		actions_.push_back(Behavior::kBarrage);
@@ -385,8 +393,6 @@ void BossEnemy::ActionControl()
 	}
 }
 
-void BossEnemy::RootInitialize() { actionTimer_ = 0; }
-
 void BossEnemy::ActionTable() 
 {
 	int behaviorRand = rand() % 5;
@@ -429,6 +435,8 @@ void BossEnemy::RootUpdate() {
 		RandomActionManager();
 	}
 }
+
+void BossEnemy::RootInitialize() { actionTimer_ = 0; }
 
 void BossEnemy::InitializeGrobalVariables() {
 	GlobalVariables* gloVars = GlobalVariables::GetInstance();
