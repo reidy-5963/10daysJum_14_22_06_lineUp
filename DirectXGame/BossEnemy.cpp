@@ -18,7 +18,6 @@ BossEnemy::BossEnemy() {
 	// ファンネル
 	funnelTex_ = TextureManager::Load("Fannel.png");
 	particleTex = TextureManager::Load("FunnelParticle.png");
-
 	// 突進先
 	rushPointTex_ = TextureManager::Load("bossAttack.png");
 	// HP
@@ -33,7 +32,7 @@ void BossEnemy::RespownBoss()
 	isDead_ = false;
 	prevBossPos_ = pos_;
 	prevPlayerPos_ = nowPlayerPos_;
-	hp_ = setHp;
+	hp_ = SetMaxHp;
 	animationTimer = 0;
 	animationNumber = 0;
 	animationScene = 4;
@@ -47,24 +46,11 @@ void BossEnemy::RandomActionManager()
 		actionTimer_++;
 	}
 	if (actionTimer_ == kActionCoolTime_) {
-		int behaviorRand = rand() % 4 + 1;
-		actionTimer_ = 0;
-		switch (behaviorRand) {
-		case 1:
-			RushAttackSetup();
-			break;
-		case 2:
-			behaviorRequest_ = Behavior::kGuided;
-			break;
-		case 3:
-			behaviorRequest_ = Behavior::kBarrage;
-			break;
-		case 4:
-			behaviorRequest_ = Behavior::kFunnel;
-			break;
+		if (isActionNow_ == kNowNone) {
+			ActionTable();
+			actionTimer_ = 0;
 		}
 	}
-
 }
 
 void BossEnemy::GenerateBullet(Vector2& velocity, float speedValue) 
@@ -86,12 +72,12 @@ void BossEnemy::GenerateFunnel(int type)
 	case BossFunnel::kHorizontal:
 		endPoint = {nowPlayerPos_.x, pos_.y};
 		newFunnel->SetParticleTex(particleTex);
-		newFunnel->Initialize(funnelTex_, type, GetPosition(), endPoint);
+		newFunnel->Initialize(funnelTex_, type, prevBossPos_, endPoint);
 		break;
 	case BossFunnel::kVertical:
 		endPoint = {pos_.x, nowPlayerPos_.y};
 		newFunnel->SetParticleTex(particleTex);
-		newFunnel->Initialize(funnelTex_, type, GetPosition(), endPoint);
+		newFunnel->Initialize(funnelTex_, type, prevBossPos_, endPoint);
 		break;
 	}
 	// リストに追加
@@ -132,10 +118,17 @@ void BossEnemy::Initialize()
 	sprite_->SetSize(Vector2(radius_ * 2, radius_ * 2));
 	particle_ = std::make_unique<ParticleManager>();
 	particle_->Initialize(particleTex);
+
+	actions_.push_back(Behavior::kRoot);
+
 }
 
 void BossEnemy::Update() 
 {
+	ImGui::Begin("player");
+	ImGui::Text("%f : %f", nowPlayerPos_.x, nowPlayerPos_.y);
+	ImGui::End();
+
 	if (isAlive_ && hp_ <= 0) {
 		isDead_ = true;
 		isAlive_ = false;
@@ -168,8 +161,8 @@ void BossEnemy::Update()
 			BarrageAttackInitialize();
 			break;
 		// ビーム初期化
-		case BossEnemy::Behavior::kBeam:
-			BeamAttackInitialize();
+		case BossEnemy::Behavior::kRushAlert:
+			RushAlertInitialize();
 			break;
 		// ファンネル初期化
 		case BossEnemy::Behavior::kFunnel:
@@ -197,9 +190,10 @@ void BossEnemy::Update()
 		BarrageAttack();
 		break;
 	/// ビーム処理
-	case BossEnemy::Behavior::kBeam:
-		BeamAttack();
+	case BossEnemy::Behavior::kRushAlert:
+		RushAlert();
 		break;
+	/// ファンネル処理
 	case BossEnemy::Behavior::kFunnel:
 		FunnelAttack();
 		break;
@@ -207,7 +201,7 @@ void BossEnemy::Update()
 
 	MyMath::ShakeUpdate(shakeVelo_, isDamageShake, amplitNum);
 
-	float hpSize = (float(hp_) / float(setHp)) * hpGaugeSize.x;
+	float hpSize = (float(hp_) / float(SetMaxHp)) * hpGaugeSize.x;
 
 	hpSprite_->SetSize({hpSize, hpGaugeSize.y});
 	hpSprite_->SetPosition({(1920 / 2) - (MaxHpSize - hpSize) / 2, 60.0f});
@@ -259,6 +253,12 @@ void BossEnemy::OnCollision() {
 }
 
 void BossEnemy::BulletUpdate() {
+
+	ImGui::Begin("time");
+	ImGui::Text("%d : %d", modeCount_,isFunnelAttackNow_);
+	ImGui::Text("%d", actions_.back());
+	ImGui::End();
+
 	bullets_.remove_if([](BossBullet* bullet) {
 		if (bullet->GetIsDead()) {
 			delete bullet;
@@ -290,16 +290,10 @@ void BossEnemy::BulletUpdate() {
 	for (BossFunnel* funnel : funnels_) {
 		funnel->SetSceneVelo(sceneVelo);
 		funnel->Update(nowPlayerPos_);
-		Vector2 size = funnel->GetSize();
-		size -= Vector2(decreaseValue_ / 2, decreaseValue_ / 2);
-		funnel->SetSize(size);
-		funnel->SetRadius(funnel->GetSize().x / 2);
-		if (funnel->GetRadius() < deadZone_) {
+		if (funnel->GetPosition().x < 0.0f || funnel->GetPosition().x > (1920.0f*2)||
+		    funnel->GetPosition().y < 0.0f || funnel->GetPosition().y > (1080.0f * 2)) {
 			funnel->SetIsDead(true);
 		}
-	}
-	if (funnels_.empty()) {
-		isFunnelAttackNow_ = false;
 	}
 }
 
@@ -307,16 +301,29 @@ void BossEnemy::ActionControl()
 {
 	/// 突進起動キー処理
 	if (input_->TriggerKey(DIK_D)) {
-		if (!isRush_) {
-			RushAttackSetup();
-		}
+		actions_.push_back(Behavior::kBarrage);
+		actions_.push_back(Behavior::kRushAlert);
+		actions_.push_back(Behavior::kBarrage);
+		actions_.push_back(Behavior::kRushAlert);
+		actions_.push_back(Behavior::kBarrage);
+		actions_.push_back(Behavior::kRushAlert);
+		actions_.push_back(Behavior::kBarrage);
+		actions_.push_back(Behavior::kRushAlert);
 	}
 	/// 誘導
 	if (input_->TriggerKey(DIK_F)) {
-		if (behavior_ != Behavior::kGuided) {
-			behaviorRequest_ = Behavior::kGuided;
-		}
+		actions_.push_back(Behavior::kBarrage);
+		actions_.push_back(Behavior::kGuided);
+		actions_.push_back(Behavior::kFunnel);
+		actions_.push_back(Behavior::kRushAlert);
+			//behaviorRequest_ = actions_.back();
 	}
+	if (behavior_ != actions_.back()) {
+		behaviorRequest_ = actions_.back();
+		//isTest_ = true;
+		//actions_.pop_front();
+	}
+
 	/// 全方位
 	if (input_->TriggerKey(DIK_G)) {
 		if (behavior_ != Behavior::kBarrage) {
@@ -339,11 +346,30 @@ void BossEnemy::ActionControl()
 	if (input_->TriggerKey(DIK_K)) {
 		RespownBoss();
 	}
-
-
 }
 
 void BossEnemy::RootInitialize() { actionTimer_ = 0; }
+
+void BossEnemy::ActionTable() 
+{
+	int behaviorRand = rand() % 5;
+	switch (behaviorRand) {
+	case 0:
+		break;
+	case 1:
+		RushAttackSetup();
+		break;
+	case 2:
+		behaviorRequest_ = Behavior::kGuided;
+		break;
+	case 3:
+		behaviorRequest_ = Behavior::kBarrage;
+		break;
+	case 4:
+		behaviorRequest_ = Behavior::kFunnel;
+		break;
+	}
+}
 
 void BossEnemy::RootUpdate() 
 {
@@ -352,19 +378,4 @@ void BossEnemy::RootUpdate()
 	if (isAlive_) {
 		RandomActionManager();
 	}
-
-#pragma region 突進の警告から開始まで
-	/// 突進までの処理
-	if (isRush_ && !isFunnelAttackNow_) {
-		rushCount_ += 1;
-		if (behavior_ != Behavior::kRush && rushCount_ > kRushTimer_) {
-			behaviorRequest_ = Behavior::kRush;
-			// 突進カウント・フラグ初期化
-			rushCount_ = 0;
-			isRush_ = false;
-		}
-	}
-#pragma endregion
-
-
 }

@@ -247,7 +247,7 @@ private: // メンバ変数
 	int scoreCOunt = 0;
 #pragma region 当たり判定処理系
 
-	int kInvisibleTimer_ = 90;
+	int kInvisibleTimer_ = 30;
 
 	int invisibleTimeCount_;
 

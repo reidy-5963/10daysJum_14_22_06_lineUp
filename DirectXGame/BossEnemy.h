@@ -65,6 +65,13 @@ private:	// 行動関数
 	void RushAttackSetup();
 
 	/// <summary>
+	/// 突進の準備
+	/// </summary>
+	void RushAlert();
+
+	void RushAlertInitialize();
+
+	/// <summary>
 	/// 誘導弾
 	/// </summary>
 	void GuidedAttack();
@@ -77,13 +84,6 @@ private:	// 行動関数
 	void BarrageAttack();
 
 	void BarrageAttackInitialize();
-
-	/// <summary>
-	/// ビーム弾
-	/// </summary>
-	void BeamAttack();
-
-	void BeamAttackInitialize();
 
 	/// <summary>
 	/// ミサイルファンネル
@@ -174,8 +174,10 @@ private:
 
 	bool isDead_ = false;
 
-	const int setHp = 500;
-	int hp_ = setHp;
+	int funnelCount_ = 0;
+
+	const int SetMaxHp = 500;
+	int hp_ = SetMaxHp;
 	Vector2 hpGaugeSize{};
 
 	//
@@ -212,9 +214,19 @@ private: // 行動管理用変数
 		kRush,
 		kGuided,
 		kBarrage,
-		kBeam,
+		kRushAlert,
 		kFunnel,
 	};
+	enum PrevBehavior {
+		kNowNone,
+		kNowRush,
+		kNowGuided,
+		kNowBarrage,
+		kNowFunnel,
+	};
+
+	std::list<Behavior> actions_;
+
 	// 状態
 	Behavior behavior_ = Behavior::kRoot;
 	// 次の動きのリクエスト
@@ -236,7 +248,9 @@ private: // 動きの管理
 
 	float MaxHpSize = 0.0f;
 
-	bool isActionNow_ = false;
+	int isActionNow_ = false;
+
+	bool isTest_ = false;
 
 private: // 揺らす系
 	Vector2 shakeVelo_{};

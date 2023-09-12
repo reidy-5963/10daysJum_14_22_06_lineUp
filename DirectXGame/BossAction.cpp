@@ -9,6 +9,9 @@ void BossEnemy::RushAttack() {
 		rushMove_t_ = 1.0f;
 		isRushNow_ = false;
 		behaviorRequest_ = Behavior::kRoot;
+		actions_.pop_back();
+		// behaviorRequest_ = actions_.front();
+		//actions_.pop_front();
 	} else {
 		rushMove_t_ += 0.02f;
 	}
@@ -45,10 +48,31 @@ void BossEnemy::RushAttackSetup() {
 	prevPlayerPos_ = nowPlayerPos_;
 }
 
+void BossEnemy::RushAlert() 
+{ 
+	#pragma region 突進の警告から開始まで
+	/// 突進までの処理
+	if (isRush_) {
+		rushCount_ += 1;
+		if (/*behavior_ != Behavior::kRush && */rushCount_ > kRushTimer_) {
+			// 突進カウント・フラグ初期化
+			rushCount_ = 0;
+			isRush_ = false;
+			// リクエスト
+			behaviorRequest_ = Behavior::kRush;
+		}
+	}
+#pragma endregion
+}
+
+void BossEnemy::RushAlertInitialize() 
+{ RushAttackSetup(); }
+
 void BossEnemy::GuidedAttack() {
-	modeCount_ += 1;
+	modeCount_ += 1;	
 	if (modeCount_ == kModeEndTimer_) {
 		behaviorRequest_ = Behavior::kRoot;
+		actions_.pop_back();
 	}
 
 	if (modeCount_ % 30 == 0) {
@@ -65,6 +89,7 @@ void BossEnemy::BarrageAttack() {
 	int barrageInterval = 20;
 	if (modeCount_ == kModeEndTimer_) {
 		behaviorRequest_ = Behavior::kRoot;
+		actions_.pop_back();
 	}
 	if (modeCount_ % barrageInterval == 0) {
 		// 右
@@ -107,23 +132,25 @@ void BossEnemy::BarrageAttackInitialize() {
 	rotateDegree = 180.0f / float(std::numbers::pi) * sprite_->GetRotation();
 }
 
-void BossEnemy::BeamAttack() {}
-
-void BossEnemy::BeamAttackInitialize() {}
-
 void BossEnemy::FunnelAttack() {
 	modeCount_ += 1;
-
-	if (modeCount_ % 120 == 0) {
+	int kMaxFunnel = 2;
+	if (modeCount_ % 120 == 0 && funnelCount_ < kMaxFunnel) {
+		funnelCount_++;
 		GenerateFunnel(BossFunnel::kHorizontal);
 		GenerateFunnel(BossFunnel::kVertical);
 	}
-	if (modeCount_ == kModeEndTimer_) {
-		behaviorRequest_ = Behavior::kRoot;
+	if (modeCount_ >= kModeEndTimer_) {
+		if (funnels_.empty() && isFunnelAttackNow_) {
+			isFunnelAttackNow_ = false;
+			behaviorRequest_ = Behavior::kRoot;
+			actions_.pop_back();
+		} 
 	}
 }
 
 void BossEnemy::FunnelAttackInitialize() {
 	kModeEndTimer_ = 260;
+	prevBossPos_ = pos_;
 	isFunnelAttackNow_ = true;
 }
