@@ -369,7 +369,6 @@ private: // メンバ変数
 	int amplitNum = 30;
 #pragma endregion
 
-
 #pragma region UI
 	// UIのスプライト
 	std::unique_ptr<Sprite> playerUI_;
@@ -390,4 +389,7 @@ private: // メンバ変数
 	bool isDead_ = false;
 
 	bool isGameStart = false;
+
+	const int setRefreshTime = 40;
+	int refreshTimer_ = setRefreshTime;
 };

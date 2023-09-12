@@ -240,4 +240,6 @@ private: // 揺らす系
 	int amplitNum = 12;
 	std::unique_ptr<ParticleManager> particle_ = nullptr;
 	Vector4 color_ = {1.0f, 1.0f, 1.0f, 1.0f};
+
+	float alphaOffset = 0.007f;
 };

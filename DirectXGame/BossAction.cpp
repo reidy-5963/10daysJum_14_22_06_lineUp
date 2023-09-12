@@ -19,7 +19,7 @@ void BossEnemy::RushAttack() {
 	} else {
 		pos_ = MyMath::EaseInQuadF(rushMove_t_, prevBossPos_, prevPlayerPos_);
 	}
-	particle_->SetAlphaOffset(0.005f);
+	particle_->SetAlphaOffset(alphaOffset);
 	particle_->SetColor(color_);
 	particle_->SetTecture(particleTex);
 	particle_->SetLenge(pos_, {radius_, radius_});
