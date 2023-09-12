@@ -19,6 +19,16 @@ void BossEnemy::RushAttack() {
 	} else {
 		pos_ = MyMath::EaseInQuadF(rushMove_t_, prevBossPos_, prevPlayerPos_);
 	}
+	particle_->SetAlphaOffset(alphaOffset);
+	particle_->SetColor(color_);
+	particle_->SetTecture(particleTex);
+	particle_->SetLenge(pos_, {radius_, radius_});
+	particle_->SetSceneVelo(sceneVelo);
+	particle_->SetTime(3);
+	particle_->SetVelo({0.0f, 0.0f});
+	particle_->SetPattern(ParticleManager::ParticlePattarn::Straight);
+	particle_->SetIsParticle(true);
+
 }
 
 void BossEnemy::RushAttackInitialize() {

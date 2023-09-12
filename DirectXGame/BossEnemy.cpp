@@ -17,6 +17,8 @@ BossEnemy::BossEnemy() {
 	bulletTex_ = TextureManager::Load("BossBullet.png");
 	// ファンネル
 	funnelTex_ = TextureManager::Load("Fannel.png");
+	particleTex = TextureManager::Load("FunnelParticle.png");
+
 	// 突進先
 	rushPointTex_ = TextureManager::Load("bossAttack.png");
 	// HP
@@ -83,10 +85,12 @@ void BossEnemy::GenerateFunnel(int type)
 	switch (type) {
 	case BossFunnel::kHorizontal:
 		endPoint = {nowPlayerPos_.x, pos_.y};
+		newFunnel->SetParticleTex(particleTex);
 		newFunnel->Initialize(funnelTex_, type, GetPosition(), endPoint);
 		break;
 	case BossFunnel::kVertical:
 		endPoint = {pos_.x, nowPlayerPos_.y};
+		newFunnel->SetParticleTex(particleTex);
 		newFunnel->Initialize(funnelTex_, type, GetPosition(), endPoint);
 		break;
 	}
@@ -126,7 +130,8 @@ void BossEnemy::Initialize()
 	radius_ = 150.0f;
 	// 適当にサイズ
 	sprite_->SetSize(Vector2(radius_ * 2, radius_ * 2));
-
+	particle_ = std::make_unique<ParticleManager>();
+	particle_->Initialize(particleTex);
 }
 
 void BossEnemy::Update() 
@@ -212,17 +217,20 @@ void BossEnemy::Update()
 	// スクロールのインスタンス取得
 	Scroll* scroll = Scroll::GetInstance();
 	ScPos = prevPlayerPos_ - scroll->GetAddScroll() + sceneVelo;
-
+	
 	rushSprite_->SetPosition(ScPos);
 
 	BulletUpdate();
+	particle_->Update();
 
 	// 座標設定
 	BaseCharacter::Update();
 }
 
 void BossEnemy::Draw() 
-{ 
+{
+	particle_->Draw();
+
 	if (isRush_ || isRushNow_) {
 		rushSprite_->Draw();
 	}

@@ -19,6 +19,7 @@ GameScene::~GameScene() {}
 /// 初期化
 /// </summary>
 void GameScene::Initialize() {
+	sceneNum = 1;
 
 	dxCommon_ = DirectXCommon::GetInstance();
 	input_ = Input::GetInstance();
@@ -31,6 +32,7 @@ void GameScene::Initialize() {
 #pragma region プレイヤー
 	// プレイヤー生成
 	player_ = std::make_unique<Player>();
+	player_->SetIsGameStart(true);
 	// プレイヤーの初期化処理
 	player_->Initialize();
 #pragma endregion
@@ -60,15 +62,25 @@ void GameScene::Initialize() {
 	back.reset(Sprite::Create(backTex, {0.0f, 0.0f}, {0.01f, 0.01f, 0.01f, 1.0f}, {0.0f, 0.0f}));
 	Vector2 size = {1920 * 3, 1080 * 3};
 	back->SetSize(size);
-#pragma endregion
+#pragma endregion 
+	
+	
+	
+	BGMHandle_ = Audio::GetInstance()->LoadWave("GameScene.wav");
 }
 
 /// <summary>
 /// 毎フレーム処理
 /// </summary>
-void GameScene::Update() { 
+void GameScene::Update() { 	
+	// BGM再生
+	if (audio_->IsPlaying(BGMHandle_) == 0 || BGMHandle_ == -1) {
+		BGMHandle_ = audio_->PlayWave(BGMHandle_, true, bolume);
+	}
+
+
 	// スクロールの更新処理
-	Scroll* scroll = Scroll::GetInstance();
+	//Scroll* scroll = Scroll::GetInstance();
 	scroll_->Update();
 
 	// 敵の更新処理
@@ -102,7 +114,7 @@ void GameScene::Update() {
 
 	
 	// 背景の更新処理
-	back->SetPosition(backPos - scroll->GetAddScroll() + sceneShakevelo_);
+	//back->SetPosition(backPos - scroll->GetAddScroll() + sceneShakevelo_);
 }
 
 /// <summary>
@@ -112,7 +124,6 @@ void GameScene::Draw() {
 
 	// コマンドリストの取得
 	ID3D12GraphicsCommandList* commandList = dxCommon_->GetCommandList();
-
 #pragma region 背景スプライト描画
 	// 背景スプライト描画前処理
 	Sprite::PreDraw(commandList);
@@ -123,6 +134,17 @@ void GameScene::Draw() {
 	
 	// 背景の描画
 	back->Draw();
+
+	// 敵の描画
+	enemyManager_->Draw();
+
+	// プレイヤーの描画処理
+	player_->Draw();
+
+	// ボスの描画
+	if (!boss_->IsDead()) {
+		boss_->Draw();
+	}
 
 	// スプライト描画後処理
 	Sprite::PostDraw();
@@ -149,17 +171,7 @@ void GameScene::Draw() {
 	/// <summary>
 	/// ここに前景スプライトの描画処理を追加できる
 	/// </summary>
-
-	// 敵の描画
-	enemyManager_->Draw();
-
-	// プレイヤーの描画処理
-	player_->Draw();
-
-	// ボスの描画
-	if (!boss_->IsDead()) {
-		boss_->Draw();
-	}
+	player_->DrawUI();
 
 	// スプライト描画後処理
 	Sprite::PostDraw();
@@ -173,8 +185,10 @@ void GameScene::Draw() {
 void GameScene::CheckAllCollision() {
 	// 変数の用意
 	Vector2 targetA, targetB;
+
 #pragma region
 #pragma endregion
+
 	// プレイヤーの弾リストを取得
 	const std::list<PlayerBullet*>& playerBullet = player_->GetBullets();
 	// 敵
@@ -206,17 +220,26 @@ void GameScene::CheckAllCollision() {
 				}
 				if (!enemy->IsParasite()) {
 					player_->OnCollision();
+					issceneShake = true;
+					sceneaAmplitNum = 40;
 					enemy->SetIsDead(true);
 				}
 				//
 				killCount_ += 1;
 
+			} 
+			//
+			else if (player_->GetIsInvisible()) {
+				if (enemy->IsParasite()) {
+					player_->AddTails();
+					enemy->SetIsDead(true);
+				}
 			}
 		}
 	}
 #pragma endregion
 
-#pragma region ボスの弾
+#pragma region ボスの弾とプレイヤー
 
 	for (BossBullet* bossBullet_ : bossBullet) {
 		// エネミーの位置取得
@@ -236,7 +259,7 @@ void GameScene::CheckAllCollision() {
 
 #pragma endregion
 
-#pragma region ボスのファンネル
+#pragma region ボスのファンネルとプレイヤー
 
 	for (BossFunnel* bossFunnel_ : bossFunnel) {
 		// エネミーの位置取得
@@ -271,9 +294,9 @@ void GameScene::CheckAllCollision() {
 			if (distance <= radius) {
 				if (!player_->GetIsInvisible()) {
 					// コールバック
-					enemy->OnCollision();
-					tail->OnCollision();
-					killCount_ += 1;
+					//enemy->OnCollision();
+					//tail->OnCollision();
+					//killCount_ += 1;
 
 				}
 			}
@@ -357,13 +380,34 @@ void GameScene::CheckAllCollision() {
 		float radius = playerBullet_->GetRadius() + boss_->GetRadius();
 
 		if (distance <= radius && boss_->IsAlive()) {
-			// コールバック
 			if (!playerBullet_->IsCollapse()) {
+				// コールバック
+				playerBullet_->OnCollision();
 				boss_->OnCollision();
 				boss_->SetHp(boss_->GetHp() - 1);
 			}
-			playerBullet_->OnCollision();
 			
+		}
+	}
+#pragma endregion
+
+#pragma region プレイヤーとボス 
+	targetA = player_->GetPosition();
+	targetB = boss_->GetPosition();
+
+	float distance = std::sqrtf(
+			    std::powf(targetA.x - targetB.x, 2) + std::powf(targetA.y - targetB.y, 2));
+
+	float radius = player_->GetRadius() + boss_->GetRadius();
+
+	// 交差判定
+	if (distance <= radius) {
+		if (!player_->GetIsInvisible()) {
+			// コールバック
+			player_->OnCollision();
+			issceneShake = true;
+			sceneaAmplitNum = 40;
+			//boss_->OnCollision();
 		}
 	}
 #pragma endregion

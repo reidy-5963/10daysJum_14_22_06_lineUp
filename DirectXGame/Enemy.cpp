@@ -6,21 +6,30 @@
 #include <numbers>
 
 void Enemy::Initialize() {
+	// 変数系初期化
 	pos_ = {300, 300};
+	radius_ = 48;
+	velocity_ = {};
 
+	// スプライトの初期化
 	sprite_.reset(
 	    Sprite::Create(charaTex_, {pos_.x, pos_.y}, {1.0f, 1.0f, 1.0f, 1.0f}, {0.5f, 0.5f}));
-
-	radius_ = 48;
 	sprite_->SetSize({radius_ * 2, radius_ * 2});
-	velocity_ = {};
+
+	// アニメーションの変数初期化
+	AnimationValueInitialize();
+
+	// パーティクルの初期化
+	particle_ = std::make_unique<ParticleManager>();
+	particle_->Initialize(particleTex_);
+}
+
+void Enemy::AnimationValueInitialize() {
 	animationTimer = 0;
 	animationNumber = 0;
 	animationScene = 3;
 	oneTime = 4;
 	isAnimation = true;
-	particle_ = std::make_unique<ParticleManager>();
-	particle_->Initialize(particleTex_);
 }
 
 void Enemy::Update() {
@@ -33,47 +42,24 @@ void Enemy::Update() {
 
 #endif // _DEBUG
 
-
 	if (!isParasite_) {
-		// 座標移動
-		pos_ += velocity_;
-		Vector2 normalize = MyMath::Normalize(velocity_);
-		sprite_->SetRotation(std::atan2(normalize.y, normalize.x));
-
-		if (pos_.x < kMinusLimits.x || pos_.x > kPlusLimits.x || pos_.y < kMinusLimits.y ||
-		    pos_.y > kPlusLimits.y) {
-			isDead_ = true;
-		}
-		Animation::Anime(animationTimer, animationNumber, animationScene, oneTime);
-
+		RootStateUpdate();
 	} else if (isParasite_) {
-		particle_->SetIsParticle(true);
-		particle_->SetTecture(particleTex_);
-		particle_->SetLenge(pos_, {radius_, radius_});
-		particle_->SetSceneVelo(sceneVelo);
-		particle_->SetColor(color_);
-		particle_->SetTime(17);
-		particle_->SetVelo({0.0f, -5.0f});
-
-		if (!isPopUpPlayer) {
-			sprite_->SetTextureHandle(parasiteTex_);
-			Animation::Anime(animationTimer, animationNumber, animationScene, oneTime);
-
-			if (animationTimer == animationScene * oneTime) {
-
-				isPopUpPlayer = true;
-			}
-		}
-
-		if (isPopUpPlayer) {
-			if (--deleteTimer < 0) {
-				isDead_ = true;
-			}
-		}
+		ParasiteStateUpdate();
 	}
 	particle_->Update();
 	// 座標設定
 	BaseCharacter::Update();
+}
+
+void Enemy::SetParticle() {
+	particle_->SetIsParticle(true);
+	particle_->SetTecture(particleTex_);
+	particle_->SetLenge(pos_, {radius_, radius_});
+	particle_->SetSceneVelo(sceneVelo);
+	particle_->SetColor(color_);
+	particle_->SetTime(17);
+	particle_->SetVelo({0.0f, -5.0f});
 }
 
 void Enemy::Draw() {
@@ -88,6 +74,39 @@ void Enemy::OnCollision() {
 		isParasite_ = true;
 
 	}
+}
+
+void Enemy::ParasiteStateUpdate() { 
+	// パーティクルの設定
+	SetParticle();
+
+	if (!isPossiblePickUp) {
+		sprite_->SetTextureHandle(parasiteTex_);
+		Animation::Anime(animationTimer, animationNumber, animationScene, oneTime);
+
+		if (animationTimer == animationScene * oneTime) {
+			isPossiblePickUp = true;
+		}
+	}
+
+	if (isPossiblePickUp) {
+		if (--deleteTimer < 0) {
+			isDead_ = true;
+		}
+	}
+}
+
+void Enemy::RootStateUpdate() { 
+	// 座標移動
+	pos_ += velocity_;
+	Vector2 normalize = MyMath::Normalize(velocity_);
+	sprite_->SetRotation(std::atan2(normalize.y, normalize.x));
+
+	if (pos_.x < kMinusLimits.x || pos_.x > kPlusLimits.x || pos_.y < kMinusLimits.y ||
+	    pos_.y > kPlusLimits.y) {
+		isDead_ = true;
+	}
+	Animation::Anime(animationTimer, animationNumber, animationScene, oneTime);
 }
 
 void Enemy::P2EOnCollision() { isDead_ = true; }

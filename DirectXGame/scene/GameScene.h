@@ -94,4 +94,10 @@ private: // メンバ変数
 	uint32_t backTex;
 	Vector2 backPos = {0.0f, 0.0f};
 #pragma endregion
+
+#pragma region 音 
+	float bolume = 0.01f;
+
+	uint32_t BGMHandle_ = 0u;
+#pragma endregion
 };

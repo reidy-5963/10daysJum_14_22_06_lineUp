@@ -32,9 +32,10 @@ public: // メンバ関数
 	virtual void InitializeGrobalVariables();
 
 	virtual void ApplyGrobalVariables();
+
 	void ScreenPosInitialize() { ScreenPos = {}; }
-	void AddScreenPos(Vector2 pos) { ScreenPos += pos;
-	}
+
+	void AddScreenPos(Vector2 pos) { ScreenPos += pos; }
 
 protected: // 継承限定メンバ変数
 	// スプライト

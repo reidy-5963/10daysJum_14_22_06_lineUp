@@ -20,35 +20,64 @@ public: // メンバ関数
 	/// </summary>
 	~Player();
 
+#pragma region 初期化系
 	/// <summary>
 	/// 初期化処理
 	/// </summary>
 	void Initialize() override;
 
 	/// <summary>
-	/// 更新処理
+	/// 尻尾に関する初期化処理
 	/// </summary>
-	void Update() override;
+	void TailInitialize();
 
 	/// <summary>
-	/// キー入力での移動処理
+	/// 弾に関する初期化処理
 	/// </summary>
-	void KeyMove();
+	void BulletInitialize();
 
 	/// <summary>
-	/// 描画処理
+	///  アニメーションに使う変数の初期化処理
 	/// </summary>
-	void Draw() override;
+	void AnimationValueInitialize();
 
 	/// <summary>
-	/// 衝突処理
+	/// UIに関する初期化処理
 	/// </summary>
-	void OnCollision() override;
+	void UIInitialize();
+	
+	/// <summary>
+	/// マーカーに関する初期化処理
+	/// </summary>
+	void MarkerInitialize(); 
 	
 	/// <summary>
 	/// グローバル変数の初期化処理
 	/// </summary>
 	void InitializeGrobalVariables() override;
+	
+	/// <summary>
+	/// 通常状態の回転の初期化処理
+	/// </summary>
+	void RootRotateMoveInitialize();
+
+	/// <summary>
+	/// マーカーへ向かう動きの初期化処理
+	/// </summary>
+	void ToMarkerMoveInitialize();
+
+#pragma endregion
+
+#pragma region 更新系
+	/// <summary>
+	/// 更新処理
+	/// </summary>
+	void Update() override;
+
+	/// <summary>
+	/// 衝突処理
+	/// </summary>
+	void OnCollision() override;
 
 	/// <summary>
 	/// グローバル変数の更新処理
@@ -56,19 +85,9 @@ public: // メンバ関数
 	void ApplyGrobalVariables() override;
 
 	/// <summary>
-	/// カーソルの更新処理
+	/// キー入力での移動処理
 	/// </summary>
-	void GetCursor();
-
-	/// <summary>
-	/// 弾の更新処理
-	/// </summary>
-	void BulletUpdate();
-
-	/// <summary>
-	/// カーソルの制限処理
-	/// </summary>
-	void MarkerControl();
+	void KeyMove();
 
 	/// <summary>
 	/// 左クリックの処理
@@ -76,23 +95,68 @@ public: // メンバ関数
 	void LeftClickUpdate();
 
 	/// <summary>
-	/// 弾を削除する処理
+	/// カーソルの更新処理
 	/// </summary>
-	void DeleteBullet();
+	void GetCursor();
 
 	/// <summary>
-	/// 通常時の回転処理(パターン2つ)
+	/// カーソルの制限処理
 	/// </summary>
-	void RootRotateMove1();
-	void RootRotateMove2();
+	void MarkerControl();
+
+	/// <summary>
+	/// マーカーの動きの処理
+	/// </summary>
+	void MarkerMovement();
+
+	/// <summary>
+	/// 弾の更新処理
+	/// </summary>
+	void BulletUpdate();
+
+	/// <summary>
+	/// 弾を削除する処理
+	/// </summary>
+	void DeleteBulletUpdate();
+
 	/// <summary>
 	/// 尻尾の更新処理
 	/// </summary>
 	void TailUpdate();
 
-	void MarkerMovement();
+	/// <summary>
+	/// 通常状態の回転処理
+	/// </summary>
+	void RootRotateMoveUpdate();
 
-	public: // 追加や削除の関数
+	/// <summary>
+	/// 通常時の回転パターン(パターン2つ)
+	/// </summary>
+	void RootRotateMove1();
+	void RootRotateMove2();
+
+	/// <summary>
+	/// マーカーへ向かう動きの処理
+	/// </summary>
+	void ToMarkerMoveUpdate();
+
+#pragma endregion
+
+#pragma region 描画系
+	/// <summary>
+	/// 描画処理
+	/// </summary>
+	void Draw() override;
+
+	/// <summary>
+	/// UI系の描画処理
+	/// </summary>
+	void DrawUI();
+
+#pragma endregion
+	
+public: // 追加や削除の関数
+#pragma region 追加や削除の関数
 	/// <summary>
 	/// 尻尾の追加
 	/// </summary>
@@ -108,16 +172,10 @@ public: // メンバ関数
 	/// </summary>
 	/// <param name="bullet">追加する弾</param>
 	void AddBullets(PlayerBullet* bullet);
-
-	void RootRotateMoveInitialize();
-
-	void RootRotateMoveUpdate();
-
-	void ToMarkerMoveInitialize();
-
-	void ToMarkerMoveUpdate();
+#pragma endregion
 
 public: // Setter & Getter
+#pragma region setter_getter
 	/// <summary>
 	/// 弾テクスチャの取得
 	/// </summary>
@@ -127,32 +185,43 @@ public: // Setter & Getter
 	/// <summary>
 	/// マーカーの位置の取得
 	/// </summary>
-	/// <returns></returns>
+	/// <returns>マーカーの位置</returns>
 	Vector2 &GetMarkerPos() { return markerPos_; }
 
 	/// <summary>
 	/// 弾の速さ取得
 	/// </summary>
-	/// <returns></returns>
+	/// <returns>弾の速さ</returns>
 	float GetBulletSpeed() { return bulletSpeed_; }
 
 	/// <summary>
 	/// 無敵中フラグ取得
 	/// </summary>
-	/// <returns></returns>
+	/// <returns>無敵中フラグ</returns>
 	int GetIsInvisible() { return isInvisible_; }
 
 	/// <summary>
 	/// 弾のリストの取得
 	/// </summary>
-	/// <returns></returns>
+	/// <returns>弾のリスト</returns>
 	const std::list<PlayerBullet*>& GetBullets() { return bullets_; }
 	
 	/// <summary>
 	/// 尻尾のリストの取得
 	/// </summary>
-	/// <returns></returns>
+	/// <returns>尻尾のリスト</returns>
 	const std::list<Tail*>& GetTails() { return tails_; }
+
+	/// <summary>
+	/// 尻尾の数の取得
+	/// </summary>
+	/// <returns>尻尾の数</returns>
+	const int GetTail() { return int(tails_.size()); }
+
+	bool IsDead() { return isDead_; }
+
+	void SetIsGameStart(bool isStart) { isGameStart = isStart; }
+#pragma endregion
 
 private: // メンバ変数
 	// 入力
@@ -161,9 +230,19 @@ private: // メンバ変数
 	// マウス位置
 	POINT mousePos;
 
+	// 前フレーム時のプレイヤーの位置
+	Vector2 clickPlayerPos_{};
+
+	// 前フレーム時の位置
+	Vector2 prePos_{};
+
 	// プレイヤーの向き
 	Vector2 direction_{};
 
+	// プレイヤーの残機(尻尾の数)
+	const int setDamageCount = 3;
+	int damageCount = setDamageCount;
+	int scoreCOunt = 0;
 #pragma region 当たり判定処理系
 
 	int kInvisibleTimer_ = 90;
@@ -177,7 +256,7 @@ private: // メンバ変数
 #pragma region マーカー
 	// マーカーのスプライト
 	std::unique_ptr<Sprite> markerSprite_ = nullptr;
-
+	float markerRadius_ = 32.0f;
 	// マーカーのテクスチャ
 	uint32_t markerTex_ = 0u;
 
@@ -190,6 +269,27 @@ private: // メンバ変数
 	// クリックした位置
 	Vector2 clickPos_{};
 
+	// マーカーの線形補完中フラグ
+	bool ismarkerMove_ = false;
+	// マーカーの線形補完用t
+	float markerMove_t = 0.0f;
+
+	// マーカーを置ける位置の制限値
+	// (端から設定した値まではマーカーを置けない)
+	float markerLimit_ = 100.0f;
+
+#pragma region マーカーのアニメーション用 
+	int markerAniTimer = 0;
+	int markerAniNumber = 0;
+	int markerAniScene = 15;
+	int markerAniOneTime = 4;
+	bool ismarkerAnimation = false;
+#pragma endregion
+
+	uint32_t yosokusenTex_;
+	std::unique_ptr<Sprite> yosokusen_;
+	Vector2 yosokusenSize{};
+	Vector2 yosokusenPos_{};
 #pragma endregion
 
 #pragma region 通常時の動き用
@@ -203,12 +303,8 @@ private: // メンバ変数
 	bool isRootMove_ = false;
 
 #pragma endregion
-	// 前フレーム時のプレイヤーの位置
-	Vector2 clickPlayerPos_{};
 
-	// 前フレーム時の位置
-	Vector2 prePos_{};
-
+#pragma region マーカーへ向かう処理用
 	// 動くときの線形補完
 	float move_t_ = 0.0f;
 	float move_t_offset = 0.005f;
@@ -218,10 +314,7 @@ private: // メンバ変数
 
 	// ベジエで動くときの終わり位置//
 	Vector2 bezierEndPos_{};
-
-	// マーカーを置ける位置の制限値
-	// (端から設定した値まではマーカーを置けない)
-	float markerLimit_ = 100.0f;
+#pragma endregion
 
 #pragma region 弾
 	// 弾
@@ -255,6 +348,8 @@ private: // メンバ変数
 	//
 	Vector2 M2AddRadian[3];
 	Vector2 W2AddRadian[3];
+	// 通常回転時の中心点
+	Vector2 originPos_{};
 
 	float radianOffset = 3.14f * ( 1.0f / 3.0f);
 
@@ -267,24 +362,20 @@ private: // メンバ変数
 
 	float rootRotate_t_offset = 0.04f;
 #pragma endregion
-	bool ismarkerMove_ = false;
-	float markerMove_t = 0.0f;
 	
-	Vector2 originPos_{};
-
 #pragma region プレイヤーの揺れ用
 	Vector2 shakeVelo_{};
 	bool isDamageShake = false;
 	int amplitNum = 30;
 #pragma endregion
 
-#pragma region マーカーのアニメーション用
-	int markerAniTimer = 0;
-	int markerAniNumber = 0;
-	int markerAniScene = 15;
-	int markerAniOneTime = 4;
-	bool ismarkerAnimation = false;
-#pragma endregion 
+#pragma region UI
+	// UIのスプライト
+	std::unique_ptr<Sprite> playerUI_;
+
+	// UIの位置
+	Vector2 UIPlayerPos_{100.0f, 100.0f};
+#pragma endregion
 
 #ifdef _DEBUG
 	// test
@@ -294,9 +385,11 @@ private: // メンバ変数
 	std::unique_ptr<Sprite> p2 = nullptr;
 	std::unique_ptr<Sprite> origin_ = nullptr;
 	//
-
 #endif // _DEBUG
-	const int setDamageCount = 3;
-	int damageCount = setDamageCount;
+	bool isDead_ = false;
 
+	bool isGameStart = false;
+
+	const int setRefreshTime = 40;
+	int refreshTimer_ = setRefreshTime;
 };

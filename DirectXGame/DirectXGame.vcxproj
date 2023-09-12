@@ -131,6 +131,7 @@
     <ClCompile Include="Scroll.cpp" />
     <ClCompile Include="SpriteEx.cpp" />
     <ClCompile Include="Tail.cpp" />
+    <ClCompile Include="TitleScene.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="2d\ImGuiManager.h" />
@@ -181,6 +182,7 @@
     <ClInclude Include="scene\GameScene.h" />
     <ClInclude Include="Scroll.h" />
     <ClInclude Include="Tail.h" />
+    <ClInclude Include="TitleScene.h" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Resources\shaders\TerrainPS.hlsl">
