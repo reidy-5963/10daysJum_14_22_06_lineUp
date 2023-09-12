@@ -246,6 +246,7 @@ void EnemyManager::FourPointsSpawn()
 
 void EnemyManager::RushSpawn() 
 { 
+	float speedPower = 0.4f;
 	float ankerOffset = 300.0f;
 	Vector2 ankerPoint = bossPos_;
 	Vector2 leftTop = {ankerPoint.x - ankerOffset, ankerPoint.y - ankerOffset};
@@ -253,10 +254,10 @@ void EnemyManager::RushSpawn()
 	Vector2 leftBottom = {ankerPoint.x - ankerOffset, ankerPoint.y + ankerOffset};
 	Vector2 rightBottom = {ankerPoint.x + ankerOffset, ankerPoint.y + ankerOffset};
 
-	AddEnemy(leftTop, Vector2(0, 0));
-	AddEnemy(rightTop, Vector2(0, 0));
-	AddEnemy(leftBottom, Vector2(0, 0));
-	AddEnemy(rightBottom, Vector2(0, 0));
+	AddEnemy(leftTop, Vector2(-speedPower, -speedPower));
+	AddEnemy(rightTop, Vector2(speedPower, -speedPower));
+	AddEnemy(leftBottom, Vector2(-speedPower, speedPower));
+	AddEnemy(rightBottom, Vector2(speedPower, speedPower));
 }
 
 void EnemyManager::DiagonalBehavior() 
