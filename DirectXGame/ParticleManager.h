@@ -11,6 +11,8 @@ public:
 	};
 
 public:
+	~ParticleManager();
+	
 	void Initialize(uint32_t tex);
 
 	void Update();

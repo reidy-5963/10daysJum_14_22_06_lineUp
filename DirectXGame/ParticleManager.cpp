@@ -1,5 +1,11 @@
 ﻿#include "ParticleManager.h"
 
+ParticleManager::~ParticleManager() {
+	for (Particle* particle : particles_) {
+		delete particle;
+	}
+}
+
 void ParticleManager::Initialize(uint32_t tex) { tex_ = tex; }
 
 void ParticleManager::Update() {

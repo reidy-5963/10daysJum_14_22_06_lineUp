@@ -140,6 +140,8 @@ public: // メンバ関数
 	/// </summary>
 	void ToMarkerMoveUpdate();
 
+	void AnimationUpdate();
+
 #pragma endregion
 
 #pragma region 描画系
@@ -286,10 +288,10 @@ private: // メンバ変数
 	bool ismarkerAnimation = false;
 #pragma endregion
 
-	uint32_t yosokusenTex_;
-	std::unique_ptr<Sprite> yosokusen_;
-	Vector2 yosokusenSize{};
-	Vector2 yosokusenPos_{};
+	uint32_t predictionLineTex_;
+	std::unique_ptr<Sprite> predictionLine_;
+	Vector2 predictionLineSize{};
+	Vector2 predictionLinePos_{};
 #pragma endregion
 
 #pragma region 通常時の動き用
@@ -372,9 +374,13 @@ private: // メンバ変数
 #pragma region UI
 	// UIのスプライト
 	std::unique_ptr<Sprite> playerUI_;
+	std::unique_ptr<Sprite> tailUI_[6];
 
 	// UIの位置
-	Vector2 UIPlayerPos_{100.0f, 100.0f};
+	Vector2 UIPlayerPos_{100.0f, 150.0f};
+	Vector2 UITailPos_[6];
+
+
 #pragma endregion
 
 #ifdef _DEBUG
@@ -392,4 +398,14 @@ private: // メンバ変数
 
 	const int setRefreshTime = 40;
 	int refreshTimer_ = setRefreshTime;
+
+	int tailAniTimer = 0;
+	int tailAniNumber = 0;
+	int tailAniScene = 3;
+	int tailAnioneTime = 6;
+
+	int tailCollapseAniTimer = 0;
+	int tailCollapseAniNumber = 0;
+	int tailCollapseAniScene = 7;
+	int tailCollapseAnioneTime = 3;
 };

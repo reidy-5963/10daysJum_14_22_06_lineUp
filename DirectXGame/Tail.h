@@ -98,6 +98,7 @@ public: // ゲッター
 	/// <returns>攻撃フラグ</returns>
 	bool *IsFirePtr() { return &isFire_; }
 
+	bool IsCollapse() { return isCollapse; }
 
 	/// <summary>
 	///  尻尾の進行方向の取得
@@ -109,7 +110,6 @@ public: // ゲッター
 	bool IsDead() { return isDead_; }
 	bool IsPlayersTail() { return isPlayersTail; }
 	bool IsCollapseAniEnd() { return isCollapseAniEnd; }
-	bool IsCollapse() { return isCollapse; }
 
 #pragma endregion
 

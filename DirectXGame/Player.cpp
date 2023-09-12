@@ -63,14 +63,14 @@ void Player::Initialize() {
 
 	// マーカーの初期化
 	MarkerInitialize();
-
+#pragma region 予測線
 	// プレイヤーののテクスチャ読み込み
-	yosokusenTex_ = TextureManager::Load("white1x1.png");
+	predictionLineTex_ = TextureManager::Load("white1x1.png");
 	// プレイヤーのスプライトの生成
-	yosokusen_.reset(
-	    Sprite::Create(yosokusenTex_, yosokusenPos_, {0.5f, 1.0f, 0.5f, 0.45f}, {0.0f, 0.5f}));
-
-	yosokusen_->SetSize({1920.0f, 5.0f});
+	predictionLine_.reset(Sprite::Create(
+	    predictionLineTex_, predictionLinePos_, {0.5f, 1.0f, 0.5f, 0.45f}, {0.0f, 0.5f}));
+#pragma endregion
+	predictionLine_->SetSize({1920.0f, 5.0f});
 	// 3本の尻尾の追加
 	AddTails();
 	AddTails();
@@ -103,8 +103,7 @@ void Player::Initialize() {
 		RootRotateMove2();
 
 		ismarkerMove_ = true;
-	}
-	else if (!isGameStart) {
+	} else if (!isGameStart) {
 		clickPos_ = {700.0f, WinApp::kWindowHeight / 2};
 		MarkerControl();
 
@@ -120,7 +119,6 @@ void Player::Initialize() {
 		RootRotateMove2();
 
 		ismarkerMove_ = true;
-
 	}
 }
 
@@ -159,6 +157,15 @@ void Player::AnimationValueInitialize() {
 	animationScene = 4;
 	oneTime = 20;
 	isAnimation = true;
+	tailAniTimer = 0;
+	tailAniNumber = 0;
+	tailAniScene = 3;
+	tailAnioneTime = 6;
+
+	tailCollapseAniTimer = 0;
+	tailCollapseAniNumber = 0;
+	tailCollapseAniScene = 7;
+	tailCollapseAnioneTime = 3;
 }
 
 /// <summary>
@@ -168,6 +175,12 @@ void Player::UIInitialize() {
 	// (仮) プレイヤーのuiスプライト生成
 	playerUI_.reset(
 	    Sprite::Create(charaTex_, UIPlayerPos_, {1.0f, 1.0f, 1.0f, 1.0f}, {0.5f, 0.5f}));
+	for (int i = 0; i < 6; i++) {
+		UITailPos_[i] = {UIPlayerPos_.x + (i * 80.0f), UIPlayerPos_.y};
+		tailUI_[i].reset(
+		    Sprite::Create(tailTexture_[0], UITailPos_[i], {1.0f, 1.0f, 1.0f, 1.0f}, {0.5f, 0.5f}));
+		tailUI_[i]->SetSize({(radius_ * 2) * 1.25f, (radius_ * 2) * 1.25f});
+	}
 
 	// uiプレイヤーのサイズ設定
 	playerUI_->SetSize({radius_ * 2, radius_ * 2});
@@ -284,9 +297,8 @@ void Player::Update() {
 
 	// もし左クリックしたら
 	if (input_->IsTriggerMouse(0) && !ismarkerMove_) {
-		LeftClickUpdate();	
-		yosokusenSize = {0.0f, 3.0f};
-
+		LeftClickUpdate();
+		predictionLineSize = {0.0f, 3.0f};
 	}
 
 	// マーカーの動き処理
@@ -314,11 +326,10 @@ void Player::Update() {
 
 	// マーカーの位置を反映させる
 	markerSprite_->SetPosition(markerPos_ - scroll->GetAddScroll() + sceneVelo);
-	yosokusenPos_ = markerPos_;
-	yosokusen_->SetPosition(yosokusenPos_ - scroll->GetAddScroll() + sceneVelo);
-	// プレイヤーのアニメーション
-	Animation::Anime(animationTimer, animationNumber, animationScene, oneTime);
-	Animation::Anime(markerAniTimer, markerAniNumber, markerAniScene, markerAniOneTime);
+	predictionLinePos_ = markerPos_;
+	predictionLine_->SetPosition(predictionLinePos_ - scroll->GetAddScroll() + sceneVelo);
+
+	AnimationUpdate();
 
 	MyMath::ShakeUpdate(shakeVelo_, isDamageShake, amplitNum);
 
@@ -347,9 +358,7 @@ void Player::Update() {
 		if (tails_.back()->IsCollapseAniEnd()) {
 			DeleteTails();
 		}
-
 	}
-
 
 	// 弾の消去
 	tails_.remove_if([](Tail* tail) {
@@ -360,17 +369,39 @@ void Player::Update() {
 		return false;
 	});
 	playerUI_->SetPosition(UIPlayerPos_ + sceneVelo + shakeVelo_);
+	if (damageCount == 3) {
+		tailUI_[int(tails_.size() - 1)]->SetTextureHandle(tailTexture_[0]);
+	} else if (damageCount == 2) {
+		tailUI_[int(tails_.size() - 1)]->SetTextureHandle(tailTexture_[1]);
+	} else if (damageCount == 1) {
+		tailUI_[int(tails_.size() - 1)]->SetTextureHandle(tailTexture_[2]);
+	}
+
+	if (tails_.size() > 0) {
+		for (int i = 0; i < tails_.size() - 1; i++) {
+			tailUI_[i]->SetTextureHandle(tailTexture_[0]);
+			tailUI_[i]->SetPosition(UITailPos_[i] + sceneVelo + shakeVelo_);
+		}
+	}
+
+	if (tails_.size() > 1) {
+		if (tails_.back()->IsCollapse()) {
+			tailUI_[int(tails_.size() - 1)]->SetTextureHandle(tailTexture_[3]);
+		}
+		tailUI_[int(tails_.size() - 1)]->SetPosition(
+		    UITailPos_[int(tails_.size() - 1)] + sceneVelo + shakeVelo_);
+	}
 
 	if (tails_.size() <= 0) {
 		isDead_ = true;
 	}
-	
+
 	if (!isMove_) {
-		if (yosokusenSize.x < 1920) {
-			yosokusenSize.x += 30.0f;
+		if (predictionLineSize.x < 1920) {
+			predictionLineSize.x += 30.0f;
 		}
-	} 
-	yosokusen_->SetSize(yosokusenSize);
+	}
+	predictionLine_->SetSize(predictionLineSize);
 }
 
 /// <summary>
@@ -540,7 +571,7 @@ void Player::MarkerMovement() {
 	//	markerSprite_->SetRotation(markerROtate - (0.5f * 3.14f));
 	// } else if (cross <= 0) {
 	markerSprite_->SetRotation(markerROtate + (0.5f * 3.14f));
-	yosokusen_->SetRotation(markerROtate );
+	predictionLine_->SetRotation(markerROtate);
 
 	//}
 }
@@ -866,6 +897,20 @@ void Player::ToMarkerMoveUpdate() {
 		MyMath::CountT(root_t_, 0.0f, isM1tM2, true, rootRotate_t_offset);
 	}
 }
+void Player::AnimationUpdate() {
+	// プレイヤーのアニメーション
+	Animation::Anime(animationTimer, animationNumber, animationScene, oneTime);
+	Animation::Anime(markerAniTimer, markerAniNumber, markerAniScene, markerAniOneTime);
+	Animation::Anime(tailAniTimer, tailAniNumber, tailAniScene, tailAnioneTime);
+
+	if (tails_.size() > 0) {
+		if (tails_.back()->IsCollapse()) {
+			Animation::Anime(
+			    tailCollapseAniTimer, tailCollapseAniNumber, tailCollapseAniScene,
+			    tailCollapseAnioneTime);
+		}
+	}
+}
 #pragma endregion
 
 #pragma region 描画系
@@ -875,7 +920,7 @@ void Player::ToMarkerMoveUpdate() {
 void Player::Draw() {
 	Scroll* scroll = Scroll::GetInstance();
 	if (!isMove_) {
-		yosokusen_->Draw();
+		predictionLine_->Draw();
 	}
 
 	if (markerPos_.x < 0 + scroll->GetAddScroll().x ||
@@ -920,8 +965,26 @@ void Player::Draw() {
 /// UI系の描画処理
 /// </summary>
 void Player::DrawUI() {
+	if (tails_.size() > 0) {
+		for (int i = 0; i < tails_.size() - 1; i++) {
+			Animation::DrawAnimation(
+			    tailUI_[i].get(), UITailPos_[i], tailAniNumber, tailTexture_[0]);
+		}
+
+		if (damageCount != 0) {
+			Animation::DrawAnimation(
+			    tailUI_[tails_.size() - 1].get(), UITailPos_[tails_.size() - 1], tailAniNumber,
+			    tailTexture_[0]);
+		}
+		if (tails_.back()->IsCollapse()) {
+			Animation::DrawAnimation(
+			    tailUI_[tails_.size() - 1].get(), UITailPos_[tails_.size() - 1],
+			    tailCollapseAniNumber, tailTexture_[0]);
+		}
+	}
+
 	// UIプレイヤーの描画
-	Animation::DrawAnimation(playerUI_.get(), UIPlayerPos_, animationNumber, charaTex_);
+	// Animation::DrawAnimation(playerUI_.get(), UIPlayerPos_, animationNumber, charaTex_);
 }
 
 #pragma endregion
@@ -943,33 +1006,34 @@ void Player::AddTails() {
 				    tailTexture_, &tails_.back()->GetPosition(), (tails_.back()->GetTailNo() + 1),
 				    tails_.back()->IsFirePtr());
 				tails_.back()->SetHp(setDamageCount);
+				newTail->SetIsPlayersTail(true);
+				// プレイヤーのポインタを設定
+				newTail->SetPlayer(this);
+				newTail->SetParticleTex(bulletParticle_);
+				// リストに追加
+				tails_.push_back(newTail);
+
 			}
 			//
-			else if (tails_.back()->IsCollapse()) {
-				newTail->Initialize(
-				    tailTexture_, &(tails_.back() - 1)->GetPosition(),
-				    ((tails_.back() - 1)->GetTailNo() + 1), (tails_.back() - 1)->IsFirePtr());
-				(tails_.back() - 1)->SetHp(setDamageCount);
-			}
 		}
 		// もし最初の尻尾なら
 		else {
 			// プレイヤーの位置を親として初期化
 			newTail->Initialize(tailTexture_, &pos_, 0, &isMove_);
+			newTail->SetIsPlayersTail(true);
+			// プレイヤーのポインタを設定
+			newTail->SetPlayer(this);
+			newTail->SetParticleTex(bulletParticle_);
+			// リストに追加
+			tails_.push_back(newTail);
+
 		}
-		newTail->SetIsPlayersTail(true);
-		// プレイヤーのポインタを設定
-		newTail->SetPlayer(this);
-		newTail->SetParticleTex(bulletParticle_);
-		// リストに追加
-		tails_.push_back(newTail);
 	}
+	//
 	else if (tails_.size() == kMaxTail_) {
 		damageCount = setDamageCount;
 		scoreCOunt += 1;
-
 	}
-	
 }
 
 /// <summary>
