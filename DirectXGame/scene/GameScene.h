@@ -135,4 +135,11 @@ private: // メンバ変数
 	Vector2 enemyNumPos[2];
 	int enemyTen = 0;
 	int enemyOne = 0;
+
+	int pickUpTailTime = 60 * 3;
+	int funnelDamage = 60 * 2;
+	int eneBulletDamage = 60 * 1;
+	int bossEnemyDamage = 60 * 1;
+
+
 };
