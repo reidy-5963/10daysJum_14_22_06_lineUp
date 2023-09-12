@@ -133,7 +133,8 @@ void BossEnemy::Initialize()
 void BossEnemy::Update() 
 {
 	ApplyGrobalVariables();
-
+	
+#ifdef _DEBUG
 	ImGui::Begin("player");
 	ImGui::Text("%f : %f", nowPlayerPos_.x, nowPlayerPos_.y);
 	ImGui::Text(" %d ", behavior_);
