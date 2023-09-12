@@ -99,6 +99,8 @@ private:	// 行動関数
 
 	void RootInitialize();
 
+	void ActionTable();
+
 public:	// 設定・取得
 	/// <summary>
 	/// プレイヤーの座標を設定
@@ -230,6 +232,8 @@ private: // 動きの管理
 	int ConvertSeconds(int second) { return int(second * 60); }
 
 	float MaxHpSize = 0.0f;
+
+	bool isActionNow_ = false;
 
 private: // 揺らす系
 	Vector2 shakeVelo_{};
