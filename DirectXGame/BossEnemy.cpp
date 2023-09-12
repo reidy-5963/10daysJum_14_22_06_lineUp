@@ -230,7 +230,7 @@ void BossEnemy::Update()
 	ScPos = prevPlayerPos_ - scroll->GetAddScroll() + sceneVelo;
 	
 	rushSprite_->SetPosition(ScPos);
-	hp_ = SetMaxHp;
+	//hp_ = SetMaxHp;
 	BulletUpdate();
 	particle_->Update();
 

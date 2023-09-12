@@ -20,6 +20,7 @@ void EnemyManager::Initialize() {
 	charaTex_ = TextureManager::Load("Enemy_ver2.png");
 	parasiteTex_ = TextureManager::Load("Parasite.png");
 	particleTex_ = TextureManager::Load("Particle.png");
+	collapseTex_ = TextureManager::Load("greenTailbreak.png");
 }
 
 void EnemyManager::Update() 
@@ -158,6 +159,7 @@ void EnemyManager::CreateEnemy(int spownPoint) {
 	newEnemy->SetVelocity(RandomRadianVector());
 	newEnemy->SetParasiteTexture(parasiteTex_);
 	newEnemy->SetParticleTex(particleTex_);
+	newEnemy->SetCollapseTexture(collapseTex_);
 
 	enemys_.push_back(newEnemy);
 	
@@ -173,6 +175,7 @@ void EnemyManager::AddEnemy(const Vector2& position, const Vector2& velocity) {
 	newEnemy->SetVelocity(velo);
 	newEnemy->SetParasiteTexture(parasiteTex_);
 	newEnemy->SetParticleTex(particleTex_);
+	newEnemy->SetCollapseTexture(collapseTex_);
 
 	enemys_.push_back(newEnemy);
 }
@@ -261,6 +264,7 @@ void EnemyManager::DiagonalBehavior()
 		newEnemy->SetVelocity(Vector2(norm.x * moveSpeed, norm.y * moveSpeed));
 		newEnemy->SetParasiteTexture(parasiteTex_);
 		newEnemy->SetParticleTex(particleTex_);
+		newEnemy->SetCollapseTexture(collapseTex_);
 
 		// リストに追加
 		enemys_.push_back(newEnemy);
@@ -295,6 +299,7 @@ void EnemyManager::DiagonalBehavior()
 		newEnemy->SetVelocity(Vector2(norm.x * moveSpeed, norm.y * moveSpeed));
 		newEnemy->SetParasiteTexture(parasiteTex_);
 		newEnemy->SetParticleTex(particleTex_);
+		newEnemy->SetCollapseTexture(collapseTex_);
 
 		// リストに追加
 		enemys_.push_back(newEnemy);
@@ -329,6 +334,7 @@ void EnemyManager::DiagonalBehavior()
 		newEnemy->SetVelocity(Vector2(norm.x * moveSpeed, norm.y * moveSpeed));
 		newEnemy->SetParasiteTexture(parasiteTex_);
 		newEnemy->SetParticleTex(particleTex_);
+		newEnemy->SetCollapseTexture(collapseTex_);
 
 		// リストに追加
 		enemys_.push_back(newEnemy);
@@ -363,6 +369,7 @@ void EnemyManager::DiagonalBehavior()
 		newEnemy->SetVelocity(Vector2(norm.x * moveSpeed, norm.y * moveSpeed));
 		newEnemy->SetParasiteTexture(parasiteTex_);
 		newEnemy->SetParticleTex(particleTex_);
+		newEnemy->SetCollapseTexture(collapseTex_);
 
 		// リストに追加
 		enemys_.push_back(newEnemy);
@@ -396,6 +403,7 @@ void EnemyManager::DiagonalClockWiseBehavior()
 		newEnemy->SetVelocity(Vector2(moveSpeed, 0));
 		newEnemy->SetParasiteTexture(parasiteTex_);
 		newEnemy->SetParticleTex(particleTex_);
+		newEnemy->SetCollapseTexture(collapseTex_);
 
 		// リストに追加
 		enemys_.push_back(newEnemy);
@@ -422,6 +430,7 @@ void EnemyManager::DiagonalClockWiseBehavior()
 		newEnemy->SetVelocity(Vector2(0, -moveSpeed));
 		newEnemy->SetParasiteTexture(parasiteTex_);
 		newEnemy->SetParticleTex(particleTex_);
+		newEnemy->SetCollapseTexture(collapseTex_);
 
 		// リストに追加
 		enemys_.push_back(newEnemy);
@@ -448,6 +457,7 @@ void EnemyManager::DiagonalClockWiseBehavior()
 		newEnemy->SetVelocity(Vector2(0, moveSpeed));
 		newEnemy->SetParasiteTexture(parasiteTex_);
 		newEnemy->SetParticleTex(particleTex_);
+		newEnemy->SetCollapseTexture(collapseTex_);
 
 		// リストに追加
 		enemys_.push_back(newEnemy);
@@ -474,6 +484,7 @@ void EnemyManager::DiagonalClockWiseBehavior()
 		newEnemy->SetVelocity(Vector2(-moveSpeed, 0));
 		newEnemy->SetParasiteTexture(parasiteTex_);
 		newEnemy->SetParticleTex(particleTex_);
+		newEnemy->SetCollapseTexture(collapseTex_);
 
 		// リストに追加
 		enemys_.push_back(newEnemy);
@@ -509,6 +520,8 @@ void EnemyManager::ArrowBehavior(int switchPatt)
 			newEnemy->SetVelocity(Vector2(0, moveSpeed));
 			newEnemy->SetParasiteTexture(parasiteTex_);
 			newEnemy->SetParticleTex(particleTex_);
+			newEnemy->SetCollapseTexture(collapseTex_);
+
 			// リストに追加
 			enemys_.push_back(newEnemy);
 		}
@@ -526,6 +539,7 @@ void EnemyManager::ArrowBehavior(int switchPatt)
 			newEnemy->SetVelocity(Vector2(0, moveSpeed));
 			newEnemy->SetParasiteTexture(parasiteTex_);
 			newEnemy->SetParticleTex(particleTex_);
+			newEnemy->SetCollapseTexture(collapseTex_);
 
 			// リストに追加
 			enemys_.push_back(newEnemy);
@@ -549,6 +563,7 @@ void EnemyManager::ArrowBehavior(int switchPatt)
 			newEnemy->SetVelocity(Vector2(0, -moveSpeed));
 			newEnemy->SetParasiteTexture(parasiteTex_);
 			newEnemy->SetParticleTex(particleTex_);
+			newEnemy->SetCollapseTexture(collapseTex_);
 
 			// リストに追加
 			enemys_.push_back(newEnemy);
@@ -567,6 +582,7 @@ void EnemyManager::ArrowBehavior(int switchPatt)
 			newEnemy->SetVelocity(Vector2(0, -moveSpeed));
 			newEnemy->SetParasiteTexture(parasiteTex_);
 			newEnemy->SetParticleTex(particleTex_);
+			newEnemy->SetCollapseTexture(collapseTex_);
 
 			// リストに追加
 			enemys_.push_back(newEnemy);
@@ -590,6 +606,7 @@ void EnemyManager::ArrowBehavior(int switchPatt)
 			newEnemy->SetVelocity(Vector2(moveSpeed, 0));
 			newEnemy->SetParasiteTexture(parasiteTex_);
 			newEnemy->SetParticleTex(particleTex_);
+			newEnemy->SetCollapseTexture(collapseTex_);
 
 			// リストに追加
 			enemys_.push_back(newEnemy);
@@ -608,6 +625,7 @@ void EnemyManager::ArrowBehavior(int switchPatt)
 			newEnemy->SetVelocity(Vector2(moveSpeed, 0));
 			newEnemy->SetParasiteTexture(parasiteTex_);
 			newEnemy->SetParticleTex(particleTex_);
+			newEnemy->SetCollapseTexture(collapseTex_);
 
 			// リストに追加
 			enemys_.push_back(newEnemy);
@@ -632,6 +650,7 @@ void EnemyManager::ArrowBehavior(int switchPatt)
 			newEnemy->SetVelocity(Vector2(-moveSpeed, 0));
 			newEnemy->SetParasiteTexture(parasiteTex_);
 			newEnemy->SetParticleTex(particleTex_);
+			newEnemy->SetCollapseTexture(collapseTex_);
 
 			// リストに追加
 			enemys_.push_back(newEnemy);
@@ -650,6 +669,7 @@ void EnemyManager::ArrowBehavior(int switchPatt)
 			newEnemy->SetVelocity(Vector2(-moveSpeed, 0));
 			newEnemy->SetParasiteTexture(parasiteTex_);
 			newEnemy->SetParticleTex(particleTex_);
+			newEnemy->SetCollapseTexture(collapseTex_);
 
 			// リストに追加
 			enemys_.push_back(newEnemy);

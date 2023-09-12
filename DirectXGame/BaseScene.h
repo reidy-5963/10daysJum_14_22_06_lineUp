@@ -14,5 +14,10 @@ public:
 
 protected:
 	static int sceneNum;
-
+	
+	static int resultTime;
+	static int resultScore;
+	static int resultKillCount;
+	static bool isBossDead;
+	static bool is6Tails;
 };

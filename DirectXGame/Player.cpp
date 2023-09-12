@@ -28,9 +28,13 @@ Player::~Player() {}
 void Player::Initialize() {
 	// 入力系
 	input_ = Input::GetInstance();
-
-	// 初期位置(仮)
-	pos_ = {-200.0f, WinApp::kWindowHeight / 2};
+	if (isGameStart) {
+		// 初期位置(仮)
+		pos_ = {-200.0f, WinApp::kWindowHeight / 2};
+	} else if (!isGameStart) {
+		// 初期位置(仮)
+		pos_ = {(WinApp::kWindowWidth / 2) - 500.0, (WinApp::kWindowHeight / 2) + 100.0f};
+	}
 	clickPlayerPos_ = pos_;
 	markerPos_ = pos_;
 	preMarkerPos_ = markerPos_;
@@ -67,14 +71,19 @@ void Player::Initialize() {
 	// プレイヤーののテクスチャ読み込み
 	predictionLineTex_ = TextureManager::Load("white1x1.png");
 	// プレイヤーのスプライトの生成
-	predictionLine_.reset(Sprite::Create(
-	    predictionLineTex_, predictionLinePos_, {0.5f, 1.0f, 0.5f, 0.45f}, {0.0f, 0.5f}));
+	predictionLine_[0].reset(Sprite::Create(
+	    predictionLineTex_, predictionLinePos_[0], {0.5f, 1.0f, 0.5f, 0.25f}, {0.0f, 0.5f}));
+	predictionLine_[1].reset(Sprite::Create(
+	    predictionLineTex_, predictionLinePos_[0], {0.5f, 1.0f, 0.5f, 0.25f}, {0.0f, 0.5f}));
+	predictionLine_[0]->SetSize({1920.0f, 5.0f});
+	predictionLine_[1]->SetSize({1920.0f, 5.0f});
+
 #pragma endregion
-	predictionLine_->SetSize({1920.0f, 5.0f});
+
 	// 3本の尻尾の追加
-	AddTails();
-	AddTails();
-	AddTails();
+	for (int i = 0; i < 3; i++) {
+		AddTails();
+	}
 	//
 #ifdef _DEBUG
 	m1.reset(Sprite::Create(markerTex_, markerPos_, {1.0f, 0.0f, 0.0f, 1.0f}, {0.5f, 0.5f}));
@@ -103,8 +112,17 @@ void Player::Initialize() {
 		RootRotateMove2();
 
 		ismarkerMove_ = true;
-	} else if (!isGameStart) {
-		clickPos_ = {700.0f, WinApp::kWindowHeight / 2};
+		predictionLineSize[0] = {0.0f, 3.0f};
+		predictionLineSize[1] = {0.0f, 3.0f};
+
+		// マーカーの動き処理
+		MarkerMovement();
+
+
+	}
+	
+	else if (!isGameStart) {
+		clickPos_ = {(WinApp::kWindowWidth / 2) + 100.0f, (WinApp::kWindowHeight / 2) + 100.0f};
 		MarkerControl();
 
 		// クリックしたときの位置を取得
@@ -119,6 +137,13 @@ void Player::Initialize() {
 		RootRotateMove2();
 
 		ismarkerMove_ = true;
+		predictionLineSize[0] = {0.0f, 3.0f};
+		predictionLineSize[1] = {0.0f, 3.0f};
+
+		// マーカーの動き処理
+		MarkerMovement();
+
+
 	}
 }
 
@@ -302,7 +327,9 @@ void Player::Update() {
 	// もし左クリックしたら
 	if (input_->IsTriggerMouse(0) && !ismarkerMove_) {
 		LeftClickUpdate();
-		predictionLineSize = {0.0f, 3.0f};
+		predictionLineSize[0] = {0.0f, 3.0f};
+		predictionLineSize[1] = {0.0f, 3.0f};
+
 	}
 
 	// マーカーの動き処理
@@ -330,8 +357,11 @@ void Player::Update() {
 
 	// マーカーの位置を反映させる
 	markerSprite_->SetPosition(markerPos_ - scroll->GetAddScroll() + sceneVelo);
-	predictionLinePos_ = markerPos_;
-	predictionLine_->SetPosition(predictionLinePos_ - scroll->GetAddScroll() + sceneVelo);
+	predictionLinePos_[0] = markerPos_;
+	predictionLinePos_[1] = markerPos_;
+
+	predictionLine_[0]->SetPosition(predictionLinePos_[0] - scroll->GetAddScroll() + sceneVelo);
+	predictionLine_[1]->SetPosition(predictionLinePos_[1] - scroll->GetAddScroll() + sceneVelo);
 
 	AnimationUpdate();
 
@@ -404,12 +434,12 @@ void Player::Update() {
 		isDead_ = true;
 	}
 
-	if (!isMove_) {
-		if (predictionLineSize.x < 1920) {
-			predictionLineSize.x += 30.0f;
-		}
-	}
-	predictionLine_->SetSize(predictionLineSize);
+	predictionLineSize[0].x = 1920;
+	predictionLineSize[1].x = 1920;
+		
+	
+	predictionLine_[0]->SetSize(predictionLineSize[0]);
+	predictionLine_[1]->SetSize(predictionLineSize[1]);
 
 	UITailPos_[0] = {UIPlayerPos_.x - (80.0f * 3.0f), UIPlayerPos_.y};
 	for (int i = 1; i < 6; i++) {
@@ -585,7 +615,8 @@ void Player::MarkerMovement() {
 	//	markerSprite_->SetRotation(markerROtate - (0.5f * 3.14f));
 	// } else if (cross <= 0) {
 	markerSprite_->SetRotation(markerROtate + (0.5f * 3.14f));
-	predictionLine_->SetRotation(markerROtate);
+	predictionLine_[0]->SetRotation(markerROtate - 0.35f);
+	predictionLine_[1]->SetRotation(markerROtate + 0.7f);
 
 	//}
 }
@@ -933,9 +964,10 @@ void Player::AnimationUpdate() {
 /// </summary>
 void Player::Draw() {
 	Scroll* scroll = Scroll::GetInstance();
-	if (!isMove_) {
-		predictionLine_->Draw();
-	}
+	
+	predictionLine_[0]->Draw();
+	predictionLine_[1]->Draw();
+	
 
 	if (markerPos_.x < 0 + scroll->GetAddScroll().x ||
 	    markerPos_.x > 1920 + scroll->GetAddScroll().x ||

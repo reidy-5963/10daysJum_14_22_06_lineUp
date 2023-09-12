@@ -63,11 +63,7 @@ public: // メンバ関数
 	/// 当たり判定
 	/// </summary>
 	void CheckAllCollision();
-	void Tn(int& ten, int& one, int tmp) {
-		ten = tmp / 10;
-		tmp = tmp % 10;
-		one = tmp;
-	}
+	
 
 private: // メンバ変数
 	DirectXCommon* dxCommon_ = nullptr;
@@ -122,20 +118,34 @@ private: // メンバ変数
 	int gameTimer = setGameTime;
 	bool isGameSet_ = false;
 
-	std::unique_ptr<Sprite> num[2];
-	Vector2 scoreNumPos_{};
-	Vector2 numPos[2];
-	uint32_t numTex_;
+	std::unique_ptr<Sprite> timerNum[2];
+	Vector2 TimerNumPos_{};
+	Vector2 timerNumPos[2];
+	uint32_t timerNumTex_;
 
-	int scoreTen = 0;
-	int scoreOne = 0;
+	int timerTen = 0;
+	int timerOne = 0;
 
 	std::unique_ptr<Sprite> enemyNum[2];
 	Vector2 enemyNumPos_{};
 	Vector2 enemyNumPos[2];
+	uint32_t enemyNumTex_;
 	int enemyTen = 0;
 	int enemyOne = 0;
 
+
+	//std::unique_ptr<Sprite> scoreNum[4];
+	//Vector2 scoreNumPos_{};
+	//Vector2 scoreNumPos[4];
+	//int scoreThousand = 0;
+	//int scorehandred = 0;
+	//int scoreTen = 0;
+	//int scoreOne = 0;
+	//Vector2 scoreSize_ = {128.0f, 128.0f};
+	//Vector4 scoreColor_ = {1.0f, 1.0f, 1.0f, 0.15f};
+
+	//int score = 0;
+#pragma region
 	int setTailTime = 3;
 	int pickUpTailTime = 60 * setTailTime;
 	int setFunnelDamage = 2;
@@ -144,6 +154,6 @@ private: // メンバ変数
 	int eneBulletDamage = 60 * setEneBulletDamage;
 	int setBossEnemyDamage = 3;
 	int bossEnemyDamage = 60 * setBossEnemyDamage;
-
+#pragma endregion
 
 };

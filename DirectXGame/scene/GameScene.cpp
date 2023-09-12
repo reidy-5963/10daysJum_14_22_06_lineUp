@@ -1,10 +1,10 @@
 #include "GameScene.h"
-#include "TextureManager.h"
+#include "GlobalVariables.h"
 #include "ImGuiManager.h"
+#include "Scroll.h"
+#include "TextureManager.h"
 #include <cassert>
 #include <cmath>
-#include "Scroll.h"
-#include "GlobalVariables.h"
 
 /// <summary>
 /// コンストクラタ
@@ -40,7 +40,7 @@ void GameScene::Initialize() {
 #pragma endregion
 
 #pragma region スクロール
-	scroll_ = Scroll::GetInstance(); 
+	scroll_ = Scroll::GetInstance();
 	scroll_->Initialize();
 	scroll_->SetTarget(&player_->GetPosition());
 	scroll_->SetEdgePos({WinApp::kWindowWidth / 2, WinApp::kWindowHeight / 2});
@@ -64,32 +64,45 @@ void GameScene::Initialize() {
 	back.reset(Sprite::Create(backTex, {0.0f, 0.0f}, {0.01f, 0.01f, 0.01f, 1.0f}, {0.0f, 0.0f}));
 	Vector2 size = {1920 * 3, 1080 * 3};
 	back->SetSize(size);
-#pragma endregion 
-	
-#pragma region 背景
-	numTex_ = TextureManager::Load("nums.png");
-	numPos[0] = {1920.0f - 500.0f, 3.0f};
-	numPos[1] = {numPos[0].x - 128.0f, numPos[0].y};
+#pragma endregion
+
+#pragma region タイマー
+	timerNumTex_ = TextureManager::Load("nums.png");
+	timerNumPos[0] = {1920.0f - 500.0f, 3.0f};
+	timerNumPos[1] = {timerNumPos[0].x - 128.0f, timerNumPos[0].y};
 
 	for (int i = 0; i < 2; i++) {
-		num[i].reset(Sprite::Create(numTex_, numPos[i], {1.0f, 1.0f, 1.0f, 1.0f}, {0.5f, 0.5f}));
+		timerNum[i].reset(Sprite::Create(timerNumTex_, timerNumPos[i], {1.0f, 1.0f, 1.0f, 1.0f}, {0.5f, 0.5f}));
 		Vector2 tmpSize = {128.0f, 128.0f};
-		num[i]->SetSize(tmpSize);
+		timerNum[i]->SetSize(tmpSize);
 	}
-#pragma endregion 
+#pragma endregion
 
-#pragma region 背景
-	numTex_ = TextureManager::Load("nums.png");
+#pragma region 敵の数
+	enemyNumTex_ = TextureManager::Load("Enemynums.png");
 	enemyNumPos[0] = {500.0f - 500.0f, 3.0f};
 	enemyNumPos[1] = {enemyNumPos[0].x - 128.0f, enemyNumPos[0].y};
 
 	for (int i = 0; i < 2; i++) {
 		enemyNum[i].reset(
-		    Sprite::Create(numTex_, enemyNumPos[i], {1.0f, 1.0f, 1.0f, 1.0f}, {0.5f, 0.5f}));
+		    Sprite::Create(enemyNumTex_, enemyNumPos[i], {1.0f, 1.0f, 1.0f, 1.0f}, {0.5f, 0.5f}));
 		Vector2 tmpSize = {128.0f, 128.0f};
 		enemyNum[i]->SetSize(tmpSize);
 	}
-#pragma endregion 
+#pragma endregion
+//#pragma region すこあ
+//	scoreNumPos[0] = {500.0f - 500.0f, 3.0f};
+//	scoreNumPos[1] = {scoreNumPos[0].x - 128.0f, scoreNumPos[0].y};
+//	scoreNumPos[2] = {scoreNumPos[1].x - 128.0f, scoreNumPos[1].y};
+//	scoreNumPos[3] = {scoreNumPos[2].x - 128.0f, scoreNumPos[2].y};
+//
+//	for (int i = 0; i < 4; i++) {
+//		scoreNum[i].reset(
+//		    Sprite::Create(timerNumTex_, scoreNumPos[i], {1.0f, 1.0f, 1.0f, 1.0f}, {0.5f, 0.5f}));
+//		Vector2 tmpSize = {128.0f, 128.0f};
+//		scoreNum[i]->SetSize(tmpSize);
+//	}
+//#pragma endregion
 
 	InitializeGrobalVariables();
 	BGMHandle_ = Audio::GetInstance()->LoadWave("GameScene.wav");
@@ -98,59 +111,66 @@ void GameScene::Initialize() {
 /// <summary>
 /// 毎フレーム処理
 /// </summary>
-void GameScene::Update() { 
+void GameScene::Update() {
 	ApplyGrobalVariables();
 	enemyNumPos[0] = {enemyNumPos_.x - 64.0f, enemyNumPos_.y};
 	enemyNumPos[1] = {enemyNumPos_.x + 64.0f, enemyNumPos_.y};
-	numPos[0] = {scoreNumPos_.x - 64.0f, scoreNumPos_.y};
-	numPos[1] = {scoreNumPos_.x + 64.0f, scoreNumPos_.y};
 
-	// BGM再生
-	if (audio_->IsPlaying(BGMHandle_) == 0 || BGMHandle_ == -1) {
-		BGMHandle_ = audio_->PlayWave(BGMHandle_, true, bolume);
-	}
+	timerNumPos[0] = {TimerNumPos_.x - 64.0f, TimerNumPos_.y};
+	timerNumPos[1] = {TimerNumPos_.x + 64.0f, TimerNumPos_.y};
 
-	if (!isGameSet_) {
-	// スクロールの更新処理
-	//Scroll* scroll = Scroll::GetInstance();
-	scroll_->Update();
+	if (!isGameSet_) { 
+		// BGM再生
+		if (audio_->IsPlaying(BGMHandle_) == 0 || BGMHandle_ == -1) {
+			BGMHandle_ = audio_->PlayWave(BGMHandle_, true, bolume);
+		}
 
-	// 敵の更新処理
-	enemyManager_->SetPlayer(player_->GetPosition());
-	enemyManager_->SetSceneVelo(sceneShakevelo_);
-	enemyManager_->Update();
+		// スクロールの更新処理
+		// Scroll* scroll = Scroll::GetInstance();
+		scroll_->Update();
 
-	// プレイヤーの更新処理
-	player_->Update();
+		// 敵の更新処理
+		enemyManager_->SetPlayer(player_->GetPosition());
+		enemyManager_->SetSceneVelo(sceneShakevelo_);
+		enemyManager_->Update();
 
-	// 当たり判定
-	CheckAllCollision();
+		// プレイヤーの更新処理
+		player_->Update();
 
-	// 画面の揺れ更新処理
-	MyMath::ShakeUpdate(sceneShakevelo_, issceneShake, sceneaAmplitNum);
-	player_->SetSceneVelo(sceneShakevelo_);
-	boss_->SetSceneVelo(sceneShakevelo_);
+		// 当たり判定
+		CheckAllCollision();
 
-	if (killCount_ > setKillCount && !isBossRespown_) {
-		isBossRespown_ = true;
-		boss_->RespownBoss();
-	}
+		// 画面の揺れ更新処理
+		MyMath::ShakeUpdate(sceneShakevelo_, issceneShake, sceneaAmplitNum);
+		player_->SetSceneVelo(sceneShakevelo_);
+		boss_->SetSceneVelo(sceneShakevelo_);
 
-	// ボスの更新処理
+		if (killCount_ >= setKillCount && !isBossRespown_) {
+			isBossRespown_ = true;
+			boss_->RespownBoss();
+		}
+
+		// ボスの更新処理
 		boss_->SetPlayer(player_->GetPosition());
 		boss_->Update();
-	
 
 		if (--gameTimer < 0) {
 			isGameSet_ = true;
 		}
-	
-	// 背景の更新処理
+
+		// 背景の更新処理
 	}
 	//
-	else if (isGameSet_) {
-		
-		
+	
+	if (isGameSet_ || player_->IsDead() || (boss_->IsDead() && !boss_->IsAlive())) {
+		if (audio_->IsPlaying(BGMHandle_)) {
+			audio_->StopWave(BGMHandle_);
+		}
+		sceneNum = CLEAR;
+	
+		if ((boss_->IsDead() && !boss_->IsAlive())) {
+			isBossDead = true;
+		}
 	}
 	ImGui::Begin("timer");
 	ImGui::Text("%d", gameTimer);
@@ -159,34 +179,42 @@ void GameScene::Update() {
 	ImGui::End();
 
 	int timeraaa = gameTimer / 60;
-	Tn(scoreTen, scoreOne, timeraaa);
-	num[0]->SetTextureRect({0.0f + (scoreTen * 128.0f), 0.0f}, {128.0f, 128.0f});
-	num[1]->SetTextureRect({0.0f + (scoreOne * 128.0f), 0.0f}, {128.0f, 128.0f});
+	MyMath::TenCount(timerTen, timerOne, timeraaa);
+	timerNum[0]->SetTextureRect({0.0f + (timerTen * 128.0f), 0.0f}, {128.0f, 128.0f});
+	timerNum[1]->SetTextureRect({0.0f + (timerOne * 128.0f), 0.0f}, {128.0f, 128.0f});
 
-	num[0]->SetPosition(numPos[0]);
-	num[1]->SetPosition(numPos[1]);
+	timerNum[0]->SetPosition(timerNumPos[0]);
+	timerNum[1]->SetPosition(timerNumPos[1]);
 
 	timeraaa = setKillCount - killCount_;
-	Tn(enemyTen, enemyOne, timeraaa);
+	MyMath::TenCount(enemyTen, enemyOne, timeraaa);
 	enemyNum[0]->SetTextureRect({0.0f + (enemyTen * 128.0f), 0.0f}, {128.0f, 128.0f});
 	enemyNum[1]->SetTextureRect({0.0f + (enemyOne * 128.0f), 0.0f}, {128.0f, 128.0f});
 
 	enemyNum[0]->SetPosition(enemyNumPos[0]);
 	enemyNum[1]->SetPosition(enemyNumPos[1]);
 
-
 	if (gameTimer > 60 * 100) {
 		gameTimer = 60 * 99;
 	}
 
+	//
+	//MyMath::ThousandCount(scoreThousand, scorehandred, scoreTen, scoreOne, score);
+	//scoreNum[3]->SetTextureRect({0.0f + (scoreThousand * 128.0f), 0.0f}, {128.0f, 128.0f});
+	//scoreNum[2]->SetTextureRect({0.0f + (scorehandred * 128.0f), 0.0f}, {128.0f, 128.0f});
+	//scoreNum[1]->SetTextureRect({0.0f + (scoreTen * 128.0f), 0.0f}, {128.0f, 128.0f});
+	//scoreNum[0]->SetTextureRect({0.0f + (scoreOne * 128.0f), 0.0f}, {128.0f, 128.0f});
+	//for (int i = 0; i < 4; i++) {
+	//	scoreNum[i]->SetColor(scoreColor_);
+	//	scoreNum[i]->SetSize(scoreSize_);
+	//	scoreNum[i]->SetPosition(scoreNumPos[i]);
+	//}
 
 	pickUpTailTime = 60 * setTailTime;
 	funnelDamage = 60 * setTailTime;
 	eneBulletDamage = 60 * setEneBulletDamage;
 	bossEnemyDamage = 60 * setBossEnemyDamage;
 }
-
-
 
 /// <summary>
 /// 描画
@@ -202,7 +230,7 @@ void GameScene::Draw() {
 	/// <summary>
 	/// ここに背景スプライトの描画処理を追加できる
 	/// </summary>
-	
+
 	// 背景の描画
 	back->Draw();
 
@@ -244,15 +272,16 @@ void GameScene::Draw() {
 	/// </summary>
 	player_->DrawUI();
 
-	num[0]->Draw();
+	timerNum[0]->Draw();
 
-	num[1]->Draw();
+	timerNum[1]->Draw();
 
-	if (!boss_->IsAlive()) {
+	if (killCount_ < 30) {
 		enemyNum[0]->Draw();
 		enemyNum[1]->Draw();
-
 	}
+
+
 
 	// スプライト描画後処理
 	Sprite::PostDraw();
@@ -268,12 +297,17 @@ void GameScene::InitializeGrobalVariables() { // グローバル変数系のシ�
 	// 作ったグループにそれぞれアイテムを追加
 	gloVars->CreateGroup(groupName);
 	gloVars->AddItem(groupName, "enemyNumPos_", enemyNumPos_);
-	gloVars->AddItem(groupName, "scoreNumPos_", scoreNumPos_);
+	gloVars->AddItem(groupName, "TimerNumPos_", TimerNumPos_);
 
 	gloVars->AddItem(groupName, "setTailTime", setTailTime);
 	gloVars->AddItem(groupName, "setFunnelDamage", setFunnelDamage);
 	gloVars->AddItem(groupName, "setEneBulletDamage", setEneBulletDamage);
 	gloVars->AddItem(groupName, "setBossEnemyDamage", setBossEnemyDamage);
+
+	//gloVars->AddItem(groupName, "scoreNumPos_", scoreNumPos_);
+	//gloVars->AddItem(groupName, "scoreSize_", scoreSize_);
+
+
 }
 
 void GameScene::ApplyGrobalVariables() { // グローバル変数系のシングルトンインスタンスを取得
@@ -282,12 +316,15 @@ void GameScene::ApplyGrobalVariables() { // グローバル変数系のシング
 	const char* groupName = "GameScene";
 	// 作ったグループにあるアイテムから値を取得
 	enemyNumPos_ = gloVars->GetVector2Value(groupName, "enemyNumPos_");
-	scoreNumPos_ = gloVars->GetVector2Value(groupName, "scoreNumPos_");
+	TimerNumPos_ = gloVars->GetVector2Value(groupName, "TimerNumPos_");
 
 	setTailTime = gloVars->GetIntValue(groupName, "setTailTime");
 	setFunnelDamage = gloVars->GetIntValue(groupName, "setFunnelDamage");
 	setEneBulletDamage = gloVars->GetIntValue(groupName, "setEneBulletDamage");
 	setBossEnemyDamage = gloVars->GetIntValue(groupName, "setBossEnemyDamage");
+	
+	//scoreNumPos_ = gloVars->GetVector2Value(groupName, "scoreNumPos_");
+	//scoreSize_ = gloVars->GetVector2Value(groupName, "scoreSize_");
 }
 
 /// <summary>
@@ -328,7 +365,7 @@ void GameScene::CheckAllCollision() {
 				if (enemy->IsParasite()) {
 					player_->AddTails();
 					if (player_->GetTail() >= 6) {
-						//gameTimer += pickUpTailTime;
+						// gameTimer += pickUpTailTime;
 					}
 
 					enemy->SetIsDead(true);
@@ -337,17 +374,17 @@ void GameScene::CheckAllCollision() {
 					player_->OnCollision();
 					issceneShake = true;
 					sceneaAmplitNum = 40;
-					//gameTimer -= eneBulletDamage;
+					// gameTimer -= eneBulletDamage;
 					enemy->SetIsDead(true);
 				}
 				//
-				//killCount_ += 1;
+				// killCount_ += 1;
 
-			} 
+			}
 			//
 			else if (player_->GetIsInvisible()) {
 				if (enemy->IsParasite()) {
-					//gameTimer += pickUpTailTime;
+					// gameTimer += pickUpTailTime;
 
 					player_->AddTails();
 					enemy->SetIsDead(true);
@@ -369,7 +406,7 @@ void GameScene::CheckAllCollision() {
 		if (distance <= radius && !player_->GetIsInvisible()) {
 			// コールバック
 			bossBullet_->OnCollision();
-			//gameTimer -= eneBulletDamage;
+			// gameTimer -= eneBulletDamage;
 			player_->OnCollision();
 			issceneShake = true;
 			sceneaAmplitNum = 40;
@@ -390,11 +427,10 @@ void GameScene::CheckAllCollision() {
 		if (distance <= radius && !player_->GetIsInvisible()) {
 			// コールバック
 			bossFunnel_->OnCollision();
-			//gameTimer -= funnelDamage;
+			// gameTimer -= funnelDamage;
 			player_->OnCollision();
 			issceneShake = true;
 			sceneaAmplitNum = 40;
-
 		}
 	}
 
@@ -414,10 +450,9 @@ void GameScene::CheckAllCollision() {
 			if (distance <= radius) {
 				if (!player_->GetIsInvisible()) {
 					// コールバック
-					//enemy->OnCollision();
-					//tail->OnCollision();
-					//killCount_ += 1;
-
+					// enemy->OnCollision();
+					// tail->OnCollision();
+					// killCount_ += 1;
 				}
 			}
 		}
@@ -425,7 +460,7 @@ void GameScene::CheckAllCollision() {
 #pragma endregion
 
 #pragma region ボスのファンネルと尻尾
-	//for (BossFunnel* bossFunnel_ : bossFunnel) {
+	// for (BossFunnel* bossFunnel_ : bossFunnel) {
 	//	// エネミーの位置取得
 	//	targetA = bossFunnel_->GetPosition();
 	//	for (Tail* tail : tails) {
@@ -440,11 +475,11 @@ void GameScene::CheckAllCollision() {
 	//			tail->OnCollision();
 	//		}
 	//	}
-	//}
+	// }
 #pragma endregion
 
 #pragma region ボスの弾と尻尾
-	//for (BossBullet* bossBullet_ : bossBullet) {
+	// for (BossBullet* bossBullet_ : bossBullet) {
 	//	// エネミーの位置取得
 	//	targetA = bossBullet_->GetPosition();
 	//	for (Tail* tail : tails) {
@@ -459,7 +494,7 @@ void GameScene::CheckAllCollision() {
 	//			tail->OnCollision();
 	//		}
 	//	}
-	//}
+	// }
 #pragma endregion
 
 #pragma region プレイヤーの弾と敵
@@ -484,8 +519,6 @@ void GameScene::CheckAllCollision() {
 						playerBullet_->OnCollision();
 					}
 				}
-
-			
 			}
 		}
 	}
@@ -523,17 +556,16 @@ void GameScene::CheckAllCollision() {
 					boss_->SetHp(boss_->GetHp() - 1);
 				}
 			}
-			
 		}
 	}
 #pragma endregion
 
-#pragma region プレイヤーとボス 
+#pragma region プレイヤーとボス
 	targetA = player_->GetPosition();
 	targetB = boss_->GetPosition();
 
-	float distance = std::sqrtf(
-			    std::powf(targetA.x - targetB.x, 2) + std::powf(targetA.y - targetB.y, 2));
+	float distance =
+	    std::sqrtf(std::powf(targetA.x - targetB.x, 2) + std::powf(targetA.y - targetB.y, 2));
 
 	float radius = player_->GetRadius() + boss_->GetRadius();
 
@@ -542,10 +574,10 @@ void GameScene::CheckAllCollision() {
 		if (!player_->GetIsInvisible()) {
 			// コールバック
 			player_->OnCollision();
-			//gameTimer -= bossEnemyDamage;
+			// gameTimer -= bossEnemyDamage;
 			issceneShake = true;
 			sceneaAmplitNum = 40;
-			//boss_->OnCollision();
+			// boss_->OnCollision();
 		}
 	}
 #pragma endregion
