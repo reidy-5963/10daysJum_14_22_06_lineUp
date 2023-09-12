@@ -53,6 +53,16 @@ public:
 	/// <returns></returns>
 	const std::list<BossFunnel*>& GetFunnels() { return funnels_; }
 
+	/// <summary>
+	/// グローバル変数の初期化処理
+	/// </summary>
+	void InitializeGrobalVariables();
+
+	/// <summary>
+	/// グローバル変数の更新処理
+	/// </summary>
+	void ApplyGrobalVariables();
+
 private:	// 行動関数
 
 	/// <summary>

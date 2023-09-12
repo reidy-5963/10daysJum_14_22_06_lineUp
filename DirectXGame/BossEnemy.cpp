@@ -6,7 +6,7 @@
 #include "WinApp.h"
 #include "Animation.h"
 #include "Scroll.h"
-
+#include "GlobalVariables.h"
 #include <numbers>
 #include <cmath>
 
@@ -115,8 +115,8 @@ void BossEnemy::Initialize()
 	    hpShadowTex_, {float(WinApp::kWindowWidth / 2), 60.0f}, {1.0f, 1.0f, 1.0f, 1.0f},
 	    {0.5f, 0.5f}));
 
-	hpSprite_->SetSize(Vector2(1400.0f, 60.0f));
-	hpShadowSprite_->SetSize(Vector2(1400.0f, 60.0f));
+	hpSprite_->SetSize(Vector2(1200.0f, 60.0f));
+	hpShadowSprite_->SetSize(Vector2(1200.0f, 60.0f));
 	hpGaugeSize = hpSprite_->GetSize();
 	MaxHpSize = hpSprite_->GetSize().x;
 	// 当たり判定用の半径（サイズに合わせる）
@@ -127,11 +127,13 @@ void BossEnemy::Initialize()
 	particle_->Initialize(particleTex);
 
 	actions_.push_back(Behavior::kRoot);
-
+	InitializeGrobalVariables();
 }
 
 void BossEnemy::Update() 
 {
+	ApplyGrobalVariables();
+
 	ImGui::Begin("player");
 	ImGui::Text("%f : %f", nowPlayerPos_.x, nowPlayerPos_.y);
 	ImGui::Text(" %d ", behavior_);
@@ -228,7 +230,7 @@ void BossEnemy::Update()
 	ScPos = prevPlayerPos_ - scroll->GetAddScroll() + sceneVelo;
 	
 	rushSprite_->SetPosition(ScPos);
-
+	hp_ = SetMaxHp;
 	BulletUpdate();
 	particle_->Update();
 
@@ -410,3 +412,14 @@ void BossEnemy::RootUpdate() {
 		RandomActionManager();
 	}
 }
+
+void BossEnemy::InitializeGrobalVariables() {
+	GlobalVariables* gloVars = GlobalVariables::GetInstance();
+	// グループ名の設定
+	const char* groupName = "Boss";
+
+	// 作ったグループにそれぞれアイテムを追加
+	gloVars->CreateGroup(groupName);
+	gloVars->AddItem(groupName, "SetMaxHp", SetMaxHp);
+}
+void BossEnemy::ApplyGrobalVariables() {}

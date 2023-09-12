@@ -3,6 +3,7 @@
 #include <cmath>
 #include <numbers>
 
+
 void BossEnemy::RushAttack() {
 	// 補間レート処理
 	if (rushMove_t_ >= 1.0f) {

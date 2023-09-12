@@ -136,10 +136,14 @@ private: // メンバ変数
 	int enemyTen = 0;
 	int enemyOne = 0;
 
-	int pickUpTailTime = 60 * 3;
-	int funnelDamage = 60 * 2;
-	int eneBulletDamage = 60 * 1;
-	int bossEnemyDamage = 60 * 1;
+	int setTailTime = 3;
+	int pickUpTailTime = 60 * setTailTime;
+	int setFunnelDamage = 2;
+	int funnelDamage = 60 * setTailTime;
+	int setEneBulletDamage = 1;
+	int eneBulletDamage = 60 * setEneBulletDamage;
+	int setBossEnemyDamage = 3;
+	int bossEnemyDamage = 60 * setBossEnemyDamage;
 
 
 };

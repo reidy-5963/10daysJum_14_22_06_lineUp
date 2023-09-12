@@ -77,7 +77,8 @@ void GameScene::Initialize() {
 		num[i]->SetSize(tmpSize);
 	}
 #pragma endregion 
-	#pragma region 背景
+
+#pragma region 背景
 	numTex_ = TextureManager::Load("nums.png");
 	enemyNumPos[0] = {500.0f - 500.0f, 3.0f};
 	enemyNumPos[1] = {enemyNumPos[0].x - 128.0f, enemyNumPos[0].y};
@@ -174,10 +175,15 @@ void GameScene::Update() {
 	enemyNum[1]->SetPosition(enemyNumPos[1]);
 
 
-	if (gameTimer > 60 * 99) {
+	if (gameTimer > 60 * 100) {
 		gameTimer = 60 * 99;
 	}
 
+
+	pickUpTailTime = 60 * setTailTime;
+	funnelDamage = 60 * setTailTime;
+	eneBulletDamage = 60 * setEneBulletDamage;
+	bossEnemyDamage = 60 * setBossEnemyDamage;
 }
 
 
@@ -263,10 +269,11 @@ void GameScene::InitializeGrobalVariables() { // グローバル変数系のシ�
 	gloVars->CreateGroup(groupName);
 	gloVars->AddItem(groupName, "enemyNumPos_", enemyNumPos_);
 	gloVars->AddItem(groupName, "scoreNumPos_", scoreNumPos_);
-	//gloVars->AddItem(groupName, "RootRotate_t_offset", rootRotate_t_offset);
-	//gloVars->AddItem(groupName, "Bullet_shot_Radian", BulletRadian);
-	//gloVars->AddItem(groupName, "bulletSpeed_", bulletSpeed_);
-	//gloVars->AddItem(groupName, "oneTime", oneTime);
+
+	gloVars->AddItem(groupName, "setTailTime", setTailTime);
+	gloVars->AddItem(groupName, "setFunnelDamage", setFunnelDamage);
+	gloVars->AddItem(groupName, "setEneBulletDamage", setEneBulletDamage);
+	gloVars->AddItem(groupName, "setBossEnemyDamage", setBossEnemyDamage);
 }
 
 void GameScene::ApplyGrobalVariables() { // グローバル変数系のシングルトンインスタンスを取得
@@ -276,10 +283,11 @@ void GameScene::ApplyGrobalVariables() { // グローバル変数系のシング
 	// 作ったグループにあるアイテムから値を取得
 	enemyNumPos_ = gloVars->GetVector2Value(groupName, "enemyNumPos_");
 	scoreNumPos_ = gloVars->GetVector2Value(groupName, "scoreNumPos_");
-	//rootRotate_t_offset = gloVars->GetFloatValue(groupName, "RootRotate_t_offset");
-	//BulletRadian = gloVars->GetFloatValue(groupName, "Bullet_shot_Radian");
-	//bulletSpeed_ = gloVars->GetFloatValue(groupName, "bulletSpeed_");
-	//oneTime = gloVars->GetIntValue(groupName, "oneTime");
+
+	setTailTime = gloVars->GetIntValue(groupName, "setTailTime");
+	setFunnelDamage = gloVars->GetIntValue(groupName, "setFunnelDamage");
+	setEneBulletDamage = gloVars->GetIntValue(groupName, "setEneBulletDamage");
+	setBossEnemyDamage = gloVars->GetIntValue(groupName, "setBossEnemyDamage");
 }
 
 /// <summary>
@@ -319,7 +327,9 @@ void GameScene::CheckAllCollision() {
 				// コールバック
 				if (enemy->IsParasite()) {
 					player_->AddTails();
-					gameTimer += pickUpTailTime;
+					if (player_->GetTail() > 6) {
+						gameTimer += pickUpTailTime;
+					}
 
 					enemy->SetIsDead(true);
 				}
