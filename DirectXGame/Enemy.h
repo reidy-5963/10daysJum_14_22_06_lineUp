@@ -2,9 +2,8 @@
 #include "BaseCharacter.h"
 #include "ParticleManager.h"
 
-class Enemy : public BaseCharacter
-{
-public:	// 継承
+class Enemy : public BaseCharacter {
+public: // 継承
 	/// <summary>
 	/// 初期化処理
 	/// </summary>
@@ -32,11 +31,9 @@ public:	// 継承
 
 	void P2EOnCollision();
 
-
 	void ParasiteAnimationInitialize();
 
 public: // 設定
-
 	/// <summary>
 	/// 死亡フラグのGetter
 	/// </summary>
@@ -66,26 +63,29 @@ public: // 設定
 	void SetIsDead(bool isDead) { isDead_ = isDead; }
 	void SetParticleTex(uint32_t tex) { particleTex_ = tex; }
 	void SetParasiteTexture(uint32_t tex) { parasiteTex_ = tex; }
+	void SetCollapseTexture(uint32_t tex) { collapseTex_ = tex; }
 
 private:
-
 	Vector2 velocity_ = {};
 
 	bool isDead_ = false;
 	bool isPossiblePickUp = false;
 	bool isParasite_ = false;
-
+	bool isCollapse_ = false;
 	int setTimer = 120;
 	int deleteTimer = setTimer;
 
 	uint32_t parasiteTex_ = 0u;
 	uint32_t particleTex_ = 0u;
-
+	uint32_t collapseTex_ = 0u;
 	std::unique_ptr<ParticleManager> particle_ = nullptr;
 
 private: // 限界値
 	Vector2 kMinusLimits = {-250.0f, -250.0f};
 	Vector2 kPlusLimits = {1920.0f * 3, 1080.0f * 3};
 
-
+	int collapseAniTimer = 0;
+	int collapseAniNumber = 0;
+	int collapseAniScene = 7;
+	int collapseAnioneTime = 3;
 };

@@ -193,7 +193,7 @@ private:
 
 	int funnelCount_ = 0;
 
-	const int SetMaxHp = 500;
+	int SetMaxHp = 300;
 	int hp_ = SetMaxHp;
 	Vector2 hpGaugeSize{};
 

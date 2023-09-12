@@ -47,6 +47,15 @@ void Enemy::Update() {
 	} else if (isParasite_) {
 		ParasiteStateUpdate();
 	}
+
+	if (isCollapse_) {
+		sprite_->SetTextureHandle(collapseTex_);
+		Animation::Anime(collapseAniTimer, animationNumber, collapseAniScene, collapseAnioneTime);
+		if (collapseAniTimer >= collapseAnioneTime * collapseAniScene) {
+			isDead_ = true;
+		}
+	}
+
 	particle_->Update();
 	// 座標設定
 	BaseCharacter::Update();
@@ -89,11 +98,13 @@ void Enemy::ParasiteStateUpdate() {
 		}
 	}
 
-	if (isPossiblePickUp) {
+	if (isPossiblePickUp && !isCollapse_) {
 		if (--deleteTimer < 0) {
-			isDead_ = true;
+			isCollapse_ = true;
 		}
 	}
+
+
 }
 
 void Enemy::RootStateUpdate() { 

@@ -289,9 +289,10 @@ private: // メンバ変数
 #pragma endregion
 
 	uint32_t predictionLineTex_;
-	std::unique_ptr<Sprite> predictionLine_;
-	Vector2 predictionLineSize{};
-	Vector2 predictionLinePos_{};
+	std::unique_ptr<Sprite> predictionLine_[2];
+	Vector2 predictionLineSize[2];
+	Vector2 predictionLinePos_[2];
+
 #pragma endregion
 
 #pragma region 通常時の動き用

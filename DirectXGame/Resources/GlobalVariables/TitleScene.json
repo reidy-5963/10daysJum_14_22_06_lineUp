@@ -1,0 +1,76 @@
+{
+    "TitleScene": {
+        "enemyEndPos0_": [
+            90.0,
+            850.0
+        ],
+        "enemyEndPos1_": [
+            1400.0,
+            100.0
+        ],
+        "enemyEndPos2_": [
+            150.0,
+            390.0
+        ],
+        "enemyEndPos3_": [
+            1750.0,
+            560.0
+        ],
+        "enemyEndPos4_": [
+            540.0,
+            960.0
+        ],
+        "enemyEndPos5_": [
+            1660.0,
+            1000.0
+        ],
+        "enemyRootMOvePOs0": [
+            180.0,
+            890.0
+        ],
+        "enemyRootMOvePOs1": [
+            1300.0,
+            60.0
+        ],
+        "enemyRootMOvePOs2": [
+            100.0,
+            60.0
+        ],
+        "enemyRootMOvePOs3": [
+            1660.0,
+            680.0
+        ],
+        "enemyRootMOvePOs4": [
+            880.0,
+            960.0
+        ],
+        "enemyRootMOvePOs5": [
+            1560.0,
+            1000.0
+        ],
+        "enemyStartPos0_": [
+            -130.0,
+            1020.0
+        ],
+        "enemyStartPos1_": [
+            1440.0,
+            -40.0
+        ],
+        "enemyStartPos2_": [
+            -130.0,
+            440.0
+        ],
+        "enemyStartPos3_": [
+            1960.0,
+            560.0
+        ],
+        "enemyStartPos4_": [
+            520.0,
+            1150.0
+        ],
+        "enemyStartPos5_": [
+            1540.0,
+            1120.0
+        ]
+    }
+}

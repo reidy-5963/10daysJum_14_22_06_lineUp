@@ -6,7 +6,7 @@
 #include "Vector4.h"
 #include "Matrix4x4.h"
 #include "Matrix3x3.h"
-
+#include "Sprite.h"
 #pragma region Vector2 Operator
 	inline extern Vector2 operator+(const Vector2& v1, const Vector2& v2);
 	inline extern Vector2 operator-(const Vector2& v1, const Vector2& v2);
@@ -33,7 +33,28 @@
 class MyMath {
 public:
 	static void ShakeUpdate(Vector2 &velo, bool &isStartShake, int &amplitNum);
-	
+	static void TenCount(int& ten, int& one, int tmp) {
+		ten = tmp / 10;
+		tmp = tmp % 10;
+		one = tmp;
+	}
+	static void HandredCount(int& handred, int& ten, int& one, int tmp) {
+		handred = tmp / 100;
+		tmp = tmp % 100;
+		ten = tmp / 10;
+		tmp = tmp % 10;
+		one = tmp;
+	}
+	static void ThousandCount(int& thousand, int& handred, int& ten, int& one, int tmp) {
+		thousand = tmp / 1000;
+		tmp = tmp % 1000;
+		handred = tmp / 100;
+		tmp = tmp % 100;
+		ten = tmp / 10;
+		tmp = tmp % 10;
+		one = tmp;
+	}
+
 #pragma region Vector2
 	static float Dot(const Vector2& v1, const Vector2& v2);
 	
