@@ -301,23 +301,22 @@ void GameScene::CheckAllCollision() {
 #pragma endregion
 
 #pragma region ボスの弾と尻尾
-	for (BossBullet* bossBullet_ : bossBullet) {
-		// エネミーの位置取得
-		targetA = bossBullet_->GetPosition();
-		for (Tail* tail : tails) {
-			targetB = tail->GetPosition();
-			float distance = std::sqrtf(
-			    std::powf(targetA.x - targetB.x, 2) + std::powf(targetA.y - targetB.y, 2));
-			float radius = tail->GetRadius() + bossBullet_->GetRadius();
-			// 交差判定
-			if (distance <= radius) {
-				// コールバック
-				bossBullet_->OnCollision();
-				tail->OnCollision();
-			}
-		}
-	}
-
+	//for (BossBullet* bossBullet_ : bossBullet) {
+	//	// エネミーの位置取得
+	//	targetA = bossBullet_->GetPosition();
+	//	for (Tail* tail : tails) {
+	//		targetB = tail->GetPosition();
+	//		float distance = std::sqrtf(
+	//		    std::powf(targetA.x - targetB.x, 2) + std::powf(targetA.y - targetB.y, 2));
+	//		float radius = tail->GetRadius() + bossBullet_->GetRadius();
+	//		// 交差判定
+	//		if (distance <= radius) {
+	//			// コールバック
+	//			bossBullet_->OnCollision();
+	//			tail->OnCollision();
+	//		}
+	//	}
+	//}
 #pragma endregion
 
 #pragma region プレイヤーの弾と敵

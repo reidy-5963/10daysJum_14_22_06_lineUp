@@ -42,7 +42,7 @@ void BossEnemy::GuidedAttack() {
 
 	if (modeCount_ % 30 == 0) {
 		Vector2 velocity = MyMath::Normalize(nowPlayerPos_ - pos_);
-		GenerateBullet(velocity);
+		GenerateBullet(velocity, 8.0f);
 	}
 }
 
@@ -50,48 +50,44 @@ void BossEnemy::GuidedAttackInitialize() { kModeEndTimer_ = ConvertSeconds(5); }
 
 void BossEnemy::BarrageAttack() {
 	modeCount_ += 1;
+	float bulletSpeed = 10.0f;
+	int barrageInterval = 20;
 	if (modeCount_ == kModeEndTimer_) {
 		behaviorRequest_ = Behavior::kRoot;
 	}
-	if (modeCount_ % 30 == 0) {
+	if (modeCount_ % barrageInterval == 0) {
 		// 右
 		float radian = rotateDegree * ((float)std::numbers::pi / 180.0f);
 		// 角度に合わせて正規化
 		Vector2 norm = {std::cosf(radian), -std::sinf(radian)};
 		norm = MyMath::Normalize(norm);
-		GenerateBullet(norm);
+		GenerateBullet(norm, bulletSpeed);
 
 		// 上
 		radian = (rotateDegree + 90.0f) * ((float)std::numbers::pi / 180.0f);
 		// 角度に合わせて正規化
 		norm = {std::cosf(radian), -std::sinf(radian)};
 		norm = MyMath::Normalize(norm);
-		GenerateBullet(norm);
+		GenerateBullet(norm, bulletSpeed);
 
 		// 左
 		radian = (rotateDegree + 180.0f) * ((float)std::numbers::pi / 180.0f);
 		// 角度に合わせて正規化
 		norm = {std::cosf(radian), -std::sinf(radian)};
 		norm = MyMath::Normalize(norm);
-		GenerateBullet(norm);
+		GenerateBullet(norm, bulletSpeed);
 
 		// 下
 		radian = (rotateDegree + 270.0f) * ((float)std::numbers::pi / 180.0f);
 		// 角度に合わせて正規化
 		norm = {std::cosf(radian), -std::sinf(radian)};
 		norm = MyMath::Normalize(norm);
-		GenerateBullet(norm);
+		GenerateBullet(norm, bulletSpeed);
 		rotateRadian_ = rotateDegree * ((float)std::numbers::pi / 180.0f);
 		// 回転
 		rotateDegree += 10.0f;
 		rotate_t_ = 0;
 	}
-	// if (rotate_t_ >= 1.0f) {
-	//	rotate_t_ += (1.0f / 30.0f);
-	//	sprite_->SetRotation(MyMath::lerp(rotate_t_, sprite_->GetRotation(), rotateRadian_));
-	// } else {
-	//	rotate_t_ = 1.0f;
-	// }
 }
 
 void BossEnemy::BarrageAttackInitialize() {

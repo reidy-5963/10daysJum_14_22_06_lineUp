@@ -112,7 +112,7 @@ public:	// 設定・取得
 	/// 弾の追加
 	/// </summary>
 	/// <param name="bullet"></param>
-	void GenerateBullet(Vector2& velocity);
+	void GenerateBullet(Vector2& velocity, float speedValue);
 
 	void GenerateFunnel(int type);
 

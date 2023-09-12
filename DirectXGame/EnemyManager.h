@@ -112,6 +112,7 @@ private:
 	// 矢印のフラグ
 	bool isArrowRespown_ = false;
 
+	int kArrowDelay_ = 120;
 
 private:
 	// パターン湧きしているか

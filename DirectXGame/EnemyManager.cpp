@@ -669,14 +669,14 @@ void EnemyManager::ArrowBehaviorControl()
 
 	if (isArrowRespown_) {
 		ArrowCoolTime++;
-		if (ArrowCoolTime == 90) {
+		if (ArrowCoolTime == kArrowDelay_ * 1) {
 			this->ArrowBehavior(kUp);
 		}
-		if (ArrowCoolTime == 180) {
+		if (ArrowCoolTime == kArrowDelay_ * 2) {
 			plPrevPos_ = playerPos_;
 			this->ArrowBehavior(kLeft);
 		}
-		if (ArrowCoolTime == 270) {
+		if (ArrowCoolTime == kArrowDelay_ * 3) {
 			this->ArrowBehavior(kRight);
 			isArrowRespown_ = false;
 			ArrowCoolTime = 0;

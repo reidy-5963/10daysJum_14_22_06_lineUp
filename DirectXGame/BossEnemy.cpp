@@ -65,12 +65,12 @@ void BossEnemy::RandomActionManager()
 
 }
 
-void BossEnemy::GenerateBullet(Vector2& velocity) 
+void BossEnemy::GenerateBullet(Vector2& velocity, float speedValue) 
 {
 	// 生成・初期化
 	BossBullet* newBullet = new BossBullet();
 	newBullet->Initialize(bulletTex_, GetPosition(), velocity);
-	newBullet->SetBulletSpeed(8.0f);
+	newBullet->SetBulletSpeed(speedValue);
 	// リストに追加
 	bullets_.push_back(newBullet);
 }
