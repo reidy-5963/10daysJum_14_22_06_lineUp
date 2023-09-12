@@ -328,7 +328,7 @@ void GameScene::CheckAllCollision() {
 				if (enemy->IsParasite()) {
 					player_->AddTails();
 					if (player_->GetTail() >= 6) {
-						gameTimer += pickUpTailTime;
+						//gameTimer += pickUpTailTime;
 					}
 
 					enemy->SetIsDead(true);
@@ -337,7 +337,7 @@ void GameScene::CheckAllCollision() {
 					player_->OnCollision();
 					issceneShake = true;
 					sceneaAmplitNum = 40;
-					gameTimer -= eneBulletDamage;
+					//gameTimer -= eneBulletDamage;
 					enemy->SetIsDead(true);
 				}
 				//
@@ -347,7 +347,7 @@ void GameScene::CheckAllCollision() {
 			//
 			else if (player_->GetIsInvisible()) {
 				if (enemy->IsParasite()) {
-					gameTimer += pickUpTailTime;
+					//gameTimer += pickUpTailTime;
 
 					player_->AddTails();
 					enemy->SetIsDead(true);
@@ -369,7 +369,7 @@ void GameScene::CheckAllCollision() {
 		if (distance <= radius && !player_->GetIsInvisible()) {
 			// コールバック
 			bossBullet_->OnCollision();
-			gameTimer -= eneBulletDamage;
+			//gameTimer -= eneBulletDamage;
 			player_->OnCollision();
 			issceneShake = true;
 			sceneaAmplitNum = 40;
@@ -390,7 +390,7 @@ void GameScene::CheckAllCollision() {
 		if (distance <= radius && !player_->GetIsInvisible()) {
 			// コールバック
 			bossFunnel_->OnCollision();
-			gameTimer -= funnelDamage;
+			//gameTimer -= funnelDamage;
 			player_->OnCollision();
 			issceneShake = true;
 			sceneaAmplitNum = 40;
@@ -542,7 +542,7 @@ void GameScene::CheckAllCollision() {
 		if (!player_->GetIsInvisible()) {
 			// コールバック
 			player_->OnCollision();
-			gameTimer -= bossEnemyDamage;
+			//gameTimer -= bossEnemyDamage;
 			issceneShake = true;
 			sceneaAmplitNum = 40;
 			//boss_->OnCollision();
