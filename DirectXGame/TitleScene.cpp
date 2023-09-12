@@ -20,14 +20,26 @@ void TitleScene::Initialize() {
 	sceneNum = TITLE;
 	// 静的変数の初期化
 	StaticValueInitialize();
+	player_.release();
+	for (int i = 0; i < 6; i++) {
+		enemy_[i].release();
+	}
+	title2gameSceneAria_.release();
+	titleLogo_.release();
 
 	// いろいろ
 	dxCommon_ = DirectXCommon::GetInstance();
 	input_ = Input::GetInstance();
 	audio_ = Audio::GetInstance();
 
-
-
+	aria_t_ = 0.0f;
+	isAriaMove_ = false;
+	titleLogo_t_ = 0.0f;
+	titleLogoMove_ = false;
+	TitleTutrialStart = false;
+	eneMove_t_ = 0.0f;
+	eneMove_ = false;
+	rootEneMove = false;
 
 #pragma region シーン遷移エリア
 	ariaTex_ = TextureManager::Load("T2GaSceneAria.png");

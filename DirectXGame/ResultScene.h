@@ -36,6 +36,9 @@ public: // メンバ関数
 	/// </summary>
 	void Update() override;
 
+	void NotTutorialUpdate();
+	void TutorialUpdate();
+
 	/// <summary>
 	/// 描画
 	/// </summary>
@@ -49,7 +52,11 @@ private: // メンバ変数
 	/// <summary>
 	/// ゲームシーン用
 	/// </summary>
-	// 背景スプライト関係
+	// 背景スプライト関係	
+	
+	// プレイヤー
+	std::unique_ptr<Player> player_ = nullptr;
+
 	std::unique_ptr<Sprite> back;
 	uint32_t backTex;
 	Vector2 backPos = {0.0f, 0.0f};
@@ -63,4 +70,18 @@ private: // メンバ変数
 	Vector2 titleLogoEndPos_{};
 	float titleLogo_t_ = 0.0f;
 	bool titleLogoMove_ = false;
+
+	bool isSceneChange = false;
+	#pragma region シーン遷移エリア
+	std::unique_ptr<Sprite> title2gameSceneAria_ = nullptr;
+	Vector2 ariaPos_{};
+	uint32_t ariaTex_;
+	Vector4 ariaColor_ = {0.6f, 0.6f, 0.6f, 0.6f};
+
+	Vector2 ariaStartPos_{2040.0f, 0.0f};
+	Vector2 ariaEndPos_{1800.0f, 0.0f};
+
+	float aria_t_ = 0.0f;
+	bool isAriaMove_ = false;
+#pragma endregion
 };

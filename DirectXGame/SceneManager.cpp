@@ -6,7 +6,7 @@ SceneManager::SceneManager()
 	sceneArray_[GAMESCENE] = std::make_unique<GameScene>();
 	sceneArray_[CLEAR] = std::make_unique<ResultScene>();
 
-	sceneNum_ = TITLE;
+	sceneNum_ = CLEAR;
 	sceneArray_[sceneNum_]->Initialize();
 }
 
