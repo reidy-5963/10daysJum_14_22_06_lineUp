@@ -164,6 +164,8 @@ private:
 	uint32_t collapseTex_ = 0u;
 	uint32_t particleTex_ = 0u;
 
+	uint32_t deadSEHandel_ = 0;
+
 	// エネミー
 	std::list<Enemy*> enemys_;
 	// プレイヤーの座標の入れ物

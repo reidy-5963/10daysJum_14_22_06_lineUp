@@ -184,18 +184,19 @@ private:
 	std::list<BossBullet*> bullets_;
 	// ミサイルファンネル
 	std::list<BossFunnel*> funnels_;
-	
+	// ファンネル攻撃中か
 	bool isFunnelAttackNow_ = false;
-
+	// 生きているか
 	bool isAlive_ = false;
-
+	// 死んだか
 	bool isDead_ = false;
-
+	// ファンネルの行動回数
 	int funnelCount_ = 0;
-
+	// ボスのHp関係
 	int SetMaxHp = 300;
 	int hp_ = SetMaxHp;
 	Vector2 hpGaugeSize{};
+	float MaxHpSize = 0.0f;
 
 	//
 	uint32_t particleTex = 0u;
@@ -209,7 +210,7 @@ private: // 突進
 	int kRushTimer_ = 120;
 	// 突進カウント用フラグ
 	bool isRush_ = false;
-
+	// 突進中の確認フラグ
 	bool isRushNow_ = false;
 
 	Vector2 ScPos = {};
@@ -217,7 +218,7 @@ private: // 突進
 private: // 全方位
 	// 角度
 	float rotateDegree = 0;
-
+	// 角度ラジアン
 	float rotateRadian_ = 0;
 
 	float rotate_t_ = 0;
@@ -235,16 +236,8 @@ private: // 行動管理用変数
 		kFunnel,
 		kCross,
 	};
-	enum PrevBehavior {
-		kNowNone,
-		kNowRush,
-		kNowGuided,
-		kNowBarrage,
-		kNowFunnel,
-	};
-
+	// 行動のリクエストリスト
 	std::list<Behavior> actions_;
-
 	// 状態
 	Behavior behavior_ = Behavior::kRoot;
 	// 次の動きのリクエスト
@@ -258,23 +251,20 @@ private: // 行動管理用変数
 
 private: // 動きの管理
 	int actionTimer_ = 0;
-
+	// 行動の間隔
 	int kActionCoolTime_ = 60 * 5;
-
+	// ランダムアクション用
 	void RandomActionManager();
-
+	// 秒数に変換の関数
 	int ConvertSeconds(int second) { return int(second * 60); }
-
-	float MaxHpSize = 0.0f;
-
+	// アクション中か
 	int isActionNow_ = false;
-
-	bool isTest_ = false;
 	// テーブルのラスト
 	bool isLastAction_ = false;
 public:
+	// 最後の行動かの取得
 	bool GetIsLastAction() { return isLastAction_; }
-
+	// 最後の行動かの設定
 	void SetIsLastAction(bool flag) { isLastAction_ = flag; }
 
 private: // 揺らす系
