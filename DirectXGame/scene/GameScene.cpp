@@ -322,7 +322,7 @@ void GameScene::CheckAllCollision() {
 					enemy->SetIsDead(true);
 				}
 				//
-				killCount_ += 1;
+				//killCount_ += 1;
 
 			} 
 			//

@@ -27,10 +27,16 @@ BossEnemy::BossEnemy() {
 
 void BossEnemy::RespownBoss() 
 { 
-	pos_ = {float(WinApp::kWindowWidth), float(WinApp::kWindowHeight)};
+	//pos_ = {float(WinApp::kWindowWidth), float(WinApp::kWindowHeight)};
 	isAlive_ = true;
 	isDead_ = false;
-	prevBossPos_ = pos_;
+	float spawnY = 0;
+	if (nowPlayerPos_.y >= 1080.0f) {
+		spawnY = 1080.0f * 2.5f;
+	} else {
+		spawnY = 0 - (1080.0f / 2);
+	}
+	pos_ = {nowPlayerPos_.x, spawnY};
 	prevPlayerPos_ = nowPlayerPos_;
 	hp_ = SetMaxHp;
 	animationTimer = 0;
@@ -38,19 +44,20 @@ void BossEnemy::RespownBoss()
 	animationScene = 4;
 	oneTime = 5;
 	isAnimation = true;
+	actions_.push_back(Behavior::kRushAlert);
 }
 
 void BossEnemy::RandomActionManager() 
 { 
-	if (behavior_ == Behavior::kRoot && !isRush_ && !isFunnelAttackNow_) {
-		actionTimer_++;
-	}
-	if (actionTimer_ == kActionCoolTime_) {
-		if (isActionNow_ == kNowNone) {
-			ActionTable();
-			actionTimer_ = 0;
-		}
-	}
+	//if (behavior_ == Behavior::kRoot && !isRush_ && !isFunnelAttackNow_) {
+	//	actionTimer_++;
+	//}
+	//if (actionTimer_ == kActionCoolTime_) {
+	//	if (isActionNow_ == kNowNone) {
+	//		ActionTable();
+	//		actionTimer_ = 0;
+	//	}
+	//}
 }
 
 void BossEnemy::GenerateBullet(Vector2& velocity, float speedValue) 
@@ -88,7 +95,7 @@ void BossEnemy::Initialize()
 {
 	input_ = Input::GetInstance();
 
-	pos_ = {-3000.0f, -3000.0f};
+	pos_ = {3000.0f, 3000.0f };
 
 	//RespownBoss();
 	animationTimer = 0;
@@ -127,6 +134,8 @@ void BossEnemy::Update()
 {
 	ImGui::Begin("player");
 	ImGui::Text("%f : %f", nowPlayerPos_.x, nowPlayerPos_.y);
+	ImGui::Text(" %d ", behavior_);
+	ImGui::Text("actionTimer : %d\nCoolTime", actionTimer_, kActionCoolTime_);
 	ImGui::End();
 
 	if (isAlive_ && hp_ <= 0) {
@@ -168,6 +177,9 @@ void BossEnemy::Update()
 		case BossEnemy::Behavior::kFunnel:
 			FunnelAttackInitialize();
 			break;
+		case BossEnemy::Behavior::kCross:
+			CrossAttackInitialize();
+			break;
 		}
 		behaviorRequest_ = std::nullopt;
 	}
@@ -196,6 +208,9 @@ void BossEnemy::Update()
 	/// ファンネル処理
 	case BossEnemy::Behavior::kFunnel:
 		FunnelAttack();
+		break;
+	case BossEnemy::Behavior::kCross:
+		CrossAttack();
 		break;
 	}
 
@@ -259,6 +274,16 @@ void BossEnemy::BulletUpdate() {
 	ImGui::Text("%d", actions_.back());
 	ImGui::End();
 
+	for (BossBullet* bullet : bullets_) {
+		bullet->SetSceneVelo(sceneVelo);
+		bullet->Update();
+
+		if (bullet->GetPosition().x < 0.0f || bullet->GetPosition().x > (1920.0f * 2) ||
+		    bullet->GetPosition().y < 0.0f || bullet->GetPosition().y > (1080.0f * 2)) {
+			bullet->SetIsDead(true);
+		}
+	}
+
 	bullets_.remove_if([](BossBullet* bullet) {
 		if (bullet->GetIsDead()) {
 			delete bullet;
@@ -266,18 +291,6 @@ void BossEnemy::BulletUpdate() {
 		}
 		return false;
 	});
-
-	for (BossBullet* bullet : bullets_) {
-		bullet->SetSceneVelo(sceneVelo);
-		bullet->Update();
-		Vector2 size = bullet->GetSize();
-		size -= Vector2(decreaseValue_, decreaseValue_);
-		bullet->SetSize(size);
-		bullet->SetRadius(bullet->GetSize().x / 2);
-		if (bullet->GetRadius() < deadZone_) {
-			bullet->SetIsDead(true);
-		}
-	}
 
 	funnels_.remove_if([](BossFunnel* funnel) {
 		if (funnel->GetIsDead()) {
@@ -290,7 +303,7 @@ void BossEnemy::BulletUpdate() {
 	for (BossFunnel* funnel : funnels_) {
 		funnel->SetSceneVelo(sceneVelo);
 		funnel->Update(nowPlayerPos_);
-		if (funnel->GetPosition().x < 0.0f || funnel->GetPosition().x > (1920.0f*2)||
+		if (funnel->GetPosition().x < 0.0f || funnel->GetPosition().x > (1920.0f * 2)||
 		    funnel->GetPosition().y < 0.0f || funnel->GetPosition().y > (1080.0f * 2)) {
 			funnel->SetIsDead(true);
 		}
@@ -299,6 +312,13 @@ void BossEnemy::BulletUpdate() {
 
 void BossEnemy::ActionControl() 
 {
+	if (behavior_ == Behavior::kRoot && isAlive_) {
+		actionTimer_++;
+		if (actionTimer_ == kActionCoolTime_) {
+			ActionTable();
+			actionTimer_ = 0;			
+		}
+	}
 	/// 突進起動キー処理
 	if (input_->TriggerKey(DIK_D)) {
 		actions_.push_back(Behavior::kBarrage);
@@ -316,35 +336,34 @@ void BossEnemy::ActionControl()
 		actions_.push_back(Behavior::kGuided);
 		actions_.push_back(Behavior::kFunnel);
 		actions_.push_back(Behavior::kRushAlert);
-			//behaviorRequest_ = actions_.back();
 	}
-	if (behavior_ != actions_.back()) {
-		behaviorRequest_ = actions_.back();
-		//isTest_ = true;
-		//actions_.pop_front();
-	}
-
 	/// 全方位
 	if (input_->TriggerKey(DIK_G)) {
-		if (behavior_ != Behavior::kBarrage) {
-			behaviorRequest_ = Behavior::kBarrage;
-		}
+		actions_.push_back(Behavior::kFunnel);
+		actions_.push_back(Behavior::kRushAlert);
+		actions_.push_back(Behavior::kFunnel);
+		actions_.push_back(Behavior::kRushAlert);
 	}
 	/// ファンネル
 	if (input_->TriggerKey(DIK_H)) {
-		if (behavior_ != Behavior::kFunnel) {
-			behaviorRequest_ = Behavior::kFunnel;
-		}
+		actions_.push_back(Behavior::kRoot);
+		actions_.push_back(Behavior::kCross);
+		actions_.push_back(Behavior::kGuided);
+		actions_.push_back(Behavior::kCross);
+		actions_.push_back(Behavior::kFunnel);
 	}
 	/// 方向転換
 	if (input_->TriggerKey(DIK_J)) {
-		Vector2 directRotate = nowPlayerPos_ - pos_;
-		// directRotate += pos_;
-		sprite_->SetRotation(std::atan2(directRotate.y, directRotate.x));
+		actions_.push_back(Behavior::kBarrage);
 	}
 	/// リスポーン
 	if (input_->TriggerKey(DIK_K)) {
 		RespownBoss();
+	}
+
+	// リクエストの読み込み
+	if (behavior_ != actions_.back()) {
+		behaviorRequest_ = actions_.back();
 	}
 }
 
@@ -355,24 +374,36 @@ void BossEnemy::ActionTable()
 	int behaviorRand = rand() % 5;
 	switch (behaviorRand) {
 	case 0:
+		actions_.push_back(Behavior::kBarrage);
+		actions_.push_back(Behavior::kGuided);
+		actions_.push_back(Behavior::kFunnel);
+		actions_.push_back(Behavior::kRushAlert);
+
 		break;
 	case 1:
-		RushAttackSetup();
+		actions_.push_back(Behavior::kBarrage);
+		actions_.push_back(Behavior::kRushAlert);
+		actions_.push_back(Behavior::kFunnel);
+		actions_.push_back(Behavior::kCross);
+
 		break;
 	case 2:
-		behaviorRequest_ = Behavior::kGuided;
+		actions_.push_back(Behavior::kBarrage);
+		actions_.push_back(Behavior::kRushAlert);
+		actions_.push_back(Behavior::kBarrage);
+		//actions_.push_back(Behavior::kRushAlert);
 		break;
 	case 3:
-		behaviorRequest_ = Behavior::kBarrage;
+		actions_.push_back(Behavior::kGuided);
+		actions_.push_back(Behavior::kFunnel);
 		break;
 	case 4:
-		behaviorRequest_ = Behavior::kFunnel;
+
 		break;
 	}
 }
 
-void BossEnemy::RootUpdate() 
-{
+void BossEnemy::RootUpdate() {
 	ActionControl();
 
 	if (isAlive_) {

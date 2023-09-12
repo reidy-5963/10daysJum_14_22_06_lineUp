@@ -93,6 +93,13 @@ private:	// 行動関数
 	void FunnelAttackInitialize();
 
 	/// <summary>
+	/// 十字・クロスショット
+	/// </summary>
+	void CrossAttack();
+
+	void CrossAttackInitialize();
+
+	/// <summary>
 	/// 通常の動き
 	/// </summary>
 	void RootUpdate();
@@ -216,6 +223,7 @@ private: // 行動管理用変数
 		kBarrage,
 		kRushAlert,
 		kFunnel,
+		kCross,
 	};
 	enum PrevBehavior {
 		kNowNone,

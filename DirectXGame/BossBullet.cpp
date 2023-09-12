@@ -23,6 +23,7 @@ void BossBullet::Initialize(uint32_t texture, const Vector2& pos, Vector2 velosi
 
 void BossBullet::Update() 
 {
+
 	pos_.x += direction_.x * bulletSpeed_;
 	pos_.y += direction_.y * bulletSpeed_;
 

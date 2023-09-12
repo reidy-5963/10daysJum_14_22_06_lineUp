@@ -145,6 +145,7 @@ void BossEnemy::FunnelAttack() {
 			isFunnelAttackNow_ = false;
 			behaviorRequest_ = Behavior::kRoot;
 			actions_.pop_back();
+			funnelCount_ = 0;
 		} 
 	}
 }
@@ -153,4 +154,47 @@ void BossEnemy::FunnelAttackInitialize() {
 	kModeEndTimer_ = 260;
 	prevBossPos_ = pos_;
 	isFunnelAttackNow_ = true;
+}
+
+void BossEnemy::CrossAttack()
+{ 
+	modeCount_ += 1;
+	float speed = 12.5f;
+	if (modeCount_ == 40) {
+		Vector2 direct = {1.0f, 1.0f};
+		direct = MyMath::Normalize(direct);
+		GenerateBullet(direct, speed);
+
+		direct = {1.0f, -1.0f};
+		direct = MyMath::Normalize(direct);
+		GenerateBullet(direct, speed);
+
+		direct = {-1.0f, 1.0f};
+		direct = MyMath::Normalize(direct);
+		GenerateBullet(direct, speed);
+
+		direct = {-1.0f, -1.0f};
+		direct = MyMath::Normalize(direct);
+		GenerateBullet(direct, speed);
+	}
+	speed = 12.5f;
+	if (modeCount_ == 80) {
+		Vector2 direct = {1.0f, 0.0f};
+		GenerateBullet(direct, speed);
+		direct = {-1.0f, 0.0f};
+		GenerateBullet(direct, speed);
+		direct = {0.0f, 1.0f};
+		GenerateBullet(direct, speed);
+		direct = {0.0f, -1.0f};
+		GenerateBullet(direct, speed);
+	}
+	if (modeCount_ == kModeEndTimer_) {
+		behaviorRequest_ = Behavior::kRoot;
+		actions_.pop_back();
+	}
+}
+
+void BossEnemy::CrossAttackInitialize() 
+{ 
+	kModeEndTimer_ = ConvertSeconds(2);
 }
