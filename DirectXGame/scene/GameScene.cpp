@@ -327,7 +327,7 @@ void GameScene::CheckAllCollision() {
 				// コールバック
 				if (enemy->IsParasite()) {
 					player_->AddTails();
-					if (player_->GetTail() > 6) {
+					if (player_->GetTail() >= 6) {
 						gameTimer += pickUpTailTime;
 					}
 
