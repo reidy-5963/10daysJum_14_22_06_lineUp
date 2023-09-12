@@ -134,17 +134,8 @@ private: // メンバ変数
 	int enemyOne = 0;
 
 
-	//std::unique_ptr<Sprite> scoreNum[4];
-	//Vector2 scoreNumPos_{};
-	//Vector2 scoreNumPos[4];
-	//int scoreThousand = 0;
-	//int scorehandred = 0;
-	//int scoreTen = 0;
-	//int scoreOne = 0;
-	//Vector2 scoreSize_ = {128.0f, 128.0f};
-	//Vector4 scoreColor_ = {1.0f, 1.0f, 1.0f, 0.15f};
-
-	//int score = 0;
+	std::unique_ptr<Sprite> cursor_ = nullptr;
+	uint32_t cursorTex_;
 #pragma region
 	int setTailTime = 3;
 	int pickUpTailTime = 60 * setTailTime;

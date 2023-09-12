@@ -104,6 +104,9 @@ void GameScene::Initialize() {
 //		scoreNum[i]->SetSize(tmpSize);
 //	}
 //#pragma endregion
+	cursorTex_ = TextureManager::Load("Cursor.png");
+	cursor_.reset(
+	    Sprite::Create(cursorTex_, {-20.0f, -20.0f}, {1.0f, 1.0f, 1.0f, 1.0f}, {0.5f, 0.5f}));
 
 	InitializeGrobalVariables();
 	BGMHandle_ = Audio::GetInstance()->LoadWave("GameScene.wav");
@@ -113,6 +116,14 @@ void GameScene::Initialize() {
 /// 毎フレーム処理
 /// </summary>
 void GameScene::Update() {
+	POINT mousePos;
+	GetCursorPos(&mousePos);
+	// クライアントエリア座標に変換する
+	HWND hwnd = WinApp::GetInstance()->GetHwnd();
+	ScreenToClient(hwnd, &mousePos);
+	cursor_->SetPosition({float(mousePos.x), float(mousePos.y)});
+
+
 	ApplyGrobalVariables();
 	enemyNumPos[0] = {enemyNumPos_.x - 64.0f, enemyNumPos_.y};
 	enemyNumPos[1] = {enemyNumPos_.x + 64.0f, enemyNumPos_.y};
@@ -291,7 +302,7 @@ void GameScene::Draw() {
 		enemyNum[1]->Draw();
 	}
 
-
+	cursor_->Draw();
 
 	// スプライト描画後処理
 	Sprite::PostDraw();
