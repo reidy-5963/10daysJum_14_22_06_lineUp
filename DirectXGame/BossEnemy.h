@@ -269,6 +269,12 @@ private: // 動きの管理
 	int isActionNow_ = false;
 
 	bool isTest_ = false;
+	// テーブルのラスト
+	bool isLastAction_ = false;
+public:
+	bool GetIsLastAction() { return isLastAction_; }
+
+	void SetIsLastAction(bool flag) { isLastAction_ = flag; }
 
 private: // 揺らす系
 	Vector2 shakeVelo_{};

@@ -117,3 +117,6 @@ void Enemy::ParasiteAnimationInitialize() {
 	animationScene = 6;
 	oneTime = 4;
 }
+
+void Enemy::SetRotation(float radian) 
+{ sprite_->SetRotation(radian); }

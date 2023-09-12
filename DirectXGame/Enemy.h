@@ -57,7 +57,12 @@ public: // 設定
 	/// <param name="velocity"></param>
 	void SetVelocity(Vector2 velocity) { velocity_ = velocity; }
 
-	
+	/// <summary>
+	/// 方向指定
+	/// </summary>
+	/// <param name="direct"></param>
+	void SetRotation(float radian);
+
 	void SetIsDead(bool isDead) { isDead_ = isDead; }
 	void SetParticleTex(uint32_t tex) { particleTex_ = tex; }
 	void SetParasiteTexture(uint32_t tex) { parasiteTex_ = tex; }

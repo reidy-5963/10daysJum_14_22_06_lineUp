@@ -138,8 +138,11 @@ void BossEnemy::Update()
 	ImGui::Text("%f : %f", nowPlayerPos_.x, nowPlayerPos_.y);
 	ImGui::Text(" %d ", behavior_);
 	ImGui::Text("actionTimer : %d\nCoolTime", actionTimer_, kActionCoolTime_);
+	ImGui::Text(" %d ", isLastAction_);
 	ImGui::End();
+#endif // _DEBUG
 
+	/// 死ぬ処理
 	if (isAlive_ && hp_ <= 0) {
 		isDead_ = true;
 		isAlive_ = false;
@@ -148,7 +151,7 @@ void BossEnemy::Update()
 	ScreenPosInitialize();
 
 	Animation::Anime(animationTimer, animationNumber, animationScene, oneTime);
-
+	// リクエスト
 	if (behaviorRequest_) {
 		// 行動変更
 		behavior_ = behaviorRequest_.value();
@@ -185,7 +188,7 @@ void BossEnemy::Update()
 		}
 		behaviorRequest_ = std::nullopt;
 	}
-
+	// リクエストごとの更新処理
 	switch (behavior_) {
 	/// 通常時の処理
 	case BossEnemy::Behavior::kRoot:
@@ -215,11 +218,11 @@ void BossEnemy::Update()
 		CrossAttack();
 		break;
 	}
-
+	// シェイク
 	MyMath::ShakeUpdate(shakeVelo_, isDamageShake, amplitNum);
-
+	// HPサイズ
 	float hpSize = (float(hp_) / float(SetMaxHp)) * hpGaugeSize.x;
-
+	// スプライトの設定
 	hpSprite_->SetSize({hpSize, hpGaugeSize.y});
 	hpSprite_->SetPosition({(1920 / 2) - (MaxHpSize - hpSize) / 2, 60.0f});
 
@@ -270,11 +273,12 @@ void BossEnemy::OnCollision() {
 }
 
 void BossEnemy::BulletUpdate() {
-
+#ifdef _DEBUG
 	ImGui::Begin("time");
-	ImGui::Text("%d : %d", modeCount_,isFunnelAttackNow_);
+	ImGui::Text("%d : %d", modeCount_, isFunnelAttackNow_);
 	ImGui::Text("%d", actions_.back());
 	ImGui::End();
+#endif // _DEBUG
 
 	for (BossBullet* bullet : bullets_) {
 		bullet->SetSceneVelo(sceneVelo);
@@ -321,6 +325,17 @@ void BossEnemy::ActionControl()
 			actionTimer_ = 0;			
 		}
 	}
+	if (input_->TriggerKey(DIK_A)) {
+		//actions_.push_back(Behavior::kRoot);
+		actions_.push_back(Behavior::kFunnel);
+		actions_.push_back(Behavior::kRushAlert);
+	}
+	if (input_->TriggerKey(DIK_S)) {
+		//actions_.push_back(Behavior::kRoot);
+		actions_.push_back(Behavior::kRushAlert);
+		actions_.push_back(Behavior::kFunnel);
+	}
+
 	/// 突進起動キー処理
 	if (input_->TriggerKey(DIK_D)) {
 		actions_.push_back(Behavior::kBarrage);
@@ -396,7 +411,7 @@ void BossEnemy::ActionTable()
 		//actions_.push_back(Behavior::kRushAlert);
 		break;
 	case 3:
-		actions_.push_back(Behavior::kGuided);
+		actions_.push_back(Behavior::kRushAlert);
 		actions_.push_back(Behavior::kFunnel);
 		break;
 	case 4:

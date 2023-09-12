@@ -11,6 +11,11 @@ void BossEnemy::RushAttack() {
 		isRushNow_ = false;
 		behaviorRequest_ = Behavior::kRoot;
 		actions_.pop_back();
+		if (actions_.back() == Behavior::kRoot) {
+			isLastAction_ = true;
+		} else {
+			isLastAction_ = false;
+		}
 		// behaviorRequest_ = actions_.front();
 		//actions_.pop_front();
 	} else {
@@ -71,12 +76,13 @@ void BossEnemy::RushAlertInitialize()
 
 void BossEnemy::GuidedAttack() {
 	modeCount_ += 1;	
+	int GuidedInterval = 30; 
 	if (modeCount_ == kModeEndTimer_) {
 		behaviorRequest_ = Behavior::kRoot;
 		actions_.pop_back();
 	}
 
-	if (modeCount_ % 30 == 0) {
+	if (modeCount_ % GuidedInterval == 0) {
 		Vector2 velocity = MyMath::Normalize(nowPlayerPos_ - pos_);
 		GenerateBullet(velocity, 8.0f);
 	}
@@ -87,7 +93,7 @@ void BossEnemy::GuidedAttackInitialize() { kModeEndTimer_ = ConvertSeconds(5); }
 void BossEnemy::BarrageAttack() {
 	modeCount_ += 1;
 	float bulletSpeed = 10.0f;
-	int barrageInterval = 20;
+	int barrageInterval = 15;
 	if (modeCount_ == kModeEndTimer_) {
 		behaviorRequest_ = Behavior::kRoot;
 		actions_.pop_back();

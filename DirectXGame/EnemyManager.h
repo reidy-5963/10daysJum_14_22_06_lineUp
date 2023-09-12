@@ -46,6 +46,8 @@ public:	// 設定、取得
 	/// <param name="pos"></param>
 	void SetPlayer(Vector2 pos) { playerPos_ = pos; }
 
+	void SetBoss(Vector2 pos) { bossPos_ = pos; }
+
 	//BossEnemy* GetBossEnemy() { return boss_; }
 
 public: // 沸きパターン
@@ -83,13 +85,30 @@ public:	// リスポーンタイプ
 	/// </summary>
 	void FormationSpawnUpdate();
 
-	void CreateEnemy(int spownPoint);
-
-	void AddEnemy(const Vector2& position, const Vector2& velocity);
-
 	Vector2 RandomRadianVector();
 
 	void FourPointsSpawn();
+
+	void RushSpawn();
+
+public: // 敵の生成関数
+	// 四隅
+	void CreateEnemy(int spownPoint);
+	
+	/// <summary>
+	/// 基本の生成
+	/// </summary>
+	/// <param name="position"></param>
+	/// <param name="velocity"></param>
+	void AddEnemy(const Vector2& position, const Vector2& velocity);
+
+	/// <summary>
+	/// 向きの指定可能
+	/// </summary>
+	/// <param name="position"></param>
+	/// <param name="velocity"></param>
+	void AddEnemy(const Vector2& position, const Vector2& velocity, const Vector2& direction);
+
 
 private:
 
@@ -105,6 +124,8 @@ private:
 	std::list<Enemy*> enemys_;
 	// プレイヤーの座標の入れ物
 	Vector2 playerPos_ = {};
+	// ボスの座標の入れ子
+	Vector2 bossPos_ = {};
 	// シーンのシェイク
 	Vector2 sceneVelo_{};
 

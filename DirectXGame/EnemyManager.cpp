@@ -35,11 +35,11 @@ void EnemyManager::Update()
 
 	normalSpawnTimer_++;
 
-	FourPointsSpawn();
+	//FourPointsSpawn();
 
-	FormationSpawnUpdate();
+	//FormationSpawnUpdate();
 
-	ArrowBehaviorControl();
+	//ArrowBehaviorControl();
 
 	if (input_->TriggerKey(DIK_4)) {
 		CreateEnemy(kLeftTop);
@@ -177,6 +177,23 @@ void EnemyManager::AddEnemy(const Vector2& position, const Vector2& velocity) {
 	enemys_.push_back(newEnemy);
 }
 
+void EnemyManager::AddEnemy(
+    const Vector2& position, const Vector2& velocity, const Vector2& direction) 
+{
+	Enemy* newEnemy = new Enemy();
+	newEnemy->SetTexture(charaTex_);
+	newEnemy->Initialize();
+	Vector2 pos = position;
+	Vector2 velo = velocity;
+	newEnemy->SetPosition(pos);
+	newEnemy->SetVelocity(velo);
+	newEnemy->SetRotation(std::atan2(direction.y,direction.x));
+	newEnemy->SetParasiteTexture(parasiteTex_);
+	newEnemy->SetParticleTex(particleTex_);
+
+	enemys_.push_back(newEnemy);
+}
+
 Vector2 EnemyManager::RandomRadianVector() 
 {
 	int random = int(rand()) % 20 + 1;
@@ -225,6 +242,21 @@ void EnemyManager::FourPointsSpawn()
 		}
 	}
 
+}
+
+void EnemyManager::RushSpawn() 
+{ 
+	float ankerOffset = 300.0f;
+	Vector2 ankerPoint = bossPos_;
+	Vector2 leftTop = {ankerPoint.x - ankerOffset, ankerPoint.y - ankerOffset};
+	Vector2 rightTop = {ankerPoint.x + ankerOffset, ankerPoint.y - ankerOffset};
+	Vector2 leftBottom = {ankerPoint.x - ankerOffset, ankerPoint.y + ankerOffset};
+	Vector2 rightBottom = {ankerPoint.x + ankerOffset, ankerPoint.y + ankerOffset};
+
+	AddEnemy(leftTop, Vector2(0, 0));
+	AddEnemy(rightTop, Vector2(0, 0));
+	AddEnemy(leftBottom, Vector2(0, 0));
+	AddEnemy(rightBottom, Vector2(0, 0));
 }
 
 void EnemyManager::DiagonalBehavior() 

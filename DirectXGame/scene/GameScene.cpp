@@ -117,8 +117,15 @@ void GameScene::Update() {
 
 	// 敵の更新処理
 	enemyManager_->SetPlayer(player_->GetPosition());
+	enemyManager_->SetBoss(boss_->GetPosition());
 	enemyManager_->SetSceneVelo(sceneShakevelo_);
 	enemyManager_->Update();
+	//enemyManager_->FourPointsSpawn();
+
+	if (boss_->GetIsLastAction()) {
+		enemyManager_->RushSpawn();
+		boss_->SetIsLastAction(false);
+	}
 
 	// プレイヤーの更新処理
 	player_->Update();
@@ -137,8 +144,8 @@ void GameScene::Update() {
 	}
 
 	// ボスの更新処理
-		boss_->SetPlayer(player_->GetPosition());
-		boss_->Update();
+	boss_->SetPlayer(player_->GetPosition());
+	boss_->Update();
 	
 
 		if (--gameTimer < 0) {
