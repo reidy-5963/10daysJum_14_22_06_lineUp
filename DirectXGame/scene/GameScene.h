@@ -100,4 +100,7 @@ private: // メンバ変数
 
 	uint32_t BGMHandle_ = 0u;
 #pragma endregion
+
+	int setGameTime = 60 * 60;
+	int gameTimer = setGameTime;
 };
