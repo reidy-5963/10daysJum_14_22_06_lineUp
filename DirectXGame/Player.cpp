@@ -172,11 +172,14 @@ void Player::AnimationValueInitialize() {
 /// UIに関する初期化処理
 /// </summary>
 void Player::UIInitialize() {
+	UITailPos_[0] = {UIPlayerPos_.x - (80.0f * 3.0f)};
+	for (int i = 1; i < 6; i++) {
+		UITailPos_[i] = {UITailPos_[0].x + (i * 80.0f), UITailPos_[0].y};
+	}
 	// (仮) プレイヤーのuiスプライト生成
 	playerUI_.reset(
 	    Sprite::Create(charaTex_, UIPlayerPos_, {1.0f, 1.0f, 1.0f, 1.0f}, {0.5f, 0.5f}));
 	for (int i = 0; i < 6; i++) {
-		UITailPos_[i] = {UIPlayerPos_.x + (i * 80.0f), UIPlayerPos_.y};
 		tailUI_[i].reset(
 		    Sprite::Create(tailTexture_[0], UITailPos_[i], {1.0f, 1.0f, 1.0f, 1.0f}, {0.5f, 0.5f}));
 		tailUI_[i]->SetSize({(radius_ * 2) * 1.25f, (radius_ * 2) * 1.25f});
@@ -243,6 +246,7 @@ void Player::InitializeGrobalVariables() {
 	gloVars->AddItem(groupName, "Bullet_shot_Radian", BulletRadian);
 	gloVars->AddItem(groupName, "bulletSpeed_", bulletSpeed_);
 	gloVars->AddItem(groupName, "oneTime", oneTime);
+	gloVars->AddItem(groupName, "UIPlayerPos_", UIPlayerPos_);
 }
 #pragma endregion
 
@@ -368,15 +372,19 @@ void Player::Update() {
 		}
 		return false;
 	});
-	playerUI_->SetPosition(UIPlayerPos_ + sceneVelo + shakeVelo_);
-	if (damageCount == 3) {
-		tailUI_[int(tails_.size() - 1)]->SetTextureHandle(tailTexture_[0]);
-	} else if (damageCount == 2) {
-		tailUI_[int(tails_.size() - 1)]->SetTextureHandle(tailTexture_[1]);
-	} else if (damageCount == 1) {
-		tailUI_[int(tails_.size() - 1)]->SetTextureHandle(tailTexture_[2]);
-	}
 
+	playerUI_->SetPosition(UIPlayerPos_ + sceneVelo + shakeVelo_);
+	
+		
+	if (tails_.size() > 0) {
+		if (damageCount == 3) {
+			tailUI_[int(tails_.size() - 1)]->SetTextureHandle(tailTexture_[0]);
+		} else if (damageCount == 2) {
+			tailUI_[int(tails_.size() - 1)]->SetTextureHandle(tailTexture_[1]);
+		} else if (damageCount == 1) {
+			tailUI_[int(tails_.size() - 1)]->SetTextureHandle(tailTexture_[2]);
+		}
+	}
 	if (tails_.size() > 0) {
 		for (int i = 0; i < tails_.size() - 1; i++) {
 			tailUI_[i]->SetTextureHandle(tailTexture_[0]);
@@ -402,6 +410,11 @@ void Player::Update() {
 		}
 	}
 	predictionLine_->SetSize(predictionLineSize);
+
+	UITailPos_[0] = {UIPlayerPos_.x - (80.0f * 3.0f), UIPlayerPos_.y};
+	for (int i = 1; i < 6; i++) {
+		UITailPos_[i] = {UITailPos_[0].x + (i * 80.0f), UITailPos_[0].y};
+	}
 }
 
 /// <summary>
@@ -442,6 +455,7 @@ void Player::ApplyGrobalVariables() {
 	BulletRadian = gloVars->GetFloatValue(groupName, "Bullet_shot_Radian");
 	bulletSpeed_ = gloVars->GetFloatValue(groupName, "bulletSpeed_");
 	oneTime = gloVars->GetIntValue(groupName, "oneTime");
+	UIPlayerPos_ = gloVars->GetVector2Value(groupName, "UIPlayerPos_");
 }
 
 /// <summary>

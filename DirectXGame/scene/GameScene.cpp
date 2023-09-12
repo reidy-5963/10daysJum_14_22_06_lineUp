@@ -4,6 +4,7 @@
 #include <cassert>
 #include <cmath>
 #include "Scroll.h"
+#include "GlobalVariables.h"
 
 /// <summary>
 /// コンストクラタ
@@ -20,6 +21,7 @@ GameScene::~GameScene() {}
 /// </summary>
 void GameScene::Initialize() {
 	sceneNum = 1;
+	gameTimer = setGameTime;
 
 	dxCommon_ = DirectXCommon::GetInstance();
 	input_ = Input::GetInstance();
@@ -64,21 +66,50 @@ void GameScene::Initialize() {
 	back->SetSize(size);
 #pragma endregion 
 	
-	
-	
+#pragma region 背景
+	numTex_ = TextureManager::Load("nums.png");
+	numPos[0] = {1920.0f - 500.0f, 3.0f};
+	numPos[1] = {numPos[0].x - 128.0f, numPos[0].y};
+
+	for (int i = 0; i < 2; i++) {
+		num[i].reset(Sprite::Create(numTex_, numPos[i], {1.0f, 1.0f, 1.0f, 1.0f}, {0.5f, 0.5f}));
+		Vector2 tmpSize = {128.0f, 128.0f};
+		num[i]->SetSize(tmpSize);
+	}
+#pragma endregion 
+	#pragma region 背景
+	numTex_ = TextureManager::Load("nums.png");
+	enemyNumPos[0] = {500.0f - 500.0f, 3.0f};
+	enemyNumPos[1] = {enemyNumPos[0].x - 128.0f, enemyNumPos[0].y};
+
+	for (int i = 0; i < 2; i++) {
+		enemyNum[i].reset(
+		    Sprite::Create(numTex_, enemyNumPos[i], {1.0f, 1.0f, 1.0f, 1.0f}, {0.5f, 0.5f}));
+		Vector2 tmpSize = {128.0f, 128.0f};
+		enemyNum[i]->SetSize(tmpSize);
+	}
+#pragma endregion 
+
+	InitializeGrobalVariables();
 	BGMHandle_ = Audio::GetInstance()->LoadWave("GameScene.wav");
 }
 
 /// <summary>
 /// 毎フレーム処理
 /// </summary>
-void GameScene::Update() { 	
+void GameScene::Update() { 
+	ApplyGrobalVariables();
+	enemyNumPos[0] = {enemyNumPos_.x - 64.0f, enemyNumPos_.y};
+	enemyNumPos[1] = {enemyNumPos_.x + 64.0f, enemyNumPos_.y};
+	numPos[0] = {scoreNumPos_.x - 64.0f, scoreNumPos_.y};
+	numPos[1] = {scoreNumPos_.x + 64.0f, scoreNumPos_.y};
+
 	// BGM再生
 	if (audio_->IsPlaying(BGMHandle_) == 0 || BGMHandle_ == -1) {
 		BGMHandle_ = audio_->PlayWave(BGMHandle_, true, bolume);
 	}
 
-
+	if (!isGameSet_) {
 	// スクロールの更新処理
 	//Scroll* scroll = Scroll::GetInstance();
 	scroll_->Update();
@@ -99,23 +130,51 @@ void GameScene::Update() {
 	player_->SetSceneVelo(sceneShakevelo_);
 	boss_->SetSceneVelo(sceneShakevelo_);
 
-	if (killCount_ > 30 && !isBossRespown_) {
+	if (killCount_ > setKillCount && !isBossRespown_) {
 		isBossRespown_ = true;
 		boss_->RespownBoss();
 	}
 
 	// ボスの更新処理
-	//if (!boss_->IsDead()) {
 		boss_->SetPlayer(player_->GetPosition());
 		boss_->Update();
-	//}
 	
 
-
+		if (--gameTimer < 0) {
+			isGameSet_ = true;
+		}
 	
 	// 背景の更新処理
-	//back->SetPosition(backPos - scroll->GetAddScroll() + sceneShakevelo_);
+	}
+	//
+	else if (isGameSet_) {
+		
+		
+	}
+	ImGui::Begin("timer");
+	ImGui::Text("%d", gameTimer);
+	ImGui::Text("timer : %d", gameTimer / 60);
+	ImGui::Text("ten : %d", (gameTimer / 60) % 10);
+	ImGui::End();
+
+	int timeraaa = gameTimer / 60;
+	Tn(scoreTen, scoreOne, timeraaa);
+	num[0]->SetTextureRect({0.0f + (scoreTen * 128.0f), 0.0f}, {128.0f, 128.0f});
+	num[1]->SetTextureRect({0.0f + (scoreOne * 128.0f), 0.0f}, {128.0f, 128.0f});
+
+	num[0]->SetPosition(numPos[0]);
+	num[1]->SetPosition(numPos[1]);
+
+	timeraaa = setKillCount - killCount_;
+	Tn(enemyTen, enemyOne, timeraaa);
+	enemyNum[0]->SetTextureRect({0.0f + (enemyTen * 128.0f), 0.0f}, {128.0f, 128.0f});
+	enemyNum[1]->SetTextureRect({0.0f + (enemyOne * 128.0f), 0.0f}, {128.0f, 128.0f});
+
+	enemyNum[0]->SetPosition(enemyNumPos[0]);
+	enemyNum[1]->SetPosition(enemyNumPos[1]);
 }
+
+
 
 /// <summary>
 /// 描画
@@ -173,10 +232,48 @@ void GameScene::Draw() {
 	/// </summary>
 	player_->DrawUI();
 
+	num[0]->Draw();
+
+	num[1]->Draw();
+
+	if (!boss_->IsAlive()) {
+		enemyNum[0]->Draw();
+		enemyNum[1]->Draw();
+
+	}
+
 	// スプライト描画後処理
 	Sprite::PostDraw();
 
 #pragma endregion
+}
+
+void GameScene::InitializeGrobalVariables() { // グローバル変数系のシングルトンインスタンスを取得
+	GlobalVariables* gloVars = GlobalVariables::GetInstance();
+	// グループ名の設定
+	const char* groupName = "GameScene";
+
+	// 作ったグループにそれぞれアイテムを追加
+	gloVars->CreateGroup(groupName);
+	gloVars->AddItem(groupName, "enemyNumPos_", enemyNumPos_);
+	gloVars->AddItem(groupName, "scoreNumPos_", scoreNumPos_);
+	//gloVars->AddItem(groupName, "RootRotate_t_offset", rootRotate_t_offset);
+	//gloVars->AddItem(groupName, "Bullet_shot_Radian", BulletRadian);
+	//gloVars->AddItem(groupName, "bulletSpeed_", bulletSpeed_);
+	//gloVars->AddItem(groupName, "oneTime", oneTime);
+}
+
+void GameScene::ApplyGrobalVariables() { // グローバル変数系のシングルトンインスタンスを取得
+	GlobalVariables* gloVars = GlobalVariables::GetInstance();
+	// グループ名の設定
+	const char* groupName = "GameScene";
+	// 作ったグループにあるアイテムから値を取得
+	enemyNumPos_ = gloVars->GetVector2Value(groupName, "enemyNumPos_");
+	scoreNumPos_ = gloVars->GetVector2Value(groupName, "scoreNumPos_");
+	//rootRotate_t_offset = gloVars->GetFloatValue(groupName, "RootRotate_t_offset");
+	//BulletRadian = gloVars->GetFloatValue(groupName, "Bullet_shot_Radian");
+	//bulletSpeed_ = gloVars->GetFloatValue(groupName, "bulletSpeed_");
+	//oneTime = gloVars->GetIntValue(groupName, "oneTime");
 }
 
 /// <summary>

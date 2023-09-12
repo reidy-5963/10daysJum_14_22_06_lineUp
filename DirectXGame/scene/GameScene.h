@@ -49,9 +49,25 @@ public: // メンバ関数
 	void Draw() override;
 
 	/// <summary>
+	/// グローバル変数の初期化処理
+	/// </summary>
+	void InitializeGrobalVariables();
+	
+
+	/// <summary>
+	/// グローバル変数の更新処理
+	/// </summary>
+	void ApplyGrobalVariables();
+
+	/// <summary>
 	/// 当たり判定
 	/// </summary>
 	void CheckAllCollision();
+	void Tn(int& ten, int& one, int tmp) {
+		ten = tmp / 10;
+		tmp = tmp % 10;
+		one = tmp;
+	}
 
 private: // メンバ変数
 	DirectXCommon* dxCommon_ = nullptr;
@@ -74,6 +90,7 @@ private: // メンバ変数
 	// ボス
 	std::unique_ptr<BossEnemy> boss_ = nullptr;
 
+	int setKillCount = 30;
 	// 雑魚敵の倒した数
 	int killCount_ = 0;
 
@@ -103,4 +120,19 @@ private: // メンバ変数
 
 	int setGameTime = 60 * 60;
 	int gameTimer = setGameTime;
+	bool isGameSet_ = false;
+
+	std::unique_ptr<Sprite> num[2];
+	Vector2 scoreNumPos_{};
+	Vector2 numPos[2];
+	uint32_t numTex_;
+
+	int scoreTen = 0;
+	int scoreOne = 0;
+
+	std::unique_ptr<Sprite> enemyNum[2];
+	Vector2 enemyNumPos_{};
+	Vector2 enemyNumPos[2];
+	int enemyTen = 0;
+	int enemyOne = 0;
 };
