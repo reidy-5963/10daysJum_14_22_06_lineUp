@@ -401,7 +401,7 @@ void GameScene::CheckAllCollision() {
 	float radius = player_->GetRadius() + boss_->GetRadius();
 
 	// 交差判定
-	if (distance <= radius) {
+	if (distance <= radius && boss_->IsAlive()) {
 		if (!player_->GetIsInvisible()) {
 			// コールバック
 			player_->OnCollision();
