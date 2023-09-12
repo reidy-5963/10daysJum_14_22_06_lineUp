@@ -485,7 +485,7 @@ void EnemyManager::ArrowBehavior(int switchPatt)
 	// 敵同士の間隔
 	float enemySpaceOffset = 100.0f;
 	// 数
-	int ArrowNumber = 5;
+	int ArrowNumber = 3;
 	// プレイヤーからの距離
 	Vector2 offset = {};
 	// 速さ

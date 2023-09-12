@@ -35,6 +35,7 @@ void BossEnemy::RushAttackInitialize() {
 	// 補間レート初期化
 	this->rushMove_t_ = 0;
 	isRushNow_ = true;
+	isRush_ = false;
 }
 
 void BossEnemy::RushAttackSetup() {

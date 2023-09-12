@@ -351,6 +351,7 @@ void GameScene::CheckAllCollision() {
 			float distance = std::sqrtf(
 			    std::powf(targetA.x - targetB.x, 2) + std::powf(targetA.y - targetB.y, 2));
 			float radius = playerBullet_->GetRadius() + enemy->GetRadius();
+			float bulletRadius = playerBullet_->GetRadius();
 
 			if (distance <= radius) {
 				// コールバック
@@ -359,7 +360,9 @@ void GameScene::CheckAllCollision() {
 						enemy->OnCollision();
 						killCount_ += 1;
 					}
-					playerBullet_->OnCollision();
+					if (bulletRadius < 32.0f) {
+						playerBullet_->OnCollision();
+					}
 				}
 
 			
@@ -379,12 +382,26 @@ void GameScene::CheckAllCollision() {
 
 		float radius = playerBullet_->GetRadius() + boss_->GetRadius();
 
+		float bulletRadius = playerBullet_->GetRadius();
+
 		if (distance <= radius && boss_->IsAlive()) {
 			if (!playerBullet_->IsCollapse()) {
 				// コールバック
 				playerBullet_->OnCollision();
 				boss_->OnCollision();
-				boss_->SetHp(boss_->GetHp() - 1);
+				if (bulletRadius == 64.0f / 1) {
+					boss_->SetHp(boss_->GetHp() - 21);
+				} else if (bulletRadius == 64.0f / 2) {
+					boss_->SetHp(boss_->GetHp() - 15);
+				} else if (bulletRadius == 64.0f / 3) {
+					boss_->SetHp(boss_->GetHp() - 10);
+				} else if (bulletRadius == 64.0f / 4) {
+					boss_->SetHp(boss_->GetHp() - 6);
+				} else if (bulletRadius == 64.0f / 5) {
+					boss_->SetHp(boss_->GetHp() - 3);
+				} else if (bulletRadius == 64.0f / 6) {
+					boss_->SetHp(boss_->GetHp() - 1);
+				}
 			}
 			
 		}
