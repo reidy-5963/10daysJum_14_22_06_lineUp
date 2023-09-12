@@ -113,6 +113,4 @@ private: // メンバ変数
 	bool eneMove_= false;
 	bool rootEneMove = false;
 
-	int setLeftClickTime = 240;
-	int leftClickTimer = 0;
 };
