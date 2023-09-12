@@ -32,6 +32,8 @@ public:
 
 	void SetSceneVelo(Vector2 velo) { sceneVelo_ = velo; }
 
+	void EnemyUpdate();
+
 public:	// 設定、取得
 
 	/// <summary>
@@ -89,7 +91,12 @@ public:	// リスポーンタイプ
 
 	void FourPointsSpawn();
 
+	/// <summary>
+	/// 突進の着地時にスポーンさせる関数
+	/// </summary>
 	void RushSpawn();
+
+	void StartSpawn();
 
 public: // 敵の生成関数
 	// 四隅
@@ -109,6 +116,7 @@ public: // 敵の生成関数
 	/// <param name="velocity"></param>
 	void AddEnemy(const Vector2& position, const Vector2& velocity, const Vector2& direction);
 
+	void SetIsBossAlive(bool isAlive) { isBossAlive_ = isAlive; }
 
 private:
 
@@ -134,6 +142,8 @@ private:
 	bool isArrowRespown_ = false;
 
 	int kArrowDelay_ = 120;
+
+	bool isBossAlive_ = false;
 
 private:
 	// パターン湧きしているか

@@ -234,7 +234,7 @@ void BossEnemy::Update()
 	ScPos = prevPlayerPos_ - scroll->GetAddScroll() + sceneVelo;
 	
 	rushSprite_->SetPosition(ScPos);
-	hp_ = SetMaxHp;
+	//hp_ = SetMaxHp;
 	BulletUpdate();
 	particle_->Update();
 
@@ -390,6 +390,7 @@ void BossEnemy::RootInitialize() { actionTimer_ = 0; }
 void BossEnemy::ActionTable() 
 {
 	int behaviorRand = rand() % 5;
+	/// 下から順番に呼び出す
 	switch (behaviorRand) {
 	case 0:
 		actions_.push_back(Behavior::kBarrage);
@@ -399,17 +400,17 @@ void BossEnemy::ActionTable()
 
 		break;
 	case 1:
-		actions_.push_back(Behavior::kBarrage);
 		actions_.push_back(Behavior::kRushAlert);
-		actions_.push_back(Behavior::kFunnel);
 		actions_.push_back(Behavior::kCross);
-
+		actions_.push_back(Behavior::kBarrage);
+		actions_.push_back(Behavior::kCross);
+		actions_.push_back(Behavior::kFunnel);
 		break;
 	case 2:
-		actions_.push_back(Behavior::kBarrage);
+		actions_.push_back(Behavior::kCross);
 		actions_.push_back(Behavior::kRushAlert);
 		actions_.push_back(Behavior::kBarrage);
-		//actions_.push_back(Behavior::kRushAlert);
+		actions_.push_back(Behavior::kRushAlert);
 		break;
 	case 3:
 		actions_.push_back(Behavior::kRushAlert);

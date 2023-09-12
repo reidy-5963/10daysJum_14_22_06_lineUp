@@ -26,44 +26,42 @@ void EnemyManager::Update()
 {
 #ifdef _DEBUG
 	ImGui::Begin("count");
-	ImGui::Text("isRespown : %d", isArrowRespown_);
-	ImGui::Text("arrowCoolTime : %d", ArrowCoolTime);
+	ImGui::Text("isRespown : %d", patternInterval_);
+	ImGui::Text("arrowCoolTime : %d", kInterval_);
 	ImGui::End();
 
 #endif // _DEBUG
 
-
 	normalSpawnTimer_++;
 
-	//FourPointsSpawn();
-
-	//FormationSpawnUpdate();
-
-	//ArrowBehaviorControl();
-
-	if (input_->TriggerKey(DIK_4)) {
-		CreateEnemy(kLeftTop);
-		CreateEnemy(kLeftBottom);
-		CreateEnemy(kRightTop);
-		CreateEnemy(kRightBottom);
+	if (isBossAlive_) {
+		autoSpawnSecond_ = 8;
+	} else {
+		autoSpawnSecond_ = 3;
+	}
+	if (!isArrowRespown_) {
+		patternInterval_++;
 	}
 
-	if (input_->TriggerKey(DIK_5)) {
-		this->DiagonalBehavior();
-	}
+	FourPointsSpawn();
 
-	if (input_->TriggerKey(DIK_6)) {
-		this->DiagonalClockWiseBehavior();
-	}
+	FormationSpawnUpdate();
 
-	if (input_->TriggerKey(DIK_7)) {
-		HorizontalSpawn();
-	}
+	ArrowBehaviorControl();
 
-	if (input_->TriggerKey(DIK_8)) {
-		VerticalSpawn();
-	}
+	EnemyUpdate();
+}
 
+void EnemyManager::Draw() 
+{
+	// エネミーの描画処理
+	for (Enemy* enemy : enemys_) {
+		enemy->Draw();
+	}
+}
+
+void EnemyManager::EnemyUpdate() 
+{
 	// 消去処理
 	enemys_.remove_if([](Enemy* enemy) {
 		if (enemy->GetIsDead()) {
@@ -80,20 +78,8 @@ void EnemyManager::Update()
 	}
 }
 
-void EnemyManager::Draw() 
-{
-	// エネミーの描画処理
-	for (Enemy* enemy : enemys_) {
-		enemy->Draw();
-	}
-}
-
 void EnemyManager::FormationSpawnUpdate() 
 {
-	if (!isPatternNow_) {
-		patternInterval_++;
-	}
-
 	if (patternInterval_ == kInterval_) {
 		int random = rand() % 6;
 		patternInterval_ = 0;
@@ -258,6 +244,39 @@ void EnemyManager::RushSpawn()
 	AddEnemy(rightTop, Vector2(speedPower, -speedPower));
 	AddEnemy(leftBottom, Vector2(-speedPower, speedPower));
 	AddEnemy(rightBottom, Vector2(speedPower, speedPower));
+}
+
+void EnemyManager::StartSpawn() {
+	Vector2 spawnPoint = {};
+	float offset = 100.0f;
+	Vector2 ankerPoint = {float(WinApp::kWindowWidth / 2), float(WinApp::kWindowHeight / 2) + (offset * 3)};
+	// 右真ん中
+	spawnPoint = Vector2(ankerPoint.x + float(WinApp::kWindowWidth / 2), ankerPoint.y);
+	AddEnemy(spawnPoint, MyMath::Normalize(spawnPoint - ankerPoint));
+
+	// 右下
+	spawnPoint = Vector2(
+	    ankerPoint.x + float(WinApp::kWindowWidth / 2),
+	    ankerPoint.y + float(WinApp::kWindowHeight / 2));
+	AddEnemy(spawnPoint, MyMath::Normalize(spawnPoint - ankerPoint));
+
+	// 右上
+	spawnPoint = Vector2(
+	    ankerPoint.x + float(WinApp::kWindowWidth / 2),
+	    ankerPoint.y - float(WinApp::kWindowHeight / 2));
+	AddEnemy(spawnPoint, MyMath::Normalize(spawnPoint - ankerPoint));
+
+	// 下
+	spawnPoint= Vector2(
+	    ankerPoint.x + float(WinApp::kWindowWidth / 4),
+	    ankerPoint.y + float(WinApp::kWindowHeight / 2) + offset);
+	AddEnemy(spawnPoint, MyMath::Normalize(spawnPoint - ankerPoint));
+
+	// 上
+	spawnPoint = Vector2(
+	    ankerPoint.x + float(WinApp::kWindowWidth / 4),
+	    ankerPoint.y - float(WinApp::kWindowHeight / 2) - offset);
+	AddEnemy(spawnPoint, MyMath::Normalize(spawnPoint - ankerPoint));
 }
 
 void EnemyManager::DiagonalBehavior() 
@@ -696,10 +715,6 @@ void EnemyManager::ArrowBehavior(int switchPatt)
 
 void EnemyManager::ArrowBehaviorControl() 
 {
-	if (input_->TriggerKey(DIK_7)) {
-		ArrowBehaviorPlay();
-	}
-
 	if (isArrowRespown_) {
 		ArrowCoolTime++;
 		if (ArrowCoolTime == kArrowDelay_ * 1) {

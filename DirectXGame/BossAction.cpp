@@ -76,7 +76,7 @@ void BossEnemy::RushAlertInitialize()
 
 void BossEnemy::GuidedAttack() {
 	modeCount_ += 1;	
-	int GuidedInterval = 30; 
+	int GuidedInterval = 40; 
 	if (modeCount_ == kModeEndTimer_) {
 		behaviorRequest_ = Behavior::kRoot;
 		actions_.pop_back();
@@ -84,7 +84,7 @@ void BossEnemy::GuidedAttack() {
 
 	if (modeCount_ % GuidedInterval == 0) {
 		Vector2 velocity = MyMath::Normalize(nowPlayerPos_ - pos_);
-		GenerateBullet(velocity, 8.0f);
+		GenerateBullet(velocity, 5.0f);
 	}
 }
 

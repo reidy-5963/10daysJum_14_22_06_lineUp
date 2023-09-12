@@ -57,6 +57,7 @@ void GameScene::Initialize() {
 
 	enemyManager_ = EnemyManager::GetInstance();
 	enemyManager_->Initialize();
+	enemyManager_->StartSpawn();
 #pragma endregion
 
 #pragma region 背景
@@ -119,6 +120,7 @@ void GameScene::Update() {
 	enemyManager_->SetPlayer(player_->GetPosition());
 	enemyManager_->SetBoss(boss_->GetPosition());
 	enemyManager_->SetSceneVelo(sceneShakevelo_);
+	enemyManager_->SetIsBossAlive(boss_->IsAlive());
 	enemyManager_->Update();
 	//enemyManager_->FourPointsSpawn();
 
