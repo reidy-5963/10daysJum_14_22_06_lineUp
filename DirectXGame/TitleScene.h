@@ -64,4 +64,6 @@ private: // メンバ変数
 
 	Vector2 titleLogoStartPos_{};
 	Vector2 titleLogoEndPos_{};
+	float titleLogo_t_ = 0.0f;
+	bool titleLogoMove_ = false;
 };

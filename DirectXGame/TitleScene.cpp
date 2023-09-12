@@ -25,9 +25,11 @@ void TitleScene::Initialize() {
 	Vector2 size = {1920, 1080};
 	back->SetSize(size);
 #pragma endregion
+
 #pragma region タイトル 
 	titleLogoPos_ = {WinApp::kWindowWidth / 2, (WinApp::kWindowHeight / 2) / 2};
-
+	titleLogoStartPos_ = {WinApp::kWindowWidth / 2, (WinApp::kWindowHeight / 2) / 2};
+	titleLogoEndPos_ = {WinApp::kWindowWidth / 2, (WinApp::kWindowHeight / 2) / 2 - 10.0f};
 	titleTex_ = TextureManager::Load("Title_ver2.png");
 	title_.reset(Sprite::Create(titleTex_, titleLogoPos_, {1.0f, 1.0f, 1.0f, 1.0f}, {0.5f, 0.5f}));
 
@@ -43,7 +45,21 @@ void TitleScene::Initialize() {
 }
 
 void TitleScene::Update() { 
+	if (!titleLogoMove_) {
+		titleLogoPos_ = MyMath::EaseInCubicF(titleLogo_t_, titleLogoStartPos_, titleLogoEndPos_);
+		MyMath::CountT(titleLogo_t_, 0.0f, titleLogoMove_, true, 0.1f);
+	}
+	if (titleLogoMove_) {
+		titleLogoPos_ = MyMath::EaseInCubicF(titleLogo_t_, titleLogoEndPos_, titleLogoStartPos_);
+		MyMath::CountT(titleLogo_t_, 0.0f, titleLogoMove_, false, 0.1f);
+		if (!titleLogoMove_) {
+			titleLogoPos_ =
+			    MyMath::EaseInCubicF(titleLogo_t_, titleLogoStartPos_, titleLogoEndPos_);
+			MyMath::CountT(titleLogo_t_, 0.0f, titleLogoMove_, true, 0.1f);
+		}
+	}
 
+	title_->SetPosition(titleLogoPos_);
 	// プレイヤーの更新処理
 	player_->Update();
 }
