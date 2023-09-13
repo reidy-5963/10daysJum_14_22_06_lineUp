@@ -81,6 +81,9 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		} else if (input->TriggerKey(DIK_F12) && win->IsFullscreen()) {
 			win->SetFullscreen(false);
 		}
+		if (input->TriggerKey(DIK_ESCAPE)) {
+			break;
+		}
 		// グローバル変数の更新処理
 		GlobalVariables::GetInstance()->Update();		
 
