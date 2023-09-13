@@ -84,7 +84,7 @@ void Enemy::OnCollision() {
 	if (!isParasite_) {
 		ParasiteAnimationInitialize();
 		isParasite_ = true;
-		Audio::GetInstance()->PlayWave(deadSEHandle_, false, 0.3f);
+		Audio::GetInstance()->PlayWave(deadSEHandle_, false, 0.15f);
 	}
 }
 
