@@ -38,7 +38,7 @@ void BossEnemy::RushAttack() {
 	particle_->SetTecture(particleTex);
 	particle_->SetLenge(pos_, {radius_, radius_});
 	particle_->SetSceneVelo(sceneVelo);
-	particle_->SetTime(3);
+	particle_->SetTime(5);
 	particle_->SetVelo({0.0f, 0.0f});
 	particle_->SetPattern(ParticleManager::ParticlePattarn::Straight);
 	particle_->SetIsParticle(true);
