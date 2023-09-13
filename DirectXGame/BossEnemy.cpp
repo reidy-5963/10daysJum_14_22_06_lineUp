@@ -46,7 +46,6 @@ BossEnemy::BossEnemy() {
 
 void BossEnemy::RespownBoss() 
 { 
-	//pos_ = {float(WinApp::kWindowWidth), float(WinApp::kWindowHeight)};
 	isAlive_ = true;
 	isDead_ = false;
 	float spawnY = 0;

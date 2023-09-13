@@ -4,6 +4,7 @@
 #include <cmath>
 #include <numbers>
 
+#pragma region 突進
 
 void BossEnemy::RushAttack() {
 	// 補間レート処理
@@ -12,12 +13,6 @@ void BossEnemy::RushAttack() {
 		isRushNow_ = false;
 		behaviorRequest_ = Behavior::kRoot;
 		actions_.pop_back();
-		//if (actions_.back() == Behavior::kRoot) {
-		//	isLastAction_ = true;
-		//	Audio::GetInstance()->PlayWave(rushSpawnSEHandle_, false, 0.2f);
-		//} else {
-		//	isLastAction_ = false;
-		//}
 	} else {
 		rushMove_t_ += 0.02f;
 		float volume = 0.3f;
@@ -86,6 +81,10 @@ void BossEnemy::RushAlertInitialize()
 	Audio::GetInstance()->PlayWave(rushAlertSEHandle_, false, volume);
 }
 
+#pragma endregion
+
+#pragma region 誘導弾
+
 void BossEnemy::GuidedAttack() {
 	modeCount_ += 1;	
 	int GuidedInterval = 40; 
@@ -104,8 +103,16 @@ void BossEnemy::GuidedAttackInitialize()
 { 
 	sprite_->SetTextureHandle(charaTex_);
 	isGuided_ = true;
-	kModeEndTimer_ = ConvertSeconds(5);
+	if (hp_ <= SetMaxHp / 2) {
+		kModeEndTimer_ = 280;
+	} else {
+		kModeEndTimer_ = 310;
+	}
 }
+
+#pragma endregion
+
+#pragma region 弾幕
 
 void BossEnemy::BarrageAttack() {
 	modeCount_ += 1;
@@ -152,9 +159,17 @@ void BossEnemy::BarrageAttack() {
 
 void BossEnemy::BarrageAttackInitialize() {
 	sprite_->SetTextureHandle(charaTex_);
-	kModeEndTimer_ = 150;
+	if (hp_ <= (SetMaxHp / 2)) {
+		kModeEndTimer_ = 200;
+	} else {
+		kModeEndTimer_ = 150;
+	}
 	rotateDegree = 180.0f / float(std::numbers::pi) * sprite_->GetRotation();
 }
+
+#pragma endregion
+
+#pragma region ファンネル
 
 void BossEnemy::FunnelAttack() {
 	modeCount_ += 1;
@@ -181,6 +196,10 @@ void BossEnemy::FunnelAttackInitialize() {
 	isFunnelAttackNow_ = true;
 	sprite_->SetTextureHandle(bossFunnelTex_);
 }
+
+#pragma endregion
+
+#pragma region 十字
 
 void BossEnemy::CrossAttack()
 { 
@@ -229,6 +248,10 @@ void BossEnemy::CrossAttackInitialize()
 	kModeEndTimer_ = ConvertSeconds(2);
 	isCrossForm_ = true;
 }
+
+#pragma endregion
+
+#pragma region 中央に戻る奴
 
 void BossEnemy::CenterMove() 
 {
@@ -312,3 +335,5 @@ void BossEnemy::CenterAlertInitialize()
 	float volume = 0.2f;
 	Audio::GetInstance()->PlayWave(rushAlertSEHandle_, false, volume);
 }
+
+#pragma endregion
