@@ -34,14 +34,23 @@ void EnemyManager::Initialize() {
 
 void EnemyManager::Update() 
 {
+#ifdef _DEBUG
+	
+	ImGui::Begin("ti");
+	ImGui::Text(" %d : %d", gameTime_, kInterval_);
+	ImGui::End();
+	
+#endif // _DEBUG
+	
+
 	normalSpawnTimer_++;
 
-	if (gameTime_ <= 600) {
+	if (gameTime_ <= 800) {
 		gameTime_++;
-		kInterval_ = 60 * 5;
+		kIntervalSecond_ = 6;
 		autoSpawnSecond_ = 5;
 	} else {
-		kInterval_ = 60 * 8;
+		kIntervalSecond_ = 8;
 		autoSpawnSecond_ = 7;
 	}
 
