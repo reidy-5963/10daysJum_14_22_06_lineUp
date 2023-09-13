@@ -341,7 +341,7 @@ void GameScene::Draw() {
 	timerNum[1]->Draw();
 	timerNum[2]->Draw();
 
-	if (!boss_->IsAlive()) {
+	if (!boss_->IsAlive() && !boss_->IsParasite()) {
 		enemyNum[0]->Draw();
 		enemyNum[1]->Draw();
 		enemy_UI->Draw();

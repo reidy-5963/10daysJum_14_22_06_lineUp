@@ -279,6 +279,9 @@ void TitleScene::Draw() {
 	// シーン遷移エリアの描画
 	title2gameSceneAria_->Draw();
 
+	// プレイヤーの描画処理
+	player_->Draw();
+
 	// もしチュートリアルが始まってたら
 	if (TitleTutrialStart) {
 		enemyManager_->Draw();
@@ -294,9 +297,7 @@ void TitleScene::Draw() {
 			}
 		}
 	}
-	// プレイヤーの描画処理
-	player_->Draw();
-	
+
 
 	// ロゴの描画
 	titleLogo_->Draw();

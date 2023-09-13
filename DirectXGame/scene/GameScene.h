@@ -110,7 +110,7 @@ private: // メンバ変数
 #pragma endregion
 
 #pragma region 音 
-	float volume = 0.01f;
+	float volume = 0.02f;
 	float SEvolume = 0.1f;
 
 	uint32_t BGMHandle_ = 0u;
