@@ -5,6 +5,7 @@
 #include "TextureManager.h"
 #include <cassert>
 #include <cmath>
+#include "Animation.h"
 
 /// <summary>
 /// コンストクラタ
@@ -78,14 +79,21 @@ void GameScene::Initialize() {
 
 #pragma region 背景
 	backTex = TextureManager::Load("back.png");
-	back[0].reset(Sprite::Create(backTex, {0.0f, 0.0f}, {1.0f, 1.0f, 1.0f, 1.0f}, {0.0f, 0.0f}));
-	back[1].reset(Sprite::Create(backTex, {0.0f, 0.0f}, {1.0f, 1.0f, 1.0f, 1.0f}, {0.0f, 0.0f}));
-	back[2].reset(Sprite::Create(backTex, {0.0f, 0.0f}, {1.0f, 1.0f, 1.0f, 1.0f}, {0.0f, 0.0f}));
-	back[3].reset(Sprite::Create(backTex, {0.0f, 0.0f}, {1.0f, 1.0f, 1.0f, 1.0f}, {0.0f, 0.0f}));
-
-	backPos[0] = {0.0f, 0.0f};
-	backPos[1] = {1920.0f, 0.0f};
-	backPos[2] = {0.0f, 1080.0f};
+	for (int i = 0; i < 4; i++) {
+		back[i].reset(
+		    Sprite::Create(backTex, {0.0f, 0.0f}, {1.0f, 1.0f, 1.0f, 1.0f}, {0.0f, 0.0f}));
+		Vector2 size = back[i]->GetSize();
+		
+		back[i]->SetSize(size * 1.25f);
+	}
+	// 1920 1080
+	//
+	// 960 540
+	//
+	// 480 270
+	backPos[0] = {-480.0f, -270.0f};
+	backPos[1] = {1920.0f, -270.0f};
+	backPos[2] = {-480.0f, 1080.0f};
 	backPos[3] = {1920.0f, 1080.0f};
 
 #pragma endregion
@@ -120,6 +128,12 @@ void GameScene::Initialize() {
 	InitializeGrobalVariables();
 	BGMHandle_ = Audio::GetInstance()->LoadWave("music/GameScene.wav");
 	pickUpTailSEHandle_ = Audio::GetInstance()->LoadWave("music/pickUpTail.wav");
+	enemyUITex_ = TextureManager::Load("Enemy_ver2.png");
+
+	enemy_UI.reset(
+	    Sprite::Create(enemyUITex_, enemyUIPos_, {1.0f, 1.0f, 1.0f, 1.0f}, {0.5f, 0.5f}));
+	enemy_UI->SetTextureRect({0.0f, 0.0f}, {128.0f, 128.0f});
+	enemy_UI->SetSize({150.0f, 150.0f});
 }
 
 /// <summary>
@@ -248,7 +262,8 @@ void GameScene::Update() {
 	for (int i = 0; i < 4; i++) {
 		back[i]->SetPosition(backPos[i] + sceneShakevelo_ - scroll_->GetAddScroll());
 	}
-
+	enemy_UI->SetPosition(enemyUIPos_);
+	enemy_UI->SetRotation((3.14f * 0.5f));
 }
 
 /// <summary>
@@ -316,7 +331,7 @@ void GameScene::Draw() {
 		enemyNum[0]->Draw();
 		enemyNum[1]->Draw();
 	}
-
+	enemy_UI->Draw();
 	player_->DrawCursor();
 
 	// スプライト描画後処理
@@ -340,8 +355,7 @@ void GameScene::InitializeGrobalVariables() { // グローバル変数系のシ�
 	gloVars->AddItem(groupName, "setEneBulletDamage", setEneBulletDamage);
 	gloVars->AddItem(groupName, "setBossEnemyDamage", setBossEnemyDamage);
 
-	//gloVars->AddItem(groupName, "scoreNumPos_", scoreNumPos_);
-	//gloVars->AddItem(groupName, "scoreSize_", scoreSize_);
+	gloVars->AddItem(groupName, "enemyUIPos_", enemyUIPos_);
 
 
 }
@@ -359,8 +373,7 @@ void GameScene::ApplyGrobalVariables() { // グローバル変数系のシング
 	setEneBulletDamage = gloVars->GetIntValue(groupName, "setEneBulletDamage");
 	setBossEnemyDamage = gloVars->GetIntValue(groupName, "setBossEnemyDamage");
 	
-	//scoreNumPos_ = gloVars->GetVector2Value(groupName, "scoreNumPos_");
-	//scoreSize_ = gloVars->GetVector2Value(groupName, "scoreSize_");
+	enemyUIPos_ = gloVars->GetVector2Value(groupName, "enemyUIPos_");
 }
 
 /// <summary>
