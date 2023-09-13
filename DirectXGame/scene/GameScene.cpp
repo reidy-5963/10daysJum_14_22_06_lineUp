@@ -65,6 +65,7 @@ void GameScene::Initialize() {
 
 	enemyManager_ = EnemyManager::GetInstance();
 	enemyManager_->Initialize();
+	enemyManager_->SetIsGameMode(true);
 	enemyManager_->StartSpawn();
 #pragma endregion
 
@@ -79,8 +80,9 @@ void GameScene::Initialize() {
 	timerNumTex_ = TextureManager::Load("nums.png");
 	timerNumPos[0] = {1920.0f - 500.0f, 3.0f};
 	timerNumPos[1] = {timerNumPos[0].x - 128.0f, timerNumPos[0].y};
+	timerNumPos[2] = {timerNumPos[1].x - 128.0f, timerNumPos[1].y};
 
-	for (int i = 0; i < 2; i++) {
+	for (int i = 0; i < 3; i++) {
 		timerNum[i].reset(Sprite::Create(timerNumTex_, timerNumPos[i], {1.0f, 1.0f, 1.0f, 1.0f}, {0.5f, 0.5f}));
 		Vector2 tmpSize = {128.0f, 128.0f};
 		timerNum[i]->SetSize(tmpSize);
@@ -101,32 +103,23 @@ void GameScene::Initialize() {
 #pragma endregion
 
 	ShowCursor(false);
-	cursorTex_ = TextureManager::Load("Cursor.png");
-	cursor_.reset(
-	    Sprite::Create(cursorTex_, {-20.0f, -20.0f}, {1.0f, 1.0f, 1.0f, 1.0f}, {0.5f, 0.5f}));
-
 	InitializeGrobalVariables();
-	BGMHandle_ = Audio::GetInstance()->LoadWave("GameScene.wav");
+	BGMHandle_ = Audio::GetInstance()->LoadWave("music/GameScene.wav");
 }
 
 /// <summary>
 /// 毎フレーム処理
 /// </summary>
 void GameScene::Update() {
-	POINT mousePos;
-	GetCursorPos(&mousePos);
-	// クライアントエリア座標に変換する
-	HWND hwnd = WinApp::GetInstance()->GetHwnd();
-	ScreenToClient(hwnd, &mousePos);
-	cursor_->SetPosition({float(mousePos.x), float(mousePos.y)});
 
 
 	ApplyGrobalVariables();
 	enemyNumPos[0] = {enemyNumPos_.x - 64.0f, enemyNumPos_.y};
 	enemyNumPos[1] = {enemyNumPos_.x + 64.0f, enemyNumPos_.y};
 
-	timerNumPos[0] = {TimerNumPos_.x - 64.0f, TimerNumPos_.y};
-	timerNumPos[1] = {TimerNumPos_.x + 64.0f, TimerNumPos_.y};
+	timerNumPos[0] = {TimerNumPos_.x - 128.0f, TimerNumPos_.y};
+	timerNumPos[1] = {TimerNumPos_.x, TimerNumPos_.y};
+	timerNumPos[2] = {TimerNumPos_.x + 128.0f, TimerNumPos_.y};
 
 	if (!isGameSet_) { 
 		// BGM再生
@@ -200,12 +193,14 @@ void GameScene::Update() {
 	ImGui::End();
 
 	int timeraaa = gameTimer / 60;
-	MyMath::TenCount(timerTen, timerOne, timeraaa);
-	timerNum[0]->SetTextureRect({0.0f + (timerTen * 128.0f), 0.0f}, {128.0f, 128.0f});
-	timerNum[1]->SetTextureRect({0.0f + (timerOne * 128.0f), 0.0f}, {128.0f, 128.0f});
+	MyMath::HandredCount(timerHandred, timerTen, timerOne, timeraaa);
+	timerNum[0]->SetTextureRect({0.0f + (timerHandred * 128.0f), 0.0f}, {128.0f, 128.0f});
+	timerNum[1]->SetTextureRect({0.0f + (timerTen * 128.0f), 0.0f}, {128.0f, 128.0f});
+	timerNum[2]->SetTextureRect({0.0f + (timerOne * 128.0f), 0.0f}, {128.0f, 128.0f});
 
 	timerNum[0]->SetPosition(timerNumPos[0]);
 	timerNum[1]->SetPosition(timerNumPos[1]);
+	timerNum[2]->SetPosition(timerNumPos[2]);
 
 	timeraaa = setKillCount - killCount_;
 	MyMath::TenCount(enemyTen, enemyOne, timeraaa);
@@ -215,21 +210,9 @@ void GameScene::Update() {
 	enemyNum[0]->SetPosition(enemyNumPos[0]);
 	enemyNum[1]->SetPosition(enemyNumPos[1]);
 
-	if (gameTimer > 60 * 100) {
-		gameTimer = 60 * 99;
+	if (gameTimer > 60 * 1000) {
+		gameTimer = 60 * 999;
 	}
-
-	//
-	//MyMath::ThousandCount(scoreThousand, scorehandred, scoreTen, scoreOne, score);
-	//scoreNum[3]->SetTextureRect({0.0f + (scoreThousand * 128.0f), 0.0f}, {128.0f, 128.0f});
-	//scoreNum[2]->SetTextureRect({0.0f + (scorehandred * 128.0f), 0.0f}, {128.0f, 128.0f});
-	//scoreNum[1]->SetTextureRect({0.0f + (scoreTen * 128.0f), 0.0f}, {128.0f, 128.0f});
-	//scoreNum[0]->SetTextureRect({0.0f + (scoreOne * 128.0f), 0.0f}, {128.0f, 128.0f});
-	//for (int i = 0; i < 4; i++) {
-	//	scoreNum[i]->SetColor(scoreColor_);
-	//	scoreNum[i]->SetSize(scoreSize_);
-	//	scoreNum[i]->SetPosition(scoreNumPos[i]);
-	//}
 
 	pickUpTailTime = 60 * setTailTime;
 	funnelDamage = 60 * setTailTime;
@@ -294,15 +277,15 @@ void GameScene::Draw() {
 	player_->DrawUI();
 
 	timerNum[0]->Draw();
-
 	timerNum[1]->Draw();
+	timerNum[2]->Draw();
 
 	if (killCount_ < 30) {
 		enemyNum[0]->Draw();
 		enemyNum[1]->Draw();
 	}
 
-	cursor_->Draw();
+	player_->DrawCursor();
 
 	// スプライト描画後処理
 	Sprite::PostDraw();

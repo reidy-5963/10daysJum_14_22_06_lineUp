@@ -20,6 +20,7 @@ void TitleScene::Initialize() {
 	sceneNum = TITLE;
 	// 静的変数の初期化
 	StaticValueInitialize();
+	BGMHandle_ = Audio::GetInstance()->LoadWave("music/GameScene.wav");
 
 	Scroll::GetInstance()->Initialize();
 
@@ -82,6 +83,7 @@ void TitleScene::Initialize() {
 
 	enemyManager_ = EnemyManager::GetInstance();
 	enemyManager_->Initialize();
+	enemyManager_->SetIsGameMode(false);
 
 	title2gameSceneAria_->SetPosition(ariaStartPos_);
 
@@ -103,6 +105,10 @@ void TitleScene::StaticValueInitialize() {
 }
 
 void TitleScene::Update() { 
+	// BGM再生
+	if (audio_->IsPlaying(BGMHandle_) == 0 || BGMHandle_ == -1) {
+		BGMHandle_ = audio_->PlayWave(BGMHandle_, true, bolume);
+	}
 
 	ApplyGrobalVariables();
 
@@ -170,6 +176,10 @@ void TitleScene::TutorialUpdate() {
 
 	if (player_->GetMarkerPos().x > 1800.0f) {
 		if (player_->GetPosition().x > 1800.0f) {
+			if (audio_->IsPlaying(BGMHandle_)) {
+				audio_->StopWave(BGMHandle_);
+			}
+
 			sceneNum = GAMESCENE;
 		}
 	}
@@ -212,6 +222,7 @@ void TitleScene::Draw() {
 
 
 
+	player_->DrawCursor();
 
 	// スプライト描画後処理
 	Sprite::PostDraw();

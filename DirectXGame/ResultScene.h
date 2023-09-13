@@ -84,5 +84,8 @@ private: // メンバ変数
 
 	float aria_t_ = 0.0f;
 	bool isAriaMove_ = false;
-#pragma endregion
+#pragma endregion 
+	float bolume = 0.01f;
+
+	uint32_t BGMHandle_ = 0u;
 };

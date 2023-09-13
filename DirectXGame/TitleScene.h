@@ -105,5 +105,11 @@ private: // メンバ変数
 	EnemyManager* enemyManager_;
 
 	Vector2 enemyEndPos_[6];
+	float bolume = 0.01f;
+
+	uint32_t BGMHandle_ = 0u;
+
+
+
 
 };

@@ -20,6 +20,7 @@ void ResultScene::Initialize() {
 	input_ = Input::GetInstance();
 	audio_ = Audio::GetInstance();
 	Scroll::GetInstance()->Initialize();
+	BGMHandle_ = Audio::GetInstance()->LoadWave("music/GameScene.wav");
 
 	player_.release();
 	title2gameSceneAria_.release();
@@ -42,7 +43,7 @@ void ResultScene::Initialize() {
 #pragma endregion
 
 #pragma region シーン遷移エリア
-	ariaTex_ = TextureManager::Load("T2GaSceneAria.png");
+	ariaTex_ = TextureManager::Load("title_Aria.png");
 	title2gameSceneAria_.reset(Sprite::Create(ariaTex_, ariaPos_, ariaColor_, {0.0f, 0.0f}));
 	ariaPos_ = {1800.0f, 0.0f};
 
@@ -69,7 +70,12 @@ void ResultScene::Initialize() {
 	title2gameSceneAria_->SetPosition(ariaStartPos_);
 }
 
-void ResultScene::Update() {
+void ResultScene::Update() { 
+	// BGM再生
+	if (audio_->IsPlaying(BGMHandle_) == 0 || BGMHandle_ == -1) {
+		BGMHandle_ = audio_->PlayWave(BGMHandle_, true, bolume);
+	}
+
 	if (isBossDead) {
 		title_->SetTextureRect({0.0f, 0.0f}, {950.0f, 540.0f});
 	} else if (!isBossDead) {
@@ -129,6 +135,10 @@ void ResultScene::TutorialUpdate() {
 	}
 
 	if (player_->GetMarkerPos().x > 1800.0f) {
+		if (audio_->IsPlaying(BGMHandle_)) {
+			audio_->StopWave(BGMHandle_);
+		}
+
 		if (player_->GetPosition().x > 1800.0f) {
 			sceneNum = TITLE;
 		}
@@ -157,6 +167,7 @@ void ResultScene::Draw() {
 	//
 	title_->Draw();
 
+	player_->DrawCursor();
 	// スプライト描画後処理
 	Sprite::PostDraw();
 	// 深度バッファクリア

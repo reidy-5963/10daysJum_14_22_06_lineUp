@@ -32,6 +32,7 @@ public: // 継承
 	void P2EOnCollision();
 
 	void ParasiteAnimationInitialize();
+	void SetIsGameMode(bool isGameMode) { isGameMode_ = isGameMode; }
 
 public: // 設定
 	/// <summary>
@@ -91,6 +92,7 @@ private:
 	int collapseAnioneTime = 3;
 
 	bool isBossParasite_ = false;
+	bool isGameMode_ = false;
 
 private: // 限界値
 	Vector2 kMinusLimits = {-250.0f, -250.0f};
