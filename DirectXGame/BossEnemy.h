@@ -347,4 +347,5 @@ private: // 揺らす系
 	int collapseAnioneTime = 20;
 
 	uint32_t parasiteTex_;
+	Vector2 hpPos_{};
 };

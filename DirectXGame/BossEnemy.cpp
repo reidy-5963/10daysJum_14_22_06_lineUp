@@ -155,11 +155,10 @@ void BossEnemy::Initialize()
 	    Sprite::Create(charaTex_, {pos_.x, pos_.y}, {1.0f, 1.0f, 1.0f, 1.0f}, {0.5f, 0.5f}));
 	rushSprite_.reset(
 	    Sprite::Create(rushPointTex_, {0, 0}, {1.0f, 1.0f, 1.0f, 1.0f}, {0.5f, 0.5f}));
-
-	hpSprite_.reset(Sprite::Create(
-	    hpTex_, {float(WinApp::kWindowWidth / 2), 60.0f}, {1.0f, 1.0f, 1.0f, 1.0f}, {0.5f, 0.5f}));
-	hpShadowSprite_.reset(Sprite::Create(
-	    hpShadowTex_, {float(WinApp::kWindowWidth / 2), 60.0f}, {1.0f, 1.0f, 1.0f, 1.0f},
+	InitializeGrobalVariables();
+	hpPos_ = {float(WinApp::kWindowWidth / 2), 60.0f};
+	hpSprite_.reset(Sprite::Create(hpTex_, hpPos_, {1.0f, 1.0f, 1.0f, 1.0f}, {0.5f, 0.5f}));
+	hpShadowSprite_.reset(Sprite::Create(hpShadowTex_, hpPos_, {1.0f, 1.0f, 1.0f, 1.0f},
 	    {0.5f, 0.5f}));
 
 	directSprite_.reset(Sprite::Create(
@@ -170,8 +169,8 @@ void BossEnemy::Initialize()
 
 	directSprite_->SetSize(Vector2(size.x - directSprite_->GetSize().x / 3, size.y - directSprite_->GetSize().x / 3));
 
-	hpSprite_->SetSize(Vector2(1200.0f, 60.0f));
-	hpShadowSprite_->SetSize(Vector2(1200.0f, 60.0f));
+	hpSprite_->SetSize(Vector2(900.0f, 70.0f));
+	hpShadowSprite_->SetSize(Vector2(900.0f, 70.0f));
 	hpGaugeSize = hpSprite_->GetSize();
 	MaxHpSize = hpSprite_->GetSize().x;
 	// 当たり判定用の半径（サイズに合わせる）
@@ -182,7 +181,6 @@ void BossEnemy::Initialize()
 	particle_->Initialize(particleTex);
 
 	actions_.push_back(Behavior::kRoot);
-	InitializeGrobalVariables();
 }
 
 void BossEnemy::Update() 
@@ -317,12 +315,13 @@ void BossEnemy::Update()
 			isDead_ = true;
 		}
 	}
-	
+	hpShadowSprite_->SetPosition(hpPos_);
+
 	// HPサイズ
 	float hpSize = (float(hp_) / float(SetMaxHp)) * hpGaugeSize.x;
 	// スプライトの設定
 	hpSprite_->SetSize({hpSize, hpGaugeSize.y});
-	hpSprite_->SetPosition({(1920 / 2) - (MaxHpSize - hpSize) / 2, 60.0f});
+	hpSprite_->SetPosition({hpPos_.x - (MaxHpSize - hpSize) / 2, hpPos_.y});
 
 	ScreenPos += shakeVelo_;
 
@@ -539,5 +538,13 @@ void BossEnemy::InitializeGrobalVariables() {
 	// 作ったグループにそれぞれアイテムを追加
 	gloVars->CreateGroup(groupName);
 	gloVars->AddItem(groupName, "SetMaxHp", SetMaxHp);
+	gloVars->AddItem(groupName, "hpPos_", hpPos_);
 }
-void BossEnemy::ApplyGrobalVariables() {}
+void BossEnemy::ApplyGrobalVariables() { // グローバル変数系のシングルトンインスタンスを取得
+	GlobalVariables* gloVars = GlobalVariables::GetInstance();
+	// グループ名の設定
+	const char* groupName = "Boss";
+	// 作ったグループにあるアイテムから値を取得
+	SetMaxHp = gloVars->GetIntValue(groupName, "SetMaxHp");
+	hpPos_ = gloVars->GetVector2Value(groupName, "hpPos_");
+}

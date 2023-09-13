@@ -1119,11 +1119,11 @@ void Player::Draw() {
 	// スプライトの描画
 	BaseCharacter::Draw();
 #ifdef _DEBUG
-	m1->Draw();
+	/*m1->Draw();
 	m2->Draw();
 	p1->Draw();
 	p2->Draw();
-	origin_->Draw();
+	origin_->Draw();*/
 #endif // _DEBUG
 }
 
