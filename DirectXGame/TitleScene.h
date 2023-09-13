@@ -15,6 +15,7 @@
 #include "Player.h"
 #include "Enemy.h"
 #include "Scroll.h"
+#include "EnemyManager.h"
 
 class TitleScene : public BaseScene {
 public: // メンバ関数
@@ -100,18 +101,9 @@ private: // メンバ変数
 	bool titleLogoMove_ = false;
 
 	bool TitleTutrialStart = false;
+	// エネミー
+	EnemyManager* enemyManager_;
 
-	uint32_t enemyTex_;
-	uint32_t parasiteTex_;
-	uint32_t particleTex_;
-	uint32_t collapseTex_ = 0u;
-	std::unique_ptr<Enemy> enemy_[6];
-	Vector2 enemyPos_[6];
-	Vector2 enemyStartPos_[6];
 	Vector2 enemyEndPos_[6];
-	Vector2 enemyRootMOvePOs[6];
-	float eneMove_t_ = 0.0f;
-	bool eneMove_= false;
-	bool rootEneMove = false;
 
 };
