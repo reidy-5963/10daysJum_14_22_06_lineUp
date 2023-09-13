@@ -31,9 +31,9 @@ public:
 		target_ = target;
 	}
 
-	int IsScreenOut() { return isScreenOut_; }
+	int IsScreenOut() { return isScreenIn_; }
 
-	void SetIsScreenOut(int isScreenOut) { isScreenOut_ = isScreenOut; }
+	void SetIsScreenOut(int isScreenOut) { isScreenIn_ = isScreenOut; }
 	
 	void loopUpdate();
 
@@ -57,6 +57,6 @@ private:
 	int heightMax = 1;
 
 
-	int isScreenOut_ = UNKNOWN;
+	int isScreenIn_ = UNKNOWN;
 
 };

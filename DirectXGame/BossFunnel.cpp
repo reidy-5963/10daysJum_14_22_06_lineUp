@@ -77,7 +77,7 @@ void BossFunnel::Update(Vector2& playerPos) {
 		if (kMoveSpeed_ < 0.5f) {
 			isDead_ = true;
 		}
-		if (!isSENow_ && kMoveSpeed_ >= 1.0f) {
+		if (!isSENow_ && kMoveSpeed_ >= 1.5f) {
 			isSENow_ = true;
 			Audio::GetInstance()->PlayWave(SEHandle_, false, 0.05f);
 		}

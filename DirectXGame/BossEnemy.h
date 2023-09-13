@@ -150,6 +150,8 @@ public:	// 設定・取得
 
 	bool IsParasite() { return isParasite_; }
 
+	void BossDirection();
+
 private:
 	// 入力
 	Input* input_ = nullptr;
@@ -157,11 +159,14 @@ private:
 	std::unique_ptr<Sprite> rushSprite_;
 	std::unique_ptr<Sprite> hpSprite_;
 	std::unique_ptr<Sprite> hpShadowSprite_;
-	// 
+	std::unique_ptr<Sprite> directSprite_;
+#pragma region テクスチャ
+	// ラッシュ時の画像
 	uint32_t bossRushTex_ = 0u;
-	// 
+	// ファンネル時の画像
 	uint32_t bossFunnelTex_ = 0u;
-
+	// 何もしてないときの画像
+	uint32_t bossNoneActionTex_ = 0u;
 	// 弾用のテクスチャ
 	uint32_t bulletTex_ = 0u;
 	// ファンネル用のテクスチャ
@@ -171,6 +176,9 @@ private:
 	// HP用のテクスチャ
 	uint32_t hpTex_ = 0u;
 	uint32_t hpShadowTex_ = 0u;
+	// ボスの方向の矢印
+	uint32_t directArrowTex_ = 0u;
+#pragma endregion
 
 	// 毎フレームプレイヤーの座標補間変数
 	Vector2 nowPlayerPos_ = {};
@@ -197,9 +205,12 @@ private:
 	uint32_t rushAlertSEHandle_ = 0;
 	// ボスの弾の音
 	uint32_t bulletSEHandle_ = 0;
-
 	bool isRushSound_ = 0;
 
+	// 画面外の方向
+	bool isScreenOut_ = false;
+	Vector2 directArrowPos_ = {};
+	Vector2 ScDirect_ = {};
 
 private:
 	// 弾のリスト

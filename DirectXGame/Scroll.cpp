@@ -19,21 +19,21 @@ void Scroll::Update() {
 }
 
 void Scroll::loopUpdate() {
-	if (isScreenOut_ == UNKNOWN) {
+	if (isScreenIn_ == UNKNOWN) {
 		if (target_->x >= float(WinApp::kWindowWidth)) {
 			addScroll.x -= float(WinApp::kWindowWidth);
-			isScreenOut_ = LEFT;
+			isScreenIn_ = LEFT;
 		} else if (target_->x <= 0) {
 			addScroll.x += float(WinApp::kWindowWidth);
-			isScreenOut_ = RIGHT;
+			isScreenIn_ = RIGHT;
 		}
 
 		if (target_->y >= float(WinApp::kWindowHeight)) {
 			addScroll.y -= float(WinApp::kWindowHeight);
-			isScreenOut_ = UP;
+			isScreenIn_ = UP;
 		} else if (target_->y <= 0) {
 			addScroll.y += float(WinApp::kWindowHeight);
-			isScreenOut_ = DOWN;
+			isScreenIn_ = DOWN;
 		}
 	}
 }

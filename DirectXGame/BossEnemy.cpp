@@ -17,7 +17,7 @@ BossEnemy::BossEnemy() {
 	charaTex_ = TextureManager::Load("BossEnemy.png");
 	bossFunnelTex_ = TextureManager::Load("parpleBoss.png");
 	bossRushTex_ = TextureManager::Load("blueBoss.png");
-
+	bossNoneActionTex_ = TextureManager::Load("gleyBoss.png");
 	parasiteTex_ = TextureManager::Load("bossbreak.png");
 	// 弾
 	bulletTex_ = TextureManager::Load("BossBullet.png");
@@ -30,7 +30,8 @@ BossEnemy::BossEnemy() {
 	// HP
 	hpTex_ = TextureManager::Load("HP_Out_Tex.png");
 	hpShadowTex_ = TextureManager::Load("Hp_Gauge_Out_Tex.png");
-
+	// 方向
+	directArrowTex_ = TextureManager::Load("BossMarker.png");
 #pragma region サウンドテクスチャ
 	// ファンネル
 	funnelSEHandle_ = Audio::GetInstance()->LoadWave("music/FunnelSE.mp3");
@@ -65,6 +66,37 @@ void BossEnemy::RespownBoss()
 	actions_.push_back(Behavior::kRushAlert);
 	prevAction_ = 20;
 	behaviorRand_ = 20;
+}
+
+void BossEnemy::BossDirection() 
+{
+	Vector2 ankerPoint = nowPlayerPos_;
+	Vector2 distance = {1280.0f, 720.0f};
+
+	Vector2 leftTop = {ankerPoint.x - distance.x, ankerPoint.y - distance.y};
+
+	Vector2 rightBottom = {ankerPoint.x + distance.x, ankerPoint.y + distance.y};
+
+	Vector2 player2Boss = {pos_ - nowPlayerPos_};
+
+	float dist = 200.0f;
+
+	if (pos_.x < leftTop.x || pos_.x > rightBottom.x ||
+		pos_.y < leftTop.y || pos_.y > rightBottom.y) 
+	{	
+		isScreenOut_ = true;
+	} 
+	else 
+	{
+		isScreenOut_ = false;
+	}
+
+	directArrowPos_ = MyMath::Normalize(player2Boss);
+	directArrowPos_ = {directArrowPos_.x * dist, directArrowPos_.y * dist};
+	//directSprite_->SetPosition(directArrowPos_ + nowPlayerPos_);
+
+	float rotation = std::atan2(player2Boss.y, player2Boss.x);
+	directSprite_->SetRotation(rotation);
 }
 
 void BossEnemy::GenerateBullet(Vector2& velocity, float speedValue) 
@@ -124,6 +156,12 @@ void BossEnemy::Initialize()
 	    hpShadowTex_, {float(WinApp::kWindowWidth / 2), 60.0f}, {1.0f, 1.0f, 1.0f, 1.0f},
 	    {0.5f, 0.5f}));
 
+	directSprite_.reset(Sprite::Create(
+	    directArrowTex_, {directArrowPos_.x, directArrowPos_.y}, {1.0f, 1.0f, 1.0f, 1.0f},
+	    {0.5f, 0.5f}));
+
+	directSprite_->SetSize(Vector2(directSprite_->GetSize().x / 2, directSprite_->GetSize().x / 2));
+
 	hpSprite_->SetSize(Vector2(1200.0f, 60.0f));
 	hpShadowSprite_->SetSize(Vector2(1200.0f, 60.0f));
 	hpGaugeSize = hpSprite_->GetSize();
@@ -147,19 +185,21 @@ void BossEnemy::Update()
 	ImGui::Begin("player");
 	ImGui::Text("%f : %f", nowPlayerPos_.x, nowPlayerPos_.y);
 	ImGui::Text(" %d ", behavior_);
-	ImGui::Text("actionTimer : %d\nCoolTime", actionTimer_, kActionCoolTime_);
+	ImGui::Text(" %f : %f", directArrowPos_.x, directArrowPos_.y);
 	ImGui::Text(" %d ", isLastAction_);
+	ImGui::Text("isScreenOut : %d", isScreenOut_);
 	ImGui::End();
 #endif // _DEBUG
 
 	/// 死ぬ処理
 	if (isAlive_ && hp_ <= 0) {
 		isParasite_ = true;
-		//isDead_ = true;
 		isAlive_ = false;
 	}
 
 	ScreenPosInitialize();
+
+	BossDirection();
 
 	if (!isParasite_) {
 		// リクエスト
@@ -257,9 +297,12 @@ void BossEnemy::Update()
 
 	// スクロールのインスタンス取得
 	Scroll* scroll = Scroll::GetInstance();
-	ScPos = prevPlayerPos_ - scroll->GetAddScroll() + sceneVelo;
-	
+	ScPos = prevPlayerPos_ - scroll->GetAddScroll() + sceneVelo;	
 	rushSprite_->SetPosition(ScPos);
+
+	ScDirect_ = directArrowPos_ - scroll->GetAddScroll() + sceneVelo;
+	//directSprite_->SetPosition(ScDirect_);
+	directSprite_->SetPosition(ScDirect_ + nowPlayerPos_);
 	//hp_ = SetMaxHp;
 	BulletUpdate();
 	particle_->Update();
@@ -290,6 +333,9 @@ void BossEnemy::Draw()
 		hpSprite_->Draw();
 	}
 
+	if (isScreenOut_ && isAlive_) {
+		directSprite_->Draw();
+	}
 }
 
 void BossEnemy::OnCollision() { 	
@@ -360,14 +406,14 @@ void BossEnemy::ActionControl()
 			actionTimer_ = 0;			
 		}
 	}
-
+#ifdef _DEBUG
 	if (input_->TriggerKey(DIK_A)) {
-		//actions_.push_back(Behavior::kRoot);
+		// actions_.push_back(Behavior::kRoot);
 		actions_.push_back(Behavior::kFunnel);
 		actions_.push_back(Behavior::kRushAlert);
 	}
 	if (input_->TriggerKey(DIK_S)) {
-		//actions_.push_back(Behavior::kRoot);
+		// actions_.push_back(Behavior::kRoot);
 		actions_.push_back(Behavior::kRushAlert);
 		actions_.push_back(Behavior::kFunnel);
 	}
@@ -413,6 +459,8 @@ void BossEnemy::ActionControl()
 		RespownBoss();
 	}
 
+#endif // DEBUG
+
 	// リクエストの読み込み
 	if (behavior_ != actions_.back()) {
 		behaviorRequest_ = actions_.back();
@@ -440,13 +488,9 @@ void BossEnemy::ActionTable()
 	case 1:
 		actions_.push_back(Behavior::kRushAlert);
 		actions_.push_back(Behavior::kCross);
-		actions_.push_back(Behavior::kBarrage);
-		actions_.push_back(Behavior::kCross);
 		actions_.push_back(Behavior::kFunnel);
 		break;
 	case 2:
-		actions_.push_back(Behavior::kCross);
-		actions_.push_back(Behavior::kRushAlert);
 		actions_.push_back(Behavior::kBarrage);
 		actions_.push_back(Behavior::kRushAlert);
 		break;
@@ -455,6 +499,10 @@ void BossEnemy::ActionTable()
 		actions_.push_back(Behavior::kFunnel);
 		break;
 	case 4:
+		actions_.push_back(Behavior::kRushAlert);
+		actions_.push_back(Behavior::kBarrage);
+		actions_.push_back(Behavior::kCross);
+		actions_.push_back(Behavior::kBarrage);
 
 		break;
 	}
@@ -466,7 +514,7 @@ void BossEnemy::RootUpdate() {
 }
 
 void BossEnemy::RootInitialize() {
-	sprite_->SetTextureHandle(charaTex_);
+	sprite_->SetTextureHandle(bossNoneActionTex_);
 	actionTimer_ = 0;
 }
 
