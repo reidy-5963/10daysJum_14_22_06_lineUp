@@ -40,4 +40,7 @@ private:
 	int animationScene = 5;
 	int oneTime = 3;
 	bool isAnimation = false;
+
+	int setTimer = 20;
+	int timer = setTimer;
 };
