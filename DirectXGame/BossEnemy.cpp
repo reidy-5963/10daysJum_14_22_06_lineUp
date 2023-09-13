@@ -92,7 +92,6 @@ void BossEnemy::BossDirection()
 
 	directArrowPos_ = MyMath::Normalize(player2Boss);
 	directArrowPos_ = {directArrowPos_.x * dist, directArrowPos_.y * dist};
-	//directSprite_->SetPosition(directArrowPos_ + nowPlayerPos_);
 
 	float rotation = std::atan2(player2Boss.y, player2Boss.x);
 	directSprite_->SetRotation(rotation);
@@ -137,7 +136,6 @@ void BossEnemy::Initialize()
 
 	pos_ = {3000.0f, 3000.0f };
 
-	//RespownBoss();
 	animationTimer = 0;
 	animationNumber = 0;
 	animationScene = 4;
@@ -334,9 +332,9 @@ void BossEnemy::Update()
 	rushSprite_->SetPosition(ScPos);
 
 	ScDirect_ = directArrowPos_ - scroll->GetAddScroll() + sceneVelo;
-	//directSprite_->SetPosition(ScDirect_);
 	directSprite_->SetPosition(ScDirect_ + nowPlayerPos_);
-	//hp_ = SetMaxHp;
+
+	/// 更新
 	BulletUpdate();
 	particle_->Update();
 
@@ -346,26 +344,32 @@ void BossEnemy::Update()
 
 void BossEnemy::Draw() 
 {
+	// パーティクル
 	particle_->Draw();
 
+	// 突進
 	if (isRush_ || isRushNow_) {
 		rushSprite_->Draw();
 	}
 
+	// 弾
 	for (BossBullet* bullet : bullets_) {
 		bullet->Draw();
 	}
+	// ファンネル
 	for (BossFunnel* funnel : funnels_) {
 		funnel->Draw();
 	}
 	// 描画
 	BaseCharacter::Draw();
 
+	// HP
 	if (isAlive_) {
 		hpShadowSprite_->Draw();
 		hpSprite_->Draw();
 	}
 
+	// 矢印
 	if (isScreenOut_ && isAlive_) {
 		directSprite_->Draw();
 	}
@@ -440,36 +444,6 @@ void BossEnemy::ActionControl()
 		}
 	}
 #ifdef _DEBUG
-	if (input_->TriggerKey(DIK_A)) {
-		// actions_.push_back(Behavior::kRoot);
-		actions_.push_back(Behavior::kFunnel);
-		actions_.push_back(Behavior::kRushAlert);
-	}
-	if (input_->TriggerKey(DIK_S)) {
-		// actions_.push_back(Behavior::kRoot);
-		actions_.push_back(Behavior::kCenter);
-		actions_.push_back(Behavior::kRushAlert);
-		actions_.push_back(Behavior::kFunnel);
-	}
-	/// 突進起動キー処理
-	if (input_->TriggerKey(DIK_D)) {
-		actions_.push_back(Behavior::kBarrage);
-		actions_.push_back(Behavior::kGuided);
-	}
-	/// 誘導
-	if (input_->TriggerKey(DIK_F)) {
-		actions_.push_back(Behavior::kBarrage);
-		actions_.push_back(Behavior::kGuided);
-		actions_.push_back(Behavior::kFunnel);
-		actions_.push_back(Behavior::kRushAlert);
-	}
-	/// 全方位
-	if (input_->TriggerKey(DIK_G)) {
-		actions_.push_back(Behavior::kFunnel);
-		actions_.push_back(Behavior::kRushAlert);
-		actions_.push_back(Behavior::kFunnel);
-		actions_.push_back(Behavior::kRushAlert);
-	}
 	/// ファンネル
 	if (input_->TriggerKey(DIK_H)) {
 		actions_.push_back(Behavior::kRoot);
@@ -480,7 +454,7 @@ void BossEnemy::ActionControl()
 	}
 	/// 方向転換
 	if (input_->TriggerKey(DIK_J)) {
-		actions_.push_back(Behavior::kBarrage);
+
 	}
 	/// リスポーン
 	if (input_->TriggerKey(DIK_K)) {

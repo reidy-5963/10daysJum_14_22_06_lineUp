@@ -97,8 +97,6 @@ void EnemyManager::FormationSpawnUpdate()
 	if (patternInterval_ >= kInterval_) {
 		RandomSpawn();
 	}
-
-
 }
 
 void EnemyManager::CreateEnemy(int spownPoint) {

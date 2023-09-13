@@ -35,13 +35,7 @@ void Enemy::AnimationValueInitialize() {
 
 void Enemy::Update() {
 	ScreenPosInitialize();
-#ifdef _DEBUG
-	ImGui::Begin("EnemyInfo");
-	ImGui::DragFloat2("pos", &pos_.x, 0.1f, 0, 2000.0f);
-	ImGui::SliderFloat2("speed", &velocity_.x, 0.0f, 30.0f);
-	ImGui::End();
 
-#endif // _DEBUG
 	if (isBossParasite_) {
 		isParasite_ = true;
 	}
@@ -62,6 +56,7 @@ void Enemy::Update() {
 		}
 	}
 
+	// 更新処理
 	particle_->Update();
 	// 座標設定
 	BaseCharacter::Update();

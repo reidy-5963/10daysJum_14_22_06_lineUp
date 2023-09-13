@@ -211,11 +211,14 @@ void GameScene::Update() {
 			isBossDead = true;
 		}
 	}
+#ifdef _DEBUG
 	ImGui::Begin("timer");
 	ImGui::Text("%d", gameTimer);
 	ImGui::Text("timer : %d", gameTimer / 60);
 	ImGui::Text("ten : %d", (gameTimer / 60) % 10);
 	ImGui::End();
+
+#endif // DEBUG
 
 	int timeraaa = gameTimer / 60;
 	MyMath::HandredCount(timerHandred, timerTen, timerOne, timeraaa);
@@ -415,11 +418,7 @@ void GameScene::CheckAllCollision() {
 					// gameTimer -= eneBulletDamage;
 					enemy->SetIsDead(true);
 				}
-				//
-				// killCount_ += 1;
-
 			}
-			//
 			else if (player_->GetIsInvisible()) {
 				if (enemy->IsParasite()) {
 					// gameTimer += pickUpTailTime;
@@ -496,44 +495,6 @@ void GameScene::CheckAllCollision() {
 			}
 		}
 	}
-#pragma endregion
-
-#pragma region ボスのファンネルと尻尾
-	// for (BossFunnel* bossFunnel_ : bossFunnel) {
-	//	// エネミーの位置取得
-	//	targetA = bossFunnel_->GetPosition();
-	//	for (Tail* tail : tails) {
-	//		targetB = tail->GetPosition();
-	//		float distance = std::sqrtf(
-	//		    std::powf(targetA.x - targetB.x, 2) + std::powf(targetA.y - targetB.y, 2));
-	//		float radius = tail->GetRadius() + bossFunnel_->GetRadius();
-	//		// 交差判定
-	//		if (distance <= radius) {
-	//			// コールバック
-	//			bossFunnel_->OnCollision();
-	//			tail->OnCollision();
-	//		}
-	//	}
-	// }
-#pragma endregion
-
-#pragma region ボスの弾と尻尾
-	// for (BossBullet* bossBullet_ : bossBullet) {
-	//	// エネミーの位置取得
-	//	targetA = bossBullet_->GetPosition();
-	//	for (Tail* tail : tails) {
-	//		targetB = tail->GetPosition();
-	//		float distance = std::sqrtf(
-	//		    std::powf(targetA.x - targetB.x, 2) + std::powf(targetA.y - targetB.y, 2));
-	//		float radius = tail->GetRadius() + bossBullet_->GetRadius();
-	//		// 交差判定
-	//		if (distance <= radius) {
-	//			// コールバック
-	//			bossBullet_->OnCollision();
-	//			tail->OnCollision();
-	//		}
-	//	}
-	// }
 #pragma endregion
 
 #pragma region プレイヤーの弾と敵
