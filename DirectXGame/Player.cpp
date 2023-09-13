@@ -9,6 +9,7 @@
 #include <cassert>
 #include <cmath>
 #include <complex>
+#include "Audio.h"
 
 /// <summary>
 /// コンストラクタ
@@ -18,7 +19,14 @@ Player::Player() {}
 /// <summary>
 /// デストラクタ
 /// </summary>
-Player::~Player() {}
+Player::~Player() {
+	if (Audio::GetInstance()->IsPlaying(BulletSEHandle_)) {
+		Audio::GetInstance()->StopWave(BulletSEHandle_);
+	}
+	if (Audio::GetInstance()->IsPlaying(DamageSEHandle_)) {
+		Audio::GetInstance()->StopWave(DamageSEHandle_);
+	}
+}
 
 #pragma region 初期化系
 
@@ -52,6 +60,10 @@ void Player::Initialize() {
 	// 無敵関係の初期化
 	invisibleTimeCount_ = 0;
 	isInvisible_ = false;
+
+	BulletSEHandle_ = 
+		 Audio::GetInstance()->LoadWave("music/p_bullet02.wav");
+	DamageSEHandle_ = Audio::GetInstance()->LoadWave("music/p_Damage.wav");
 
 	// アニメーションで使う変数の初期化
 	AnimationValueInitialize();
@@ -504,6 +516,7 @@ void Player::Update() {
 /// </summary>
 void Player::OnCollision() {
 	if (!isInvisible_) {
+		Audio::GetInstance()->PlayWave(DamageSEHandle_, false, volume);
 		// もし当たったらシェイクフラグを有効に
 		isDamageShake = true;
 		damageCount--;
@@ -1164,6 +1177,8 @@ void Player::DeleteTails() {
 /// </summary>
 /// <param name="bullet">追加する弾</param>
 void Player::AddBullets(PlayerBullet* bullet) {
+	Audio::GetInstance()->PlayWave(BulletSEHandle_, false, volume);
+
 	// 弾をリストに追加
 	bullets_.push_back(bullet);
 }

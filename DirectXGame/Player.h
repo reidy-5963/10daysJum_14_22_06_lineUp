@@ -421,4 +421,9 @@ private: // メンバ変数
 	int tailCollapseAniNumber = 0;
 	int tailCollapseAniScene = 7;
 	int tailCollapseAnioneTime = 3;
+
+	uint32_t BulletSEHandle_ = 0u;
+	uint32_t DamageSEHandle_ = 0u;
+
+	float volume = 0.09f;
 };

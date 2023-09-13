@@ -103,7 +103,7 @@ void GameScene::Initialize() {
 
 	ShowCursor(false);
 	InitializeGrobalVariables();
-	BGMHandle_ = Audio::GetInstance()->LoadWave("GameScene.wav");
+	BGMHandle_ = Audio::GetInstance()->LoadWave("music/GameScene.wav");
 }
 
 /// <summary>
