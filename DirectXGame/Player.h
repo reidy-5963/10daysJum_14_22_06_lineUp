@@ -157,6 +157,8 @@ public: // メンバ関数
 	/// </summary>
 	void DrawUI();
 
+	void DrawCursor();
+
 #pragma endregion
 	
 public: // 追加や削除の関数

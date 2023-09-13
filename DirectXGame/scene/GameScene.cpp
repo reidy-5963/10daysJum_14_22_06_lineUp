@@ -284,6 +284,7 @@ void GameScene::Draw() {
 		enemyNum[1]->Draw();
 	}
 
+	player_->DrawCursor();
 
 	// スプライト描画後処理
 	Sprite::PostDraw();

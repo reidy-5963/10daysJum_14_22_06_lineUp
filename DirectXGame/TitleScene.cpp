@@ -212,6 +212,7 @@ void TitleScene::Draw() {
 
 
 
+	player_->DrawCursor();
 
 	// スプライト描画後処理
 	Sprite::PostDraw();

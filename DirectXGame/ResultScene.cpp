@@ -157,6 +157,7 @@ void ResultScene::Draw() {
 	//
 	title_->Draw();
 
+	player_->DrawCursor();
 	// スプライト描画後処理
 	Sprite::PostDraw();
 	// 深度バッファクリア

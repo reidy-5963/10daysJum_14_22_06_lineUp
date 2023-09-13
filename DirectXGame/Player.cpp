@@ -122,10 +122,21 @@ void Player::Initialize() {
 	if (isGameStart) {
 		clickPos_ = {700.0f, WinApp::kWindowHeight / 2};
 		yoClickPos_ = clickPos_;
+		// カーソルの位置取得
+		//GetCursor();
+		CursourCalicurate();
+		
 		MarkerControl();
 
 		// クリックしたときの位置を取得
 		clickPlayerPos_ = pos_;
+		M2AddRadian[0] = yoM2AddRadian[0];
+		M2AddRadian[1] = yoM2AddRadian[1];
+		M2AddRadian[2] = yoM2AddRadian[2];
+		W2AddRadian[0] = yoW2AddRadian[0];
+		W2AddRadian[1] = yoW2AddRadian[1];
+		W2AddRadian[2] = yoW2AddRadian[2];
+		originPos_ = yoOriginPos_;
 
 		//
 		ToMarkerMoveInitialize();
@@ -133,7 +144,7 @@ void Player::Initialize() {
 		//
 		RootRotateMoveInitialize();
 
-		RootRotateMove2();
+		//RootRotateMove2();
 
 		ismarkerMove_ = true;
 		predictionLineSize[0] = {0.0f, 3.0f};
@@ -148,10 +159,21 @@ void Player::Initialize() {
 	else if (!isGameStart) {
 		clickPos_ = {(WinApp::kWindowWidth / 2) + 100.0f, (WinApp::kWindowHeight / 2) + 100.0f};
 		yoClickPos_ = clickPos_;
+		// カーソルの位置取得
+		//GetCursor();
+		CursourCalicurate();
+		
 		MarkerControl();
 
 		// クリックしたときの位置を取得
 		clickPlayerPos_ = pos_;
+		M2AddRadian[0] = yoM2AddRadian[0];
+		M2AddRadian[1] = yoM2AddRadian[1];
+		M2AddRadian[2] = yoM2AddRadian[2];
+		W2AddRadian[0] = yoW2AddRadian[0];
+		W2AddRadian[1] = yoW2AddRadian[1];
+		W2AddRadian[2] = yoW2AddRadian[2];
+		originPos_ = yoOriginPos_;
 
 		//
 		ToMarkerMoveInitialize();
@@ -159,7 +181,7 @@ void Player::Initialize() {
 		//
 		RootRotateMoveInitialize();
 
-		RootRotateMove2();
+		//RootRotateMove2();
 
 		ismarkerMove_ = true;
 		predictionLineSize[0] = {0.0f, 3.0f};
@@ -578,8 +600,6 @@ void Player::LeftClickUpdate() {
 }
 
 void Player::CursourCalicurate() { 
-	yoClickPos_.x = float(mousePos.x);
-	yoClickPos_.y = float(mousePos.y);
 	RootRotateMove2();
 
 	Vector2 FireBulletDirection = yoM2AddRadian[0] - yoW2AddRadian[0];
@@ -606,6 +626,8 @@ void Player::GetCursor() {
 
 	mousePos.x = mousePos.x + LONG(scroll->GetAddScroll().x);
 	mousePos.y = mousePos.y + LONG(scroll->GetAddScroll().y);
+	yoClickPos_.x = float(mousePos.x);
+	yoClickPos_.y = float(mousePos.y);
 }
 
 /// <summary>
@@ -1075,8 +1097,9 @@ void Player::DrawUI() {
 
 	// UIプレイヤーの描画
 	// Animation::DrawAnimation(playerUI_.get(), UIPlayerPos_, animationNumber, charaTex_);
-	cursor_->Draw();
 }
+
+void Player::DrawCursor() { cursor_->Draw(); }
 
 #pragma endregion
 
