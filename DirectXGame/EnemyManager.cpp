@@ -29,30 +29,32 @@ void EnemyManager::Initialize() {
 	enemys_.clear();
 
 	kIntervalSecond_ = 10;
+	gameTime_ = 0;
 }
 
 void EnemyManager::Update() 
 {
-#ifdef _DEBUG
-	ImGui::Begin("count");
-	ImGui::Text("isRespown : %d", patternInterval_);
-	ImGui::Text("arrowCoolTime : %d", kInterval_);
-	ImGui::Text(" %d ", isBossAlive_);
-	ImGui::End();
-
-#endif // _DEBUG
-
 	normalSpawnTimer_++;
+
+	if (gameTime_ <= 600) {
+		gameTime_++;
+		kInterval_ = 60 * 5;
+		autoSpawnSecond_ = 5;
+	} else {
+		kInterval_ = 60 * 8;
+		autoSpawnSecond_ = 7;
+	}
+
 	// ボス出現中
 	if (isBossAlive_) {
-		autoSpawnSecond_ = 8;
+
 	} 
 	// ボス出現前
 	else {
 		if (!isArrowRespown_) {
 			patternInterval_++;
 		}
-		autoSpawnSecond_ = 3;
+		kRespownTimer_ = 60 * autoSpawnSecond_;
 		FourPointsSpawn();
 		// 陣形湧き
 		FormationSpawnUpdate();
@@ -611,7 +613,7 @@ void EnemyManager::ArrowBehavior(int switchPatt)
 	// 敵同士の間隔
 	float enemySpaceOffset = 100.0f;
 	// 数
-	int ArrowNumber = 3;
+	int ArrowNumber = 2;
 	// プレイヤーからの距離
 	Vector2 offset = {};
 	// 速さ

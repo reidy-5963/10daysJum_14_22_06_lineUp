@@ -206,6 +206,8 @@ private:
 
 	bool isCrossPattern_ = false;
 
+	int gameTime_ = 0;
+
 public:
 
 	void SetIsCross(bool flag) { isCrossPattern_ = flag; }
