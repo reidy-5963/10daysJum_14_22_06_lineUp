@@ -67,6 +67,8 @@ public: // 設定
 
 	void SetSEHandle(uint32_t handle) { deadSEHandle_ = handle; }
 
+	void SetIsBossParasite(bool isParasite) { isBossParasite_ = isParasite; }
+
 private:
 	Vector2 velocity_ = {};
 
@@ -83,13 +85,15 @@ private:
 	std::unique_ptr<ParticleManager> particle_ = nullptr;
 
 	uint32_t deadSEHandle_ = 0;
+	int collapseAniTimer = 0;
+	int collapseAniNumber = 0;
+	int collapseAniScene = 7;
+	int collapseAnioneTime = 3;
+
+	bool isBossParasite_ = false;
 
 private: // 限界値
 	Vector2 kMinusLimits = {-250.0f, -250.0f};
 	Vector2 kPlusLimits = {1920.0f * 3, 1080.0f * 3};
 
-	int collapseAniTimer = 0;
-	int collapseAniNumber = 0;
-	int collapseAniScene = 7;
-	int collapseAnioneTime = 3;
 };

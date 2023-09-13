@@ -91,6 +91,7 @@ void EnemyManager::EnemyUpdate()
 
 	// エネミーの更新
 	for (Enemy* enemy : enemys_) {
+		enemy->SetIsBossParasite(isBossParasite);
 		enemy->SetSceneVelo(sceneVelo_);
 		enemy->Update();
 	}

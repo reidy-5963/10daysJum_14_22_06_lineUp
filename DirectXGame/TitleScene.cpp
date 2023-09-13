@@ -24,9 +24,7 @@ void TitleScene::Initialize() {
 	Scroll::GetInstance()->Initialize();
 
 	player_.release();
-	for (int i = 0; i < 6; i++) {
-		enemy_[i].release();
-	}
+	
 	title2gameSceneAria_.release();
 	titleLogo_.release();
 
@@ -40,9 +38,6 @@ void TitleScene::Initialize() {
 	titleLogo_t_ = 0.0f;
 	titleLogoMove_ = false;
 	TitleTutrialStart = false;
-	eneMove_t_ = 0.0f;
-	eneMove_ = false;
-	rootEneMove = false;
 
 #pragma region シーン遷移エリア
 	ariaTex_ = TextureManager::Load("T2GaSceneAria.png");
@@ -85,28 +80,18 @@ void TitleScene::Initialize() {
 	player_->Initialize();
 #pragma endregion
 
-#pragma region 敵
-	enemyTex_ = TextureManager::Load("Enemy_ver2.png");
-	parasiteTex_ = TextureManager::Load("Parasite.png");
-	particleTex_ = TextureManager::Load("Particle.png");
-	collapseTex_ = TextureManager::Load("greenTailbreak.png");
-	// 6体生成
-	for (int i = 0; i < 6; i++) {
-		enemyPos_[i] = {-300.0f, -300.0f};
-		enemy_[i] = std::make_unique<Enemy>();
-		enemy_[i]->SetTexture(enemyTex_);
-		enemy_[i]->SetParasiteTexture(parasiteTex_);
-		enemy_[i]->SetParticleTex(particleTex_);
-		enemy_[i]->SetCollapseTexture(collapseTex_);
+	enemyManager_ = EnemyManager::GetInstance();
+	enemyManager_->Initialize();
 
-		enemy_[i]->SetPosition(enemyPos_[i]);
-		enemy_[i]->Initialize();
-	}
-#pragma endregion
 	title2gameSceneAria_->SetPosition(ariaStartPos_);
 
 	// グローバル変数の初期化処理
 	InitializeGrobalVariables();
+	ApplyGrobalVariables();
+
+	for (int i = 0; i < 6; i++) {
+		enemyManager_->AddEnemy(enemyEndPos_[i], {0.0f, 0.0f});
+	}
 }
 
 void TitleScene::StaticValueInitialize() {
@@ -126,6 +111,7 @@ void TitleScene::Update() {
 
 	// プレイヤーの更新処理
 	player_->Update();
+
 
 	if (!TitleTutrialStart) {
 
@@ -178,29 +164,9 @@ void TitleScene::TutorialUpdate() {
 		MyMath::CountT(titleLogo_t_, 1.0f, titleLogoMove_, true, 0.1f);
 	}
 
-	for (int i = 0; i < 6; i++) {
-		if (!eneMove_) {
-			enemyPos_[i] = MyMath::EaseInCubicF(eneMove_t_, enemyStartPos_[i], enemyEndPos_[i]);
-			MyMath::CountT(eneMove_t_, 0.0f, eneMove_, true, 0.01f);
-		}
-		if (eneMove_) {
-			if (rootEneMove) {
-				enemyPos_[i] =
-				    MyMath::EaseInCubicF(eneMove_t_, enemyEndPos_[i], enemyRootMOvePOs[i]);
-				MyMath::CountT(eneMove_t_, 0.0f, rootEneMove, false, 0.01f);
-
-			} else if (!rootEneMove) {
-				enemyPos_[i] =
-				    MyMath::EaseInCubicF(eneMove_t_, enemyRootMOvePOs[i], enemyEndPos_[i]);
-				MyMath::CountT(eneMove_t_, 0.0f, rootEneMove, true, 0.01f);
-			}
-		}
-		if (!enemy_[i]->GetIsDead()) {
-			enemy_[i]->Update();
-			enemy_[i]->SetPosition(enemyPos_[i]);
-		}
-
-	}
+	enemyManager_->SetPlayer(player_->GetPosition());
+	enemyManager_->SetTailSize(player_->GetTail());
+	enemyManager_->EnemyUpdate();
 
 	if (player_->GetMarkerPos().x > 1800.0f) {
 		if (player_->GetPosition().x > 1800.0f) {
@@ -231,13 +197,7 @@ void TitleScene::Draw() {
 
 	// もしチュートリアルが始まってたら
 	if (TitleTutrialStart) {
-		for (int i = 0; i < 6; i++) {
-			// もし敵が死んでいなかったら
-			if (!enemy_[i]->GetIsDead()) {
-				// 敵の描画
-				enemy_[i]->Draw();
-			}
-		}
+		enemyManager_->Draw();
 	}
 	// プレイヤーの描画処理
 	player_->Draw();
@@ -268,13 +228,6 @@ void TitleScene::InitializeGrobalVariables() {
 
 	// 作ったグループにそれぞれアイテムを追加
 	gloVars->CreateGroup(groupName);
-	gloVars->AddItem(groupName, "enemyStartPos0_", enemyStartPos_[0]);
-	gloVars->AddItem(groupName, "enemyStartPos1_", enemyStartPos_[1]);
-	gloVars->AddItem(groupName, "enemyStartPos2_", enemyStartPos_[2]);
-	gloVars->AddItem(groupName, "enemyStartPos3_", enemyStartPos_[3]);
-	gloVars->AddItem(groupName, "enemyStartPos4_", enemyStartPos_[4]);
-	gloVars->AddItem(groupName, "enemyStartPos5_", enemyStartPos_[5]);
-
 	gloVars->AddItem(groupName, "enemyEndPos0_", enemyEndPos_[0]);
 	gloVars->AddItem(groupName, "enemyEndPos1_", enemyEndPos_[1]);
 	gloVars->AddItem(groupName, "enemyEndPos2_", enemyEndPos_[2]);
@@ -282,12 +235,6 @@ void TitleScene::InitializeGrobalVariables() {
 	gloVars->AddItem(groupName, "enemyEndPos4_", enemyEndPos_[4]);
 	gloVars->AddItem(groupName, "enemyEndPos5_", enemyEndPos_[5]);
 
-	gloVars->AddItem(groupName, "enemyRootMOvePOs0", enemyRootMOvePOs[0]);
-	gloVars->AddItem(groupName, "enemyRootMOvePOs1", enemyRootMOvePOs[1]);
-	gloVars->AddItem(groupName, "enemyRootMOvePOs2", enemyRootMOvePOs[2]);
-	gloVars->AddItem(groupName, "enemyRootMOvePOs3", enemyRootMOvePOs[3]);
-	gloVars->AddItem(groupName, "enemyRootMOvePOs4", enemyRootMOvePOs[4]);
-	gloVars->AddItem(groupName, "enemyRootMOvePOs5", enemyRootMOvePOs[5]);
 }
 
 void TitleScene::ApplyGrobalVariables() { 
@@ -296,26 +243,12 @@ void TitleScene::ApplyGrobalVariables() {
 	// グループ名の設定
 	const char* groupName = "TitleScene";
 	// 作ったグループにあるアイテムから値を取得
-	enemyStartPos_[0] = gloVars->GetVector2Value(groupName, "enemyStartPos0_");
-	enemyStartPos_[1] = gloVars->GetVector2Value(groupName, "enemyStartPos1_");
-	enemyStartPos_[2] = gloVars->GetVector2Value(groupName, "enemyStartPos2_");
-	enemyStartPos_[3] = gloVars->GetVector2Value(groupName, "enemyStartPos3_");
-	enemyStartPos_[4] = gloVars->GetVector2Value(groupName, "enemyStartPos4_");
-	enemyStartPos_[5] = gloVars->GetVector2Value(groupName, "enemyStartPos5_");
-
 	enemyEndPos_[0] = gloVars->GetVector2Value(groupName, "enemyEndPos0_");
 	enemyEndPos_[1] = gloVars->GetVector2Value(groupName, "enemyEndPos1_");
 	enemyEndPos_[2] = gloVars->GetVector2Value(groupName, "enemyEndPos2_");
 	enemyEndPos_[3] = gloVars->GetVector2Value(groupName, "enemyEndPos3_");
 	enemyEndPos_[4] = gloVars->GetVector2Value(groupName, "enemyEndPos4_");
 	enemyEndPos_[5] = gloVars->GetVector2Value(groupName, "enemyEndPos5_");
-
-	enemyRootMOvePOs[0] = gloVars->GetVector2Value(groupName, "enemyRootMOvePOs0");
-	enemyRootMOvePOs[1] = gloVars->GetVector2Value(groupName, "enemyRootMOvePOs1");
-	enemyRootMOvePOs[2] = gloVars->GetVector2Value(groupName, "enemyRootMOvePOs2");
-	enemyRootMOvePOs[3] = gloVars->GetVector2Value(groupName, "enemyRootMOvePOs3");
-	enemyRootMOvePOs[4] = gloVars->GetVector2Value(groupName, "enemyRootMOvePOs4");
-	enemyRootMOvePOs[5] = gloVars->GetVector2Value(groupName, "enemyRootMOvePOs5");
 }
 
 void TitleScene::CheckAllCollision() { 
@@ -324,34 +257,36 @@ void TitleScene::CheckAllCollision() {
 	
 	// プレイヤーの弾リストを取得
 	const std::list<PlayerBullet*>& playerBullet = player_->GetBullets();
+	// 敵
+	const std::list<Enemy*>& enemys = enemyManager_->GetEnemyLists();
 	// プレイヤーの位置取得
 	targetA = player_->GetPosition();
 #pragma region 敵とプレイヤー
 
-	for (int i = 0; i < 6; i++) {
+	for (Enemy* enemy : enemys) {
 		// エネミーの位置取得
-		targetB = enemy_[i]->GetPosition();
+		targetB = enemy->GetPosition();
 		float distance =
 		    std::sqrtf(std::powf(targetA.x - targetB.x, 2) + std::powf(targetA.y - targetB.y, 2));
-		float radius = player_->GetRadius() + enemy_[i]->GetRadius();
+		float radius = player_->GetRadius() + enemy->GetRadius();
 		// 交差判定
 		if (distance <= radius) {
-			if (!player_->GetIsInvisible() && !enemy_[i]->GetIsDead()) {
+			if (!player_->GetIsInvisible() && !enemy->GetIsDead()) {
 				// コールバック
-				if (enemy_[i]->IsParasite()) {
+				if (enemy->IsParasite()) {
 					player_->AddTails();
 					if (player_->GetTail() >= 6) {
 						// gameTimer += pickUpTailTime;
 					}
 
-					enemy_[i]->SetIsDead(true);
+					enemy->SetIsDead(true);
 				}
-				if (!enemy_[i]->IsParasite()) {
+				if (!enemy->IsParasite()) {
 					player_->OnCollision();
 					//issceneShake = true;
 					//sceneaAmplitNum = 40;
 					// gameTimer -= eneBulletDamage;
-					enemy_[i]->SetIsDead(true);
+					enemy->SetIsDead(true);
 				}
 				//
 				// killCount_ += 1;
@@ -359,11 +294,11 @@ void TitleScene::CheckAllCollision() {
 			}
 			//
 			else if (player_->GetIsInvisible()) {
-				if (enemy_[i]->IsParasite()) {
+				if (enemy->IsParasite()) {
 					// gameTimer += pickUpTailTime;
 
 					player_->AddTails();
-					enemy_[i]->SetIsDead(true);
+					enemy->SetIsDead(true);
 				}
 			}
 		}
@@ -374,18 +309,18 @@ void TitleScene::CheckAllCollision() {
 	// プレイヤーの弾と敵の衝突判定
 	for (PlayerBullet* playerBullet_ : playerBullet) {
 		targetA = playerBullet_->GetPosition();
-		for (int i = 0; i < 6; i++) {
-			targetB = enemy_[i]->GetPosition();
+		for (Enemy* enemy : enemys) {
+			targetB = enemy->GetPosition();
 			float distance = std::sqrtf(
 			    std::powf(targetA.x - targetB.x, 2) + std::powf(targetA.y - targetB.y, 2));
-			float radius = playerBullet_->GetRadius() + enemy_[i]->GetRadius();
+			float radius = playerBullet_->GetRadius() + enemy->GetRadius();
 			float bulletRadius = playerBullet_->GetRadius();
 
 			if (distance <= radius) {
 				// コールバック
-				if (!enemy_[i]->IsParasite() && !enemy_[i]->GetIsDead()) {
+				if (!enemy->IsParasite() && !enemy->GetIsDead()) {
 					if (!playerBullet_->IsCollapse()) {
-						enemy_[i]->OnCollision();
+						enemy->OnCollision();
 						//killCount_ += 1;
 					}
 					if (bulletRadius < 32.0f) {
