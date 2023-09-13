@@ -7,6 +7,7 @@
 #include <cmath>
 #include <numbers>
 #include "MyMath.h"
+#include "Audio.h"
 
 EnemyManager* EnemyManager::GetInstance() 
 {
@@ -21,6 +22,11 @@ void EnemyManager::Initialize() {
 	parasiteTex_ = TextureManager::Load("Parasite.png");
 	particleTex_ = TextureManager::Load("Particle.png");
 	collapseTex_ = TextureManager::Load("greenTailbreak.png");
+
+	deadSEHandel_ = Audio::GetInstance()->LoadWave("music/EnemyDead.mp3");
+
+	enemys_.clear();
+
 }
 
 void EnemyManager::Update() 
@@ -34,25 +40,28 @@ void EnemyManager::Update()
 #endif // _DEBUG
 
 	normalSpawnTimer_++;
-
+	// ボス出現中
 	if (isBossAlive_) {
 		autoSpawnSecond_ = 8;
-	} else {
+	} 
+	// ボス出現前
+	else {
 		autoSpawnSecond_ = 3;
+		FourPointsSpawn();
 	}
 	if (!isArrowRespown_) {
 		patternInterval_++;
 	}
 	int maxInterVal = 13;
 	int minInterVal = 9;
-
+	// 尻尾の数が最大の場合
 	if (tailSize_ == 6) {
 		kIntervalSecond_ = maxInterVal;
-	} else {
+	}
+	// それ以外
+	else {
 		kIntervalSecond_ = minInterVal;
 	}
-
-	FourPointsSpawn();
 
 	FormationSpawnUpdate();
 
@@ -170,6 +179,7 @@ void EnemyManager::AddEnemy(const Vector2& position, const Vector2& velocity) {
 	newEnemy->SetParasiteTexture(parasiteTex_);
 	newEnemy->SetParticleTex(particleTex_);
 	newEnemy->SetCollapseTexture(collapseTex_);
+	newEnemy->SetSEHandle(deadSEHandel_);
 
 	enemys_.push_back(newEnemy);
 }
@@ -187,6 +197,7 @@ void EnemyManager::AddEnemy(
 	newEnemy->SetRotation(std::atan2(direction.y,direction.x));
 	newEnemy->SetParasiteTexture(parasiteTex_);
 	newEnemy->SetParticleTex(particleTex_);
+	newEnemy->SetSEHandle(deadSEHandel_);
 
 	enemys_.push_back(newEnemy);
 }
@@ -322,6 +333,9 @@ void EnemyManager::DiagonalBehavior()
 		norm = MyMath::Normalize(norm);
 		// 速さ設定
 		newEnemy->SetVelocity(Vector2(norm.x * moveSpeed, norm.y * moveSpeed));
+		// SEの設定
+		newEnemy->SetSEHandle(deadSEHandel_);
+
 		newEnemy->SetParasiteTexture(parasiteTex_);
 		newEnemy->SetParticleTex(particleTex_);
 		newEnemy->SetCollapseTexture(collapseTex_);
@@ -357,6 +371,9 @@ void EnemyManager::DiagonalBehavior()
 		norm = MyMath::Normalize(norm);
 		// 速さ設定
 		newEnemy->SetVelocity(Vector2(norm.x * moveSpeed, norm.y * moveSpeed));
+		// SEの設定
+		newEnemy->SetSEHandle(deadSEHandel_);
+
 		newEnemy->SetParasiteTexture(parasiteTex_);
 		newEnemy->SetParticleTex(particleTex_);
 		newEnemy->SetCollapseTexture(collapseTex_);
@@ -392,6 +409,9 @@ void EnemyManager::DiagonalBehavior()
 		norm = MyMath::Normalize(norm);
 		// 速さ設定
 		newEnemy->SetVelocity(Vector2(norm.x * moveSpeed, norm.y * moveSpeed));
+		// SEの設定
+		newEnemy->SetSEHandle(deadSEHandel_);
+
 		newEnemy->SetParasiteTexture(parasiteTex_);
 		newEnemy->SetParticleTex(particleTex_);
 		newEnemy->SetCollapseTexture(collapseTex_);
@@ -427,6 +447,9 @@ void EnemyManager::DiagonalBehavior()
 		norm = MyMath::Normalize(norm);
 		// 速さ設定
 		newEnemy->SetVelocity(Vector2(norm.x * moveSpeed, norm.y * moveSpeed));
+		// SEの設定
+		newEnemy->SetSEHandle(deadSEHandel_);
+
 		newEnemy->SetParasiteTexture(parasiteTex_);
 		newEnemy->SetParticleTex(particleTex_);
 		newEnemy->SetCollapseTexture(collapseTex_);
@@ -461,6 +484,9 @@ void EnemyManager::DiagonalClockWiseBehavior()
 		float moveSpeed = 5.0f;
 		// 速さ設定
 		newEnemy->SetVelocity(Vector2(moveSpeed, 0));
+		// SEの設定
+		newEnemy->SetSEHandle(deadSEHandel_);
+
 		newEnemy->SetParasiteTexture(parasiteTex_);
 		newEnemy->SetParticleTex(particleTex_);
 		newEnemy->SetCollapseTexture(collapseTex_);
@@ -488,6 +514,9 @@ void EnemyManager::DiagonalClockWiseBehavior()
 		float moveSpeed = 5.0f;
 		// 速さ設定
 		newEnemy->SetVelocity(Vector2(0, -moveSpeed));
+		// SEの設定
+		newEnemy->SetSEHandle(deadSEHandel_);
+
 		newEnemy->SetParasiteTexture(parasiteTex_);
 		newEnemy->SetParticleTex(particleTex_);
 		newEnemy->SetCollapseTexture(collapseTex_);
@@ -515,6 +544,9 @@ void EnemyManager::DiagonalClockWiseBehavior()
 		float moveSpeed = 5.0f;
 		// 速さ設定
 		newEnemy->SetVelocity(Vector2(0, moveSpeed));
+		// SEの設定
+		newEnemy->SetSEHandle(deadSEHandel_);
+
 		newEnemy->SetParasiteTexture(parasiteTex_);
 		newEnemy->SetParticleTex(particleTex_);
 		newEnemy->SetCollapseTexture(collapseTex_);
@@ -542,6 +574,9 @@ void EnemyManager::DiagonalClockWiseBehavior()
 		float moveSpeed = 5.0f;
 		// 速さ設定
 		newEnemy->SetVelocity(Vector2(-moveSpeed, 0));
+		// SEの設定
+		newEnemy->SetSEHandle(deadSEHandel_);
+
 		newEnemy->SetParasiteTexture(parasiteTex_);
 		newEnemy->SetParticleTex(particleTex_);
 		newEnemy->SetCollapseTexture(collapseTex_);
@@ -578,6 +613,9 @@ void EnemyManager::ArrowBehavior(int switchPatt)
 			newEnemy->SetPosition(newPos);
 			// 速さ設定
 			newEnemy->SetVelocity(Vector2(0, moveSpeed));
+			// SEの設定
+			newEnemy->SetSEHandle(deadSEHandel_);
+
 			newEnemy->SetParasiteTexture(parasiteTex_);
 			newEnemy->SetParticleTex(particleTex_);
 			newEnemy->SetCollapseTexture(collapseTex_);
@@ -597,6 +635,9 @@ void EnemyManager::ArrowBehavior(int switchPatt)
 			newEnemy->SetPosition(newPos);
 			// 速さ設定
 			newEnemy->SetVelocity(Vector2(0, moveSpeed));
+			// SEの設定
+			newEnemy->SetSEHandle(deadSEHandel_);
+
 			newEnemy->SetParasiteTexture(parasiteTex_);
 			newEnemy->SetParticleTex(particleTex_);
 			newEnemy->SetCollapseTexture(collapseTex_);
@@ -621,6 +662,9 @@ void EnemyManager::ArrowBehavior(int switchPatt)
 			newEnemy->SetPosition(newPos);
 			// 速さ設定
 			newEnemy->SetVelocity(Vector2(0, -moveSpeed));
+			// SEの設定
+			newEnemy->SetSEHandle(deadSEHandel_);
+
 			newEnemy->SetParasiteTexture(parasiteTex_);
 			newEnemy->SetParticleTex(particleTex_);
 			newEnemy->SetCollapseTexture(collapseTex_);
@@ -640,6 +684,9 @@ void EnemyManager::ArrowBehavior(int switchPatt)
 			newEnemy->SetPosition(newPos);
 			// 速さ設定
 			newEnemy->SetVelocity(Vector2(0, -moveSpeed));
+			// SEの設定
+			newEnemy->SetSEHandle(deadSEHandel_);
+
 			newEnemy->SetParasiteTexture(parasiteTex_);
 			newEnemy->SetParticleTex(particleTex_);
 			newEnemy->SetCollapseTexture(collapseTex_);
@@ -664,6 +711,9 @@ void EnemyManager::ArrowBehavior(int switchPatt)
 			newEnemy->SetPosition(newPos);
 			// 速さ設定
 			newEnemy->SetVelocity(Vector2(moveSpeed, 0));
+			// SEの設定
+			newEnemy->SetSEHandle(deadSEHandel_);
+
 			newEnemy->SetParasiteTexture(parasiteTex_);
 			newEnemy->SetParticleTex(particleTex_);
 			newEnemy->SetCollapseTexture(collapseTex_);
@@ -683,6 +733,9 @@ void EnemyManager::ArrowBehavior(int switchPatt)
 			newEnemy->SetPosition(newPos);
 			// 速さ設定
 			newEnemy->SetVelocity(Vector2(moveSpeed, 0));
+			// SEの設定
+			newEnemy->SetSEHandle(deadSEHandel_);
+
 			newEnemy->SetParasiteTexture(parasiteTex_);
 			newEnemy->SetParticleTex(particleTex_);
 			newEnemy->SetCollapseTexture(collapseTex_);
@@ -708,6 +761,9 @@ void EnemyManager::ArrowBehavior(int switchPatt)
 			newEnemy->SetPosition(newPos);
 			// 速さ設定
 			newEnemy->SetVelocity(Vector2(-moveSpeed, 0));
+			// SEの設定
+			newEnemy->SetSEHandle(deadSEHandel_);
+
 			newEnemy->SetParasiteTexture(parasiteTex_);
 			newEnemy->SetParticleTex(particleTex_);
 			newEnemy->SetCollapseTexture(collapseTex_);
@@ -727,6 +783,9 @@ void EnemyManager::ArrowBehavior(int switchPatt)
 			newEnemy->SetPosition(newPos);
 			// 速さ設定
 			newEnemy->SetVelocity(Vector2(-moveSpeed, 0));
+			// SEの設定
+			newEnemy->SetSEHandle(deadSEHandel_);
+
 			newEnemy->SetParasiteTexture(parasiteTex_);
 			newEnemy->SetParticleTex(particleTex_);
 			newEnemy->SetCollapseTexture(collapseTex_);

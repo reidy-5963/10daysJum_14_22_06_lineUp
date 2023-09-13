@@ -65,6 +65,8 @@ public: // 設定
 	void SetParasiteTexture(uint32_t tex) { parasiteTex_ = tex; }
 	void SetCollapseTexture(uint32_t tex) { collapseTex_ = tex; }
 
+	void SetSEHandle(uint32_t handle) { deadSEHandle_ = handle; }
+
 private:
 	Vector2 velocity_ = {};
 
@@ -79,6 +81,8 @@ private:
 	uint32_t particleTex_ = 0u;
 	uint32_t collapseTex_ = 0u;
 	std::unique_ptr<ParticleManager> particle_ = nullptr;
+
+	uint32_t deadSEHandle_ = 0;
 
 private: // 限界値
 	Vector2 kMinusLimits = {-250.0f, -250.0f};
