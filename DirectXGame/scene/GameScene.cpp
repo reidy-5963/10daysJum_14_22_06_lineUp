@@ -139,37 +139,36 @@ void GameScene::Update() {
 	enemyManager_->SetIsBossParasite(boss_->IsParasite());
 	enemyManager_->SetTailSize(player_->GetTail());
 	enemyManager_->Update();
-	//enemyManager_->FourPointsSpawn();
+
+	// プレイヤーの更新処理
+	player_->Update();
+
+	// 当たり判定
+	CheckAllCollision();
+
+	// 画面の揺れ更新処理
+	MyMath::ShakeUpdate(sceneShakevelo_, issceneShake, sceneaAmplitNum);
+	player_->SetSceneVelo(sceneShakevelo_);
+	boss_->SetSceneVelo(sceneShakevelo_);
+
+	if (killCount_ >= setKillCount && !isBossRespown_) {
+		isBossRespown_ = true;
+		boss_->RespownBoss();
+	}
+
+	// ボスの更新処理
+	boss_->SetPlayer(player_->GetPosition());
+	boss_->Update();
 
 	if (boss_->GetIsLastAction()) {
 		enemyManager_->RushSpawn();
 		boss_->SetIsLastAction(false);
 	}
 
-		// プレイヤーの更新処理
-		player_->Update();
-
-		// 当たり判定
-		CheckAllCollision();
-
-		// 画面の揺れ更新処理
-		MyMath::ShakeUpdate(sceneShakevelo_, issceneShake, sceneaAmplitNum);
-		player_->SetSceneVelo(sceneShakevelo_);
-		boss_->SetSceneVelo(sceneShakevelo_);
-
-		if (killCount_ >= setKillCount && !isBossRespown_) {
-			isBossRespown_ = true;
-			boss_->RespownBoss();
-		}
-
-	// ボスの更新処理
-	boss_->SetPlayer(player_->GetPosition());
-	boss_->Update();
-
-	if (boss_->GetIsCrossForm()) {
-		boss_->SetIsCrossForm(false);
-		enemyManager_->DiagonalBehavior();
-	}
+	//if (boss_->GetIsCrossForm()) {
+	//	boss_->SetIsCrossForm(false);
+	//	enemyManager_->DiagonalBehavior();
+	//}
 	
 
 		if (--gameTimer < 0) {

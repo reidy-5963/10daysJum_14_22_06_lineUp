@@ -197,6 +197,8 @@ void BossEnemy::Update()
 	ImGui::Text(" %f : %f", directArrowPos_.x, directArrowPos_.y);
 	ImGui::Text(" %d ", isLastAction_);
 	ImGui::Text("isScreenOut : %d", isScreenOut_);
+	ImGui::Text("ActionCoolTime : %d", kActionCoolTime_);
+	ImGui::Text("Timer : %d", actionTimer_);
 	ImGui::End();
 #endif // _DEBUG
 
@@ -245,6 +247,9 @@ void BossEnemy::Update()
 			case BossEnemy::Behavior::kCross:
 				CrossAttackInitialize();
 				break;
+			case BossEnemy::Behavior::kCenter:
+				CenterMoveInitialize();
+				break;
 			}
 			behaviorRequest_ = std::nullopt;
 		}
@@ -276,6 +281,9 @@ void BossEnemy::Update()
 			break;
 		case BossEnemy::Behavior::kCross:
 			CrossAttack();
+			break;
+		case BossEnemy::Behavior::kCenter:
+			CenterMove();
 			break;
 		}
 		// シェイク
@@ -401,10 +409,10 @@ void BossEnemy::BulletUpdate() {
 void BossEnemy::ActionControl() 
 {
 	if (hp_ <= this->SetMaxHp / 2) {
-		int coolTimeSecond = 4;
+		int coolTimeSecond = 2;
 		kActionCoolTime_ = 60 * coolTimeSecond;
 	} else {
-		int coolTimeSecond = 6;
+		int coolTimeSecond = 4;
 		kActionCoolTime_ = 60 * coolTimeSecond;
 	}
 
@@ -423,6 +431,7 @@ void BossEnemy::ActionControl()
 	}
 	if (input_->TriggerKey(DIK_S)) {
 		// actions_.push_back(Behavior::kRoot);
+		actions_.push_back(Behavior::kCenter);
 		actions_.push_back(Behavior::kRushAlert);
 		actions_.push_back(Behavior::kFunnel);
 	}
@@ -488,6 +497,7 @@ void BossEnemy::ActionTable()
 	/// 下から順番に呼び出す
 	switch (behaviorRand_) {
 	case 0:
+		actions_.push_back(Behavior::kCenter);
 		actions_.push_back(Behavior::kBarrage);
 		actions_.push_back(Behavior::kGuided);
 		actions_.push_back(Behavior::kFunnel);
@@ -495,20 +505,24 @@ void BossEnemy::ActionTable()
 
 		break;
 	case 1:
+		actions_.push_back(Behavior::kCenter);
 		actions_.push_back(Behavior::kRushAlert);
 		actions_.push_back(Behavior::kCross);
 		actions_.push_back(Behavior::kFunnel);
 		break;
 	case 2:
+		actions_.push_back(Behavior::kCenter);
 		actions_.push_back(Behavior::kBarrage);
 		actions_.push_back(Behavior::kRushAlert);
 		break;
 	case 3:
+		actions_.push_back(Behavior::kCenter);
 		actions_.push_back(Behavior::kRushAlert);
 		actions_.push_back(Behavior::kFunnel);
 
 		break;
 	case 4:
+		actions_.push_back(Behavior::kCenter);
 		actions_.push_back(Behavior::kRushAlert);
 		actions_.push_back(Behavior::kBarrage);
 		actions_.push_back(Behavior::kCross);

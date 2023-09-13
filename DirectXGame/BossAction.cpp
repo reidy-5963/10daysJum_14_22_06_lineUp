@@ -12,12 +12,12 @@ void BossEnemy::RushAttack() {
 		isRushNow_ = false;
 		behaviorRequest_ = Behavior::kRoot;
 		actions_.pop_back();
-		if (actions_.back() == Behavior::kRoot) {
-			isLastAction_ = true;
-			Audio::GetInstance()->PlayWave(rushSpawnSEHandle_, false, 0.2f);
-		} else {
-			isLastAction_ = false;
-		}
+		//if (actions_.back() == Behavior::kRoot) {
+		//	isLastAction_ = true;
+		//	Audio::GetInstance()->PlayWave(rushSpawnSEHandle_, false, 0.2f);
+		//} else {
+		//	isLastAction_ = false;
+		//}
 	} else {
 		rushMove_t_ += 0.02f;
 		float volume = 0.3f;
@@ -183,9 +183,11 @@ void BossEnemy::FunnelAttackInitialize() {
 
 void BossEnemy::CrossAttack()
 { 
+	float firstTime = 40;
+	float secondTime = 100;
 	modeCount_ += 1;
 	float speed = 12.5f;
-	if (modeCount_ == 40) {
+	if (modeCount_ == firstTime) {
 		Vector2 direct = {1.0f, 1.0f};
 		direct = MyMath::Normalize(direct);
 		GenerateBullet(direct, speed);
@@ -203,7 +205,7 @@ void BossEnemy::CrossAttack()
 		GenerateBullet(direct, speed);
 	}
 	speed = 12.5f;
-	if (modeCount_ == 100) {
+	if (modeCount_ == secondTime) {
 		Vector2 direct = {1.0f, 0.0f};
 		GenerateBullet(direct, speed);
 		direct = {-1.0f, 0.0f};
@@ -225,4 +227,54 @@ void BossEnemy::CrossAttackInitialize()
 	sprite_->SetTextureHandle(charaTex_);
 	kModeEndTimer_ = ConvertSeconds(2);
 	isCrossForm_ = true;
+}
+
+void BossEnemy::CenterMove() 
+{
+	// 補間レート処理
+	if (rushMove_t_ >= 1.0f) {
+		rushMove_t_ = 1.0f;
+		isRushNow_ = false;
+		behaviorRequest_ = Behavior::kRoot;
+		actions_.pop_back();
+		if (actions_.back() == Behavior::kRoot) {
+			isLastAction_ = true;
+			Audio::GetInstance()->PlayWave(rushSpawnSEHandle_, false, 0.2f);
+		} else {
+			isLastAction_ = false;
+		}
+	} else {
+		rushMove_t_ += 0.02f;
+		float volume = 0.3f;
+		if (!isRushSound_ && rushMove_t_ >= 0.2f) {
+			isRushSound_ = true;
+			Audio::GetInstance()->PlayWave(rushSEHandle_, false, volume);
+		}
+	}
+	// 座標移動ー線形補間
+	float distance = MyMath::Length(prevPlayerPos_ - prevBossPos_);
+	if (distance >= easeInRange_) {
+		pos_ = MyMath::EaseOutQuadF(rushMove_t_, prevBossPos_, prevPlayerPos_);
+	} else {
+		pos_ = MyMath::EaseInQuadF(rushMove_t_, prevBossPos_, prevPlayerPos_);
+	}
+	particle_->SetAlphaOffset(alphaOffset);
+	particle_->SetColor(color_);
+	particle_->SetTecture(particleTex);
+	particle_->SetLenge(pos_, {radius_, radius_});
+	particle_->SetSceneVelo(sceneVelo);
+	particle_->SetTime(3);
+	particle_->SetVelo({0.0f, 0.0f});
+	particle_->SetPattern(ParticleManager::ParticlePattarn::Straight);
+	particle_->SetIsParticle(true);
+}
+
+void BossEnemy::CenterMoveInitialize() 
+{
+	// 補間レート初期化
+	this->rushMove_t_ = 0;
+	isRushNow_ = true;
+	// 座標初期化
+	prevBossPos_ = pos_;
+	prevPlayerPos_ = Vector2(1920.0f, 1080.0f);
 }

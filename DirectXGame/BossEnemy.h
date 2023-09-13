@@ -110,6 +110,13 @@ private:	// 行動関数
 	void CrossAttackInitialize();
 
 	/// <summary>
+	/// 真ん中に戻る処理
+	/// </summary>
+	void CenterMove();
+
+	void CenterMoveInitialize();
+
+	/// <summary>
 	/// 通常の動き
 	/// </summary>
 	void RootUpdate();
@@ -272,6 +279,7 @@ private: // 行動管理用変数
 		kRushAlert,
 		kFunnel,
 		kCross,
+		kCenter,
 	};
 	// 行動のリクエストリスト
 	std::list<Behavior> actions_;

@@ -27,6 +27,7 @@ void EnemyManager::Initialize() {
 
 	enemys_.clear();
 
+	kIntervalSecond_ = 10;
 }
 
 void EnemyManager::Update() 
@@ -35,6 +36,7 @@ void EnemyManager::Update()
 	ImGui::Begin("count");
 	ImGui::Text("isRespown : %d", patternInterval_);
 	ImGui::Text("arrowCoolTime : %d", kInterval_);
+	ImGui::Text(" %d ", isBossAlive_);
 	ImGui::End();
 
 #endif // _DEBUG
@@ -46,24 +48,14 @@ void EnemyManager::Update()
 	} 
 	// ボス出現前
 	else {
+		if (!isArrowRespown_) {
+			patternInterval_++;
+		}
 		autoSpawnSecond_ = 3;
 		FourPointsSpawn();
+		// 陣形湧き
+		FormationSpawnUpdate();
 	}
-	if (!isArrowRespown_) {
-		patternInterval_++;
-	}
-	int maxInterVal = 13;
-	int minInterVal = 9;
-	// 尻尾の数が最大の場合
-	if (tailSize_ == 6) {
-		kIntervalSecond_ = maxInterVal;
-	}
-	// それ以外
-	else {
-		kIntervalSecond_ = minInterVal;
-	}
-
-	FormationSpawnUpdate();
 
 	ArrowBehaviorControl();
 
@@ -99,7 +91,9 @@ void EnemyManager::EnemyUpdate()
 
 void EnemyManager::FormationSpawnUpdate() 
 {
-	if (patternInterval_ == kInterval_) {
+	kInterval_ = 60 * kIntervalSecond_;
+
+	if (patternInterval_ >= kInterval_) {
 		int random = rand() % 6;
 		patternInterval_ = 0;
 		switch (random) {
