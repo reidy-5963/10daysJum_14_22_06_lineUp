@@ -119,9 +119,33 @@ void TitleScene::Initialize() {
 	InitializeGrobalVariables();
 	ApplyGrobalVariables();
 
-	for (int i = 0; i < 6; i++) {
+	for (int i = 0; i < enemyNum; i++) {
 		enemyManager_->AddEnemy(enemyEndPos_[i], {0.0f, 0.0f});
 	}
+
+#pragma region あてろ
+	hitTex_ = TextureManager::Load("hitandpick.png");
+
+	for (int i = 0; i < enemyNum; i++) {
+		HitPos_[i] = {enemyEndPos_[i].x, enemyEndPos_[i].y - 20.0f};
+		HitText_[i].reset(
+		    Sprite::Create(hitTex_, HitPos_[i], {0.0f, 1.0f, 0.0f, 0.3f}, {0.5f, 0.5f}));
+		HitText_[i]->SetTextureRect({0.0f, 0.0f}, {308.0f, 107.0f});
+		HitText_[i]->SetSize({308.0f * 0.75f, 107.0f * 0.75f});
+	}
+#pragma endregion
+
+#pragma region ひろえ
+	pickedTex_ = TextureManager::Load("hitandpick.png");
+
+	for (int i = 0; i < enemyNum; i++) {
+		PickedPos_[i] = {enemyEndPos_[i].x, enemyEndPos_[i].y - 20.0f};
+		PickedText_[i].reset(
+		    Sprite::Create(pickedTex_, PickedPos_[i], {1.0f, 0.0f, 0.0f, 0.3f}, {0.5f, 0.5f}));
+		PickedText_[i]->SetTextureRect({308.0f, 0.0f}, {308.0f, 107.0f});
+		PickedText_[i]->SetSize({308.0f * 0.75f, 107.0f * 0.75f});
+	}
+#pragma endregion
 }
 
 void TitleScene::StaticValueInitialize() {
@@ -224,6 +248,19 @@ void TitleScene::TutorialUpdate() {
 			sceneNum = GAMESCENE;
 		}
 	}
+	{
+		int i = 0;
+		for (Enemy* enemy : enemyManager_->GetEnemyLists()) {
+			//enemy->SetPosition(enemyEndPos_[i]);
+			enemyEndPos_[i] = enemy->GetPosition();
+			HitPos_[i] = {enemyEndPos_[i].x, enemyEndPos_[i].y - 128.0f};
+			PickedPos_[i] = {enemyEndPos_[i].x, enemyEndPos_[i].y - 128.0f};
+			HitText_[i]->SetPosition(HitPos_[i]);
+			PickedText_[i]->SetPosition(PickedPos_[i]);
+			i++;
+
+		}
+	}
 }
 
 void TitleScene::Draw() {
@@ -236,10 +273,6 @@ void TitleScene::Draw() {
 	/// <summary>
 	/// ここに背景スプライトの描画処理を追加できる
 	/// </summary>
-	
-
-
-
 	// 背景の描画
 	back->Draw();
 
@@ -249,9 +282,21 @@ void TitleScene::Draw() {
 	// もしチュートリアルが始まってたら
 	if (TitleTutrialStart) {
 		enemyManager_->Draw();
+		{
+			int i = 0;
+			for (Enemy* enemy : enemyManager_->GetEnemyLists()) {
+				if (enemy->IsParasite()) {
+					PickedText_[i]->Draw();
+				} else if (!enemy->IsParasite()) {
+					HitText_[i]->Draw();
+				}
+				i++;
+			}
+		}
 	}
 	// プレイヤーの描画処理
 	player_->Draw();
+	
 
 	// ロゴの描画
 	titleLogo_->Draw();

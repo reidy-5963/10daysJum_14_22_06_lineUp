@@ -65,6 +65,9 @@ void Player::Initialize() {
 	sprite_.release();
 	// プレイヤーののテクスチャ読み込み
 	charaTex_ = TextureManager::Load("Player_ver2.png");
+	//
+	playerBreakTex_ = TextureManager::Load("playerBreak.png");
+
 	// プレイヤーのスプライトの生成
 	sprite_.reset(Sprite::Create(charaTex_, pos_, {1.0f, 1.0f, 1.0f, 1.0f}, {0.5f, 0.5f}));
 	// プレイヤーのサイズ設定
@@ -241,6 +244,11 @@ void Player::AnimationValueInitialize() {
 	tailCollapseAniNumber = 0;
 	tailCollapseAniScene = 7;
 	tailCollapseAnioneTime = 3;
+
+	playerBreakAniTimer = 0;
+	playerBreakAniNumber = 0;
+	playerBreakAniScene = 8;
+	playerBreakAnioneTime = 6;
 }
 
 /// <summary>
@@ -334,8 +342,6 @@ void Player::Update() {
 	// グローバル変数の値を取得
 	ApplyGrobalVariables();
 	ScreenPosInitialize();
-	// スクロールのインスタンスを取得
-	Scroll* scroll = Scroll::GetInstance();
 	// ひとまずの尻尾追加
 #ifdef _DEBUG
 	////////////////////////////////////////////////////
@@ -347,6 +353,8 @@ void Player::Update() {
 	if (input_->TriggerKey(DIK_2)) {
 		DeleteTails();
 	}
+	// スクロールのインスタンスを取得
+	Scroll* scroll = Scroll::GetInstance();
 
 	////////////////////////////////////////////////////
 	// 通常状態の回転用の道順
@@ -375,133 +383,21 @@ void Player::Update() {
 	GetCursor();
 	CursourCalicurate();
 
-	// もし左クリックしたら
-	if (input_->IsTriggerMouse(0) && !ismarkerMove_) {
-		LeftClickUpdate();
-		predictionLineSize[0] = {0.0f, 3.0f};
-		predictionLineSize[1] = {0.0f, 3.0f};
-	}
-
-	// マーカーの動き処理
-	MarkerMovement();
-
-	// もしマーカーまで移動しきったら
-	if (!isMove_) {
-		// 通常状態の回転の処理
-		RootRotateMoveUpdate();
-	}
-	// そうでないなら
-	else if (isMove_) {
-		// マーカーまでの移動処理
-		ToMarkerMoveUpdate();
-	}
-
-	// 尻尾の更新
-	TailUpdate();
-
-	// 弾の削除処理
-	DeleteBulletUpdate();
-
-	// 弾の更新処理
-	BulletUpdate();
-
-	// マーカーの位置を反映させる
-	markerSprite_->SetPosition(markerPos_ - scroll->GetAddScroll() + sceneVelo);
-	// predictionLinePos_[0] = markerPos_;
-	// predictionLinePos_[1] = markerPos_;
-	predictionLinePos_[0].x = float(mousePos.x);
-	predictionLinePos_[0].y = float(mousePos.y);
-	predictionLinePos_[1].x = float(mousePos.x);
-	predictionLinePos_[1].y = float(mousePos.y);
-
-	predictionLine_[0]->SetPosition(predictionLinePos_[0] - scroll->GetAddScroll() + sceneVelo);
-	predictionLine_[1]->SetPosition(predictionLinePos_[1] - scroll->GetAddScroll() + sceneVelo);
-
-	AnimationUpdate();
-
-	MyMath::ShakeUpdate(shakeVelo_, isDamageShake, amplitNum);
-
-	sprite_->SetColor(color_);
-	ScreenPos += shakeVelo_;
-	// ベースの更新処理
-	BaseCharacter::Update();
-	if (isDamage) {
-		color_ = {1.0f, 1.0f, 1.0f, 1.0f};
-		isDamage = false;
-	}
-	if (isInvisible_) {
-		invisibleTimeCount_ += 1;
-		color_ = {1.0f, 0.7f, 0.7f, 0.8f};
-	}
-
-	if (invisibleTimeCount_ == kInvisibleTimer_) {
-		invisibleTimeCount_ = 0;
-		isInvisible_ = false;
-		color_ = {1.0f, 1.0f, 1.0f, 1.0f};
-	}
-
-	if (tails_.size() > 0) {
-		tails_.back()->SetHp(damageCount);
-		if (damageCount <= 0) {
-			damageCount = setDamageCount;
-			isInvisible_ = true;
-			tails_.back()->SetIsCollapse(true);
-			Audio::GetInstance()->PlayWave(collapseHandle_, false, volume);
-		}
-		if (tails_.back()->IsCollapseAniEnd()) {
-			DeleteTails();
+	if (!isPlayerBreak) {
+		AliveUpdate();
+	} else if (isPlayerBreak) {
+		Vector4 color = sprite_->GetColor();
+		color.w -= 0.015f;
+		sprite_->SetColor(color);
+		sprite_->SetTextureHandle(playerBreakTex_);
+		Animation::Anime(
+		    playerBreakAniTimer, animationNumber, playerBreakAniScene, playerBreakAnioneTime);
+		if (playerBreakAniTimer >= playerBreakAniScene * playerBreakAnioneTime) {
+			isDead_ = true;
 		}
 	}
 
-	// 弾の消去
-	tails_.remove_if([](Tail* tail) {
-		if (tail->IsCollapseAniEnd()) {
-			delete tail;
-			return true;
-		}
-		return false;
-	});
 
-	playerUI_->SetPosition(UIPlayerPos_ + sceneVelo + shakeVelo_);
-
-	if (tails_.size() > 0) {
-		if (damageCount == 3) {
-			tailUI_[int(tails_.size() - 1)]->SetTextureHandle(tailTexture_[0]);
-		} else if (damageCount == 2) {
-			tailUI_[int(tails_.size() - 1)]->SetTextureHandle(tailTexture_[1]);
-		} else if (damageCount == 1) {
-			tailUI_[int(tails_.size() - 1)]->SetTextureHandle(tailTexture_[2]);
-		}
-	}
-	if (tails_.size() > 0) {
-		for (int i = 0; i < tails_.size() - 1; i++) {
-			tailUI_[i]->SetTextureHandle(tailTexture_[0]);
-			tailUI_[i]->SetPosition(UITailPos_[i] + sceneVelo + shakeVelo_);
-		}
-	}
-
-	if (tails_.size() > 1) {
-		if (tails_.back()->IsCollapse()) {
-			tailUI_[int(tails_.size() - 1)]->SetTextureHandle(tailTexture_[3]);
-		}
-		tailUI_[int(tails_.size() - 1)]->SetPosition(
-		    UITailPos_[int(tails_.size() - 1)] + sceneVelo + shakeVelo_);
-	}
-
-	if (tails_.size() <= 0) {
-		isDead_ = true;
-	}
-
-	predictionLineSize[0].x = 1920;
-	predictionLineSize[1].x = 1920;
-
-	predictionLine_[0]->SetSize(predictionLineSize[0]);
-	predictionLine_[1]->SetSize(predictionLineSize[1]);
-
-	UITailPos_[0] = {UIPlayerPos_.x - (80.0f * 3.0f), UIPlayerPos_.y};
-	for (int i = 1; i < 6; i++) {
-		UITailPos_[i] = {UITailPos_[0].x + (i * 80.0f), UITailPos_[0].y};
-	}
 }
 
 /// <summary>
@@ -661,24 +557,24 @@ void Player::MarkerControl() {
 	Scroll* scroll = Scroll::GetInstance();
 
 	if (clickPos_.x < 0 + markerLimit_) {
-		yoClickPos_.x = markerLimit_ + scroll->GetAddScroll().x;
+		clickPos_.x = markerLimit_ + scroll->GetAddScroll().x;
 	}
 
 	else if (
-	    yoClickPos_.x > (WinApp::kWindowWidth * 1) + scroll->GetEdgePos().x +
+	    clickPos_.x > (WinApp::kWindowWidth * 1) + scroll->GetEdgePos().x +
 	                        (scroll->GetEdgePos().x - markerLimit_)) {
-		yoClickPos_.x = (WinApp::kWindowWidth * 1) + scroll->GetEdgePos().x +
+		clickPos_.x = (WinApp::kWindowWidth * 1) + scroll->GetEdgePos().x +
 		                (scroll->GetEdgePos().x - markerLimit_);
 	}
 
-	if (yoClickPos_.y < 0 + markerLimit_) {
-		yoClickPos_.y = markerLimit_ + scroll->GetAddScroll().y;
+	if (clickPos_.y < 0 + markerLimit_) {
+		clickPos_.y = markerLimit_ + scroll->GetAddScroll().y;
 	}
 
 	else if (
-	    yoClickPos_.y > (WinApp::kWindowHeight * 1) + scroll->GetEdgePos().y +
+	    clickPos_.y > (WinApp::kWindowHeight * 1) + scroll->GetEdgePos().y +
 	                        (scroll->GetEdgePos().y - markerLimit_)) {
-		yoClickPos_.y = (WinApp::kWindowHeight * 1) + scroll->GetEdgePos().y +
+		clickPos_.y = (WinApp::kWindowHeight * 1) + scroll->GetEdgePos().y +
 		                (scroll->GetEdgePos().y - markerLimit_);
 	}
 }
@@ -1039,11 +935,147 @@ void Player::AnimationUpdate() {
 
 	if (tails_.size() > 0) {
 		if (tails_.back()->IsCollapse()) {
-			Animation::Anime(
-			    tailCollapseAniTimer, tailCollapseAniNumber, tailCollapseAniScene,
-			    tailCollapseAnioneTime);
+			if (tailCollapseAniTimer < tailCollapseAniScene * tailCollapseAnioneTime) {
+				Animation::Anime(
+				    tailCollapseAniTimer, tailCollapseAniNumber, tailCollapseAniScene,
+				    tailCollapseAnioneTime);
+			}
 		}
 	}
+}
+void Player::AliveUpdate() {
+	// スクロールのインスタンスを取得
+	Scroll* scroll = Scroll::GetInstance();
+
+	// もし左クリックしたら
+	if (input_->IsTriggerMouse(0) && !ismarkerMove_) {
+		LeftClickUpdate();
+		predictionLineSize[0] = {0.0f, 3.0f};
+		predictionLineSize[1] = {0.0f, 3.0f};
+	}
+
+	// マーカーの動き処理
+	MarkerMovement();
+
+	// もしマーカーまで移動しきったら
+	if (!isMove_) {
+		// 通常状態の回転の処理
+		RootRotateMoveUpdate();
+	}
+	// そうでないなら
+	else if (isMove_) {
+		// マーカーまでの移動処理
+		ToMarkerMoveUpdate();
+	}
+
+	// 尻尾の更新
+	TailUpdate();
+
+	// 弾の削除処理
+	DeleteBulletUpdate();
+
+	// 弾の更新処理
+	BulletUpdate();
+
+	// マーカーの位置を反映させる
+	markerSprite_->SetPosition(markerPos_ - scroll->GetAddScroll() + sceneVelo);
+	// predictionLinePos_[0] = markerPos_;
+	// predictionLinePos_[1] = markerPos_;
+	predictionLinePos_[0].x = float(mousePos.x);
+	predictionLinePos_[0].y = float(mousePos.y);
+	predictionLinePos_[1].x = float(mousePos.x);
+	predictionLinePos_[1].y = float(mousePos.y);
+
+	predictionLine_[0]->SetPosition(predictionLinePos_[0] - scroll->GetAddScroll() + sceneVelo);
+	predictionLine_[1]->SetPosition(predictionLinePos_[1] - scroll->GetAddScroll() + sceneVelo);
+
+	AnimationUpdate();
+
+	MyMath::ShakeUpdate(shakeVelo_, isDamageShake, amplitNum);
+
+	sprite_->SetColor(color_);
+	ScreenPos += shakeVelo_;
+	// ベースの更新処理
+	BaseCharacter::Update();
+	if (isDamage) {
+		color_ = {1.0f, 1.0f, 1.0f, 1.0f};
+		isDamage = false;
+	}
+	if (isInvisible_) {
+		invisibleTimeCount_ += 1;
+		color_ = {1.0f, 0.7f, 0.7f, 0.8f};
+	}
+
+	if (invisibleTimeCount_ == kInvisibleTimer_) {
+		invisibleTimeCount_ = 0;
+		isInvisible_ = false;
+		color_ = {1.0f, 1.0f, 1.0f, 1.0f};
+	}
+
+	if (tails_.size() > 0) {
+		tails_.back()->SetHp(damageCount);
+		if (damageCount <= 0) {
+			damageCount = setDamageCount;
+			isInvisible_ = true;
+			tails_.back()->SetIsCollapse(true);
+			Audio::GetInstance()->PlayWave(collapseHandle_, false, volume);
+		}
+		if (tails_.back()->IsCollapseAniEnd()) {
+			DeleteTails();
+		}
+	}
+
+	// 弾の消去
+	tails_.remove_if([](Tail* tail) {
+		if (tail->IsCollapseAniEnd()) {
+			delete tail;
+			return true;
+		}
+		return false;
+	});
+
+	playerUI_->SetPosition(UIPlayerPos_ + sceneVelo + shakeVelo_);
+
+	if (tails_.size() > 0) {
+		if (damageCount == 3) {
+			tailUI_[int(tails_.size() - 1)]->SetTextureHandle(tailTexture_[0]);
+		} else if (damageCount == 2) {
+			tailUI_[int(tails_.size() - 1)]->SetTextureHandle(tailTexture_[1]);
+		} else if (damageCount == 1) {
+			tailUI_[int(tails_.size() - 1)]->SetTextureHandle(tailTexture_[2]);
+		}
+	}
+	if (tails_.size() > 0) {
+		for (int i = 0; i < tails_.size() - 1; i++) {
+			tailUI_[i]->SetTextureHandle(tailTexture_[0]);
+			tailUI_[i]->SetPosition(UITailPos_[i] + sceneVelo + shakeVelo_);
+		}
+	}
+
+	if (tails_.size() > 1) {
+		if (tails_.back()->IsCollapse()) {
+			tailUI_[int(tails_.size() - 1)]->SetTextureHandle(tailTexture_[3]);
+		}
+		tailUI_[int(tails_.size() - 1)]->SetPosition(
+		    UITailPos_[int(tails_.size() - 1)] + sceneVelo + shakeVelo_);
+	}
+
+	predictionLineSize[0].x = 1920;
+	predictionLineSize[1].x = 1920;
+
+	predictionLine_[0]->SetSize(predictionLineSize[0]);
+	predictionLine_[1]->SetSize(predictionLineSize[1]);
+
+	UITailPos_[0] = {UIPlayerPos_.x - (80.0f * 3.0f), UIPlayerPos_.y};
+	for (int i = 1; i < 6; i++) {
+		UITailPos_[i] = {UITailPos_[0].x + (i * 80.0f), UITailPos_[0].y};
+	}
+	if (isGameStart) {
+		if (tails_.size() <= 0) {
+			isPlayerBreak = true;
+		}
+	} 
+
 }
 #pragma endregion
 
@@ -1177,8 +1209,15 @@ void Player::AddTails() {
 /// 尻尾の削除
 /// </summary>
 void Player::DeleteTails() {
-	if (tails_.size() > 0) {
-		tails_.pop_back();
+	if(isGameStart){
+		if (tails_.size() > 0) {
+			tails_.pop_back();
+		}
+	} else if (!isGameStart) {
+		if (tails_.size() > 1) {
+			tails_.pop_back();
+		}
+
 	}
 }
 
