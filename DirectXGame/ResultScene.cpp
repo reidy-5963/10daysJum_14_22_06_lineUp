@@ -12,7 +12,11 @@ ResultScene::ResultScene() {}
 /// <summary>
 /// デストラクタ
 /// </summary>
-ResultScene::~ResultScene() {}
+ResultScene::~ResultScene() {
+	if (audio_->IsPlaying(BGMHandle_)) {
+		audio_->StopWave(BGMHandle_);
+	}
+}
 
 void ResultScene::Initialize() {
 	sceneNum = CLEAR;
@@ -134,6 +138,15 @@ void ResultScene::TutorialUpdate() {
 
 	if (player_->GetMarkerPos().x > 1800.0f) {
 		if (player_->GetPosition().x > 1800.0f) {
+			player_->AudioStop();
+			player_->AudioStop();
+
+			if (audio_->IsPlaying(BGMHandle_)) {
+				audio_->StopWave(BGMHandle_);
+			}
+			if (audio_->IsPlaying(BGMHandle_)) {
+				audio_->StopWave(BGMHandle_);
+			}
 			if (audio_->IsPlaying(BGMHandle_)) {
 				audio_->StopWave(BGMHandle_);
 			}

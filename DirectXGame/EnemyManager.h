@@ -169,6 +169,7 @@ private:
 	uint32_t particleTex_ = 0u;
 
 	uint32_t deadSEHandel_ = 0;
+	uint32_t collapseSEHandle_ = 0u;
 
 	// エネミー
 	std::list<Enemy*> enemys_;

@@ -66,7 +66,8 @@ public: // 設定
 	void SetParasiteTexture(uint32_t tex) { parasiteTex_ = tex; }
 	void SetCollapseTexture(uint32_t tex) { collapseTex_ = tex; }
 
-	void SetSEHandle(uint32_t handle) { deadSEHandle_ = handle; }
+	void SetDeadSEHandle(uint32_t handle) { deadSEHandle_ = handle; }
+	void SetCollapseSEHandle(uint32_t handle) { collapseSEHandle_ = handle; }
 
 	void SetIsBossParasite(bool isParasite) { isBossParasite_ = isParasite; }
 
@@ -86,6 +87,8 @@ private:
 	std::unique_ptr<ParticleManager> particle_ = nullptr;
 
 	uint32_t deadSEHandle_ = 0;
+	uint32_t collapseSEHandle_ = 0u;
+
 	int collapseAniTimer = 0;
 	int collapseAniNumber = 0;
 	int collapseAniScene = 7;
@@ -93,6 +96,7 @@ private:
 
 	bool isBossParasite_ = false;
 	bool isGameMode_ = false;
+	float volume = 0.1f;
 
 private: // 限界値
 	Vector2 kMinusLimits = {-250.0f, -250.0f};

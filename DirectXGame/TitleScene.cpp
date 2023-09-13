@@ -73,6 +73,26 @@ void TitleScene::Initialize() {
 
 #pragma endregion
 
+#pragma region タイトル
+	// タイトルロゴの位置
+	leftClick_pos_ = {WinApp::kWindowWidth / 2, (WinApp::kWindowHeight / 2) / 2};
+
+	// 線形補完用スタート位置
+	leftClick_StartPos_ = {WinApp::kWindowWidth / 2, (WinApp::kWindowHeight / 2) / 2};
+
+	// 線形補完用終わり位置
+	leftClick_EndPos_ = {WinApp::kWindowWidth / 2, (WinApp::kWindowHeight / 2) / 2 - 10.0f};
+
+	// タイトルロゴのテクスチャ読み込み
+	leftClick_tex_ = TextureManager::Load("hidari.png");
+
+	// タイトルロゴのスプライト生成
+	leftClick_.reset(
+	    Sprite::Create(leftClick_tex_, leftClick_pos_, {1.0f, 1.0f, 1.0f, 1.0f}, {0.5f, 0.5f}));
+
+#pragma endregion
+
+
 #pragma region プレイヤー
 	// プレイヤー生成
 	player_ = std::make_unique <Player>();
@@ -114,6 +134,7 @@ void TitleScene::Update() {
 
 
 	titleLogo_->SetPosition(titleLogo_pos_);
+	leftClick_->SetPosition(leftClick_pos_);
 
 	// プレイヤーの更新処理
 	player_->Update();
@@ -136,14 +157,18 @@ void TitleScene::NotTutorialUpdate() {
 
 	if (!titleLogoMove_) {
 		titleLogo_pos_ = MyMath::EaseInCubicF(titleLogo_t_, titleLogoStartPos_, titleLogoEndPos_);
+		leftClick_pos_ = MyMath::EaseInCubicF(titleLogo_t_, leftClick_StartPos_, leftClick_EndPos_);
 		MyMath::CountT(titleLogo_t_, 0.0f, titleLogoMove_, true, 0.1f);
 	}
 	if (titleLogoMove_) {
 		titleLogo_pos_ = MyMath::EaseInCubicF(titleLogo_t_, titleLogoEndPos_, titleLogoStartPos_);
+		leftClick_pos_ = MyMath::EaseInCubicF(titleLogo_t_, leftClick_EndPos_, leftClick_StartPos_);
 		MyMath::CountT(titleLogo_t_, 0.0f, titleLogoMove_, false, 0.1f);
 		if (!titleLogoMove_) {
 			titleLogo_pos_ =
 			    MyMath::EaseInCubicF(titleLogo_t_, titleLogoStartPos_, titleLogoEndPos_);
+			leftClick_pos_ =
+			    MyMath::EaseInCubicF(titleLogo_t_, leftClick_StartPos_, leftClick_EndPos_);
 			MyMath::CountT(titleLogo_t_, 0.0f, titleLogoMove_, true, 0.1f);
 		}
 	}
@@ -167,6 +192,8 @@ void TitleScene::TutorialUpdate() {
 	if (titleLogoMove_) {
 		titleLogo_pos_ =
 		    MyMath::EaseInCubicF(titleLogo_t_, titleLogoEndPos_, {titleLogoEndPos_.x, -200.0f});
+		leftClick_pos_ =
+		    MyMath::EaseInCubicF(titleLogo_t_, leftClick_EndPos_, {leftClick_EndPos_.x, -200.0f});
 		MyMath::CountT(titleLogo_t_, 1.0f, titleLogoMove_, true, 0.1f);
 	}
 
@@ -176,6 +203,12 @@ void TitleScene::TutorialUpdate() {
 
 	if (player_->GetMarkerPos().x > 1800.0f) {
 		if (player_->GetPosition().x > 1800.0f) {
+			player_->AudioStop();
+			player_->AudioStop();
+
+			if (audio_->IsPlaying(BGMHandle_)) {
+				audio_->StopWave(BGMHandle_);
+			}
 			if (audio_->IsPlaying(BGMHandle_)) {
 				audio_->StopWave(BGMHandle_);
 			}
@@ -214,7 +247,7 @@ void TitleScene::Draw() {
 
 	// ロゴの描画
 	titleLogo_->Draw();
-	
+	leftClick_->Draw();
 	// チュートリアルが始まったら描画
 	if (TitleTutrialStart) {
 		player_->DrawUI();
@@ -246,6 +279,11 @@ void TitleScene::InitializeGrobalVariables() {
 	gloVars->AddItem(groupName, "enemyEndPos4_", enemyEndPos_[4]);
 	gloVars->AddItem(groupName, "enemyEndPos5_", enemyEndPos_[5]);
 
+	gloVars->AddItem(groupName, "titleLogoStartPos_", titleLogoStartPos_);
+	gloVars->AddItem(groupName, "titleLogoEndPos_", titleLogoEndPos_);
+
+	gloVars->AddItem(groupName, "leftClick_StartPos_", leftClick_StartPos_);
+	gloVars->AddItem(groupName, "leftClick_EndPos_", leftClick_EndPos_);
 }
 
 void TitleScene::ApplyGrobalVariables() { 
@@ -260,6 +298,12 @@ void TitleScene::ApplyGrobalVariables() {
 	enemyEndPos_[3] = gloVars->GetVector2Value(groupName, "enemyEndPos3_");
 	enemyEndPos_[4] = gloVars->GetVector2Value(groupName, "enemyEndPos4_");
 	enemyEndPos_[5] = gloVars->GetVector2Value(groupName, "enemyEndPos5_");
+
+	titleLogoStartPos_ = gloVars->GetVector2Value(groupName, "titleLogoStartPos_");
+	titleLogoEndPos_ = gloVars->GetVector2Value(groupName, "titleLogoEndPos_");
+	
+	leftClick_StartPos_ = gloVars->GetVector2Value(groupName, "leftClick_StartPos_");
+	leftClick_EndPos_ = gloVars->GetVector2Value(groupName, "leftClick_EndPos_");
 }
 
 void TitleScene::CheckAllCollision() { 

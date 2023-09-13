@@ -14,7 +14,11 @@ GameScene::GameScene() {}
 /// <summary>
 /// デストラクタ
 /// </summary>
-GameScene::~GameScene() {}
+GameScene::~GameScene() {
+	if (audio_->IsPlaying(BGMHandle_)) {
+		audio_->StopWave(BGMHandle_);
+	}
+}
 
 /// <summary>
 /// 初期化
@@ -105,6 +109,7 @@ void GameScene::Initialize() {
 	ShowCursor(false);
 	InitializeGrobalVariables();
 	BGMHandle_ = Audio::GetInstance()->LoadWave("music/GameScene.wav");
+	pickUpTailSEHandle_ = Audio::GetInstance()->LoadWave("music/pickUpTail.wav");
 }
 
 /// <summary>
@@ -124,7 +129,7 @@ void GameScene::Update() {
 	if (!isGameSet_) { 
 		// BGM再生
 		if (audio_->IsPlaying(BGMHandle_) == 0 || BGMHandle_ == -1) {
-			BGMHandle_ = audio_->PlayWave(BGMHandle_, true, bolume);
+			BGMHandle_ = audio_->PlayWave(BGMHandle_, true, volume);
 		}
 
 		// スクロールの更新処理
@@ -368,6 +373,8 @@ void GameScene::CheckAllCollision() {
 				// コールバック
 				if (enemy->IsParasite()) {
 					player_->AddTails();
+					Audio::GetInstance()->PlayWave(pickUpTailSEHandle_, false, SEvolume);
+
 					if (player_->GetTail() >= 6) {
 						// gameTimer += pickUpTailTime;
 					}
@@ -389,6 +396,7 @@ void GameScene::CheckAllCollision() {
 			else if (player_->GetIsInvisible()) {
 				if (enemy->IsParasite()) {
 					// gameTimer += pickUpTailTime;
+					Audio::GetInstance()->PlayWave(pickUpTailSEHandle_, false, SEvolume);
 
 					player_->AddTails();
 					enemy->SetIsDead(true);

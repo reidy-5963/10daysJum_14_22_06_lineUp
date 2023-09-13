@@ -71,6 +71,22 @@
         "enemyStartPos5_": [
             1540.0,
             1120.0
+        ],
+        "leftClick_EndPos_": [
+            960.0,
+            860.0
+        ],
+        "leftClick_StartPos_": [
+            960.0,
+            870.0
+        ],
+        "titleLogoEndPos_": [
+            960.0,
+            260.0
+        ],
+        "titleLogoStartPos_": [
+            960.0,
+            270.0
         ]
     }
 }

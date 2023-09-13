@@ -84,7 +84,6 @@ void Enemy::Draw() {
 }
 
 void Enemy::OnCollision() {
-	float volume = 0.1f;
 	if (!isParasite_) {
 		ParasiteAnimationInitialize();
 		isParasite_ = true;
@@ -105,13 +104,17 @@ void Enemy::ParasiteStateUpdate() {
 		}
 	}
 
-	if (isPossiblePickUp && !isCollapse_) {
-		if (isBossParasite_) {
-			isCollapse_ = true;
-		}
+	if (isGameMode_) {
+		if (isPossiblePickUp && !isCollapse_) {
+			if (isBossParasite_) {
+				isCollapse_ = true;
+				Audio::GetInstance()->PlayWave(collapseSEHandle_, false, volume);
+			}
 
-		if (--deleteTimer < 0) {
-			isCollapse_ = true;
+			if (--deleteTimer < 0) {
+				isCollapse_ = true;
+				Audio::GetInstance()->PlayWave(collapseSEHandle_, false, volume);
+			}
 		}
 	}
 

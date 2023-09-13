@@ -109,7 +109,15 @@ private: // メンバ変数
 
 	uint32_t BGMHandle_ = 0u;
 
+	std::unique_ptr<Sprite> leftClick_ = nullptr;
+	uint32_t leftClick_tex_ = 0u;
+	Vector2 leftClick_pos_{};
 
+	
+	Vector2 leftClick_StartPos_{};
+	Vector2 leftClick_EndPos_{};
+	float leftClick_t_ = 0.0f;
+	bool leftClick_Move_ = false;
 
 
 };

@@ -144,6 +144,8 @@ public: // セッター
 	void SetParticleTex(uint32_t particletex) { particleTex_ = particletex; }
 	
 	void SetIsCollapse(bool isColl) { isCollapse = isColl; }
+
+	void SetCollapseSEHandle(uint32_t SEhandle) { collapseSEHandle_ = SEhandle; }
 #pragma endregion
 
 private: // メンバ変数
@@ -207,4 +209,6 @@ private: // メンバ変数
 	
 	std::unique_ptr<Sprite> playerUI_;
 	Vector2 UIPlayerPos_{100.0f, 100.0f};
+
+	uint32_t collapseSEHandle_;
 };

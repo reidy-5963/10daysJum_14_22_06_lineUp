@@ -109,7 +109,8 @@ private: // メンバ変数
 #pragma endregion
 
 #pragma region 音 
-	float bolume = 0.01f;
+	float volume = 0.01f;
+	float SEvolume = 0.1f;
 
 	uint32_t BGMHandle_ = 0u;
 #pragma endregion
@@ -133,7 +134,7 @@ private: // メンバ変数
 	int enemyTen = 0;
 	int enemyOne = 0;
 
-
+	uint32_t pickUpTailSEHandle_;
 #pragma region
 	int setTailTime = 3;
 	int pickUpTailTime = 60 * setTailTime;
@@ -144,5 +145,4 @@ private: // メンバ変数
 	int setBossEnemyDamage = 3;
 	int bossEnemyDamage = 60 * setBossEnemyDamage;
 #pragma endregion
-
 };
