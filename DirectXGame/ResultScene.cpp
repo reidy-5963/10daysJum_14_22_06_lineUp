@@ -90,14 +90,8 @@ void ResultScene::Update() {
 	// プレイヤーの更新処理
 	player_->Update();
 
-	if (!isSceneChange) {
-		NotTutorialUpdate();
-	}
-	//
-	else if (isSceneChange) {
-
-		TutorialUpdate();
-	}
+	NotTutorialUpdate();
+	
 }
 
 void ResultScene::NotTutorialUpdate() {
@@ -117,24 +111,12 @@ void ResultScene::NotTutorialUpdate() {
 	if (input_->IsTriggerMouse(0)) {
 		isSceneChange = true;
 	}
-}
-
-void ResultScene::TutorialUpdate() {
 	if (!isAriaMove_) {
 		ariaPos_ = MyMath::lerp(aria_t_, ariaStartPos_, ariaEndPos_);
 		MyMath::CountT(aria_t_, 1.0f, isAriaMove_, true, 0.05f);
 	}
 	title2gameSceneAria_->SetColor(ariaColor_);
 	title2gameSceneAria_->SetPosition(ariaPos_);
-
-	if (!titleLogoMove_) {
-		titleLogoMove_ = true;
-	}
-	if (titleLogoMove_) {
-		titleLogoPos_ =
-		    MyMath::EaseInCubicF(titleLogo_t_, titleLogoEndPos_, {titleLogoEndPos_.x, -200.0f});
-		MyMath::CountT(titleLogo_t_, 1.0f, titleLogoMove_, true, 0.1f);
-	}
 
 	if (player_->GetMarkerPos().x > 1800.0f) {
 		if (player_->GetPosition().x > 1800.0f) {
@@ -154,6 +136,11 @@ void ResultScene::TutorialUpdate() {
 			sceneNum = TITLE;
 		}
 	}
+}
+
+void ResultScene::TutorialUpdate() {
+
+
 }
 
 void ResultScene::Draw() {
