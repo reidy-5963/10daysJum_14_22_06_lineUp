@@ -165,6 +165,11 @@ void GameScene::Update() {
 	// ボスの更新処理
 	boss_->SetPlayer(player_->GetPosition());
 	boss_->Update();
+
+	if (boss_->GetIsCrossForm()) {
+		boss_->SetIsCrossForm(false);
+		enemyManager_->DiagonalBehavior();
+	}
 	
 
 		if (--gameTimer < 0) {

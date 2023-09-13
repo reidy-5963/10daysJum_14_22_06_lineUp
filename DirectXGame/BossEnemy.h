@@ -298,11 +298,18 @@ private: // 動きの管理
 	int isActionNow_ = false;
 	// テーブルのラスト
 	bool isLastAction_ = false;
+	// 上下クロスのフラグ
+	bool isCrossForm_ = false;
+
 public:
 	// 最後の行動かの取得
 	bool GetIsLastAction() { return isLastAction_; }
 	// 最後の行動かの設定
 	void SetIsLastAction(bool flag) { isLastAction_ = flag; }
+
+	bool GetIsCrossForm() { return isCrossForm_; }
+
+	void SetIsCrossForm(bool flag) { isCrossForm_ = flag; }
 
 private: // 揺らす系
 	Vector2 shakeVelo_{};

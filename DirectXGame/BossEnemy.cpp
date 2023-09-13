@@ -144,6 +144,15 @@ void BossEnemy::Initialize()
 	animationScene = 4;
 	oneTime = 5;
 	isAnimation = true;
+	// 行動系
+	actionTimer_ = 0;
+	kActionCoolTime_ = 60 * 5;
+	// アクション中か
+	isActionNow_ = false;
+	// テーブルのラスト
+	isLastAction_ = false;
+	// 上下クロスのフラグ
+	isCrossForm_ = false;
 
 	sprite_.reset(
 	    Sprite::Create(charaTex_, {pos_.x, pos_.y}, {1.0f, 1.0f, 1.0f, 1.0f}, {0.5f, 0.5f}));
@@ -497,6 +506,7 @@ void BossEnemy::ActionTable()
 	case 3:
 		actions_.push_back(Behavior::kRushAlert);
 		actions_.push_back(Behavior::kFunnel);
+
 		break;
 	case 4:
 		actions_.push_back(Behavior::kRushAlert);

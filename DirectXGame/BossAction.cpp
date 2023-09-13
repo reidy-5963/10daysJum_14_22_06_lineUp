@@ -216,6 +216,7 @@ void BossEnemy::CrossAttack()
 	if (modeCount_ == kModeEndTimer_) {
 		behaviorRequest_ = Behavior::kRoot;
 		actions_.pop_back();
+		
 	}
 }
 
@@ -223,4 +224,5 @@ void BossEnemy::CrossAttackInitialize()
 { 
 	sprite_->SetTextureHandle(charaTex_);
 	kModeEndTimer_ = ConvertSeconds(2);
+	isCrossForm_ = true;
 }

@@ -201,6 +201,12 @@ private:
 	// パターン湧きの間隔
 	int kInterval_ = 60 * kIntervalSecond_;
 
+	bool isCrossPattern_ = false;
+
+public:
+
+	void SetIsCross(bool flag) { isCrossPattern_ = flag; }
+
 private:	// Arrowの変数
 	enum Pattern 
 	{
