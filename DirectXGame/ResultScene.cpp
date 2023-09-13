@@ -1,6 +1,6 @@
-﻿#include "ImGuiManager.h"
+﻿#include "ResultScene.h"
+#include "ImGuiManager.h"
 #include "TextureManager.h"
-#include "ResultScene.h"
 #include <cassert>
 #include <cmath>
 
@@ -65,12 +65,12 @@ void ResultScene::Initialize() {
 	player_->SetIsGameStart(false);
 	// プレイヤーの初期化処理
 	player_->Initialize();
-#pragma endregion 
-	
+#pragma endregion
+
 	title2gameSceneAria_->SetPosition(ariaStartPos_);
 }
 
-void ResultScene::Update() { 
+void ResultScene::Update() {
 	// BGM再生
 	if (audio_->IsPlaying(BGMHandle_) == 0 || BGMHandle_ == -1) {
 		BGMHandle_ = audio_->PlayWave(BGMHandle_, true, bolume);
@@ -80,10 +80,9 @@ void ResultScene::Update() {
 		title_->SetTextureRect({0.0f, 0.0f}, {950.0f, 540.0f});
 	} else if (!isBossDead) {
 		title_->SetTextureRect({950.0f, 0.0f}, {950.0f, 540.0f});
-
 	}
 	title_->SetPosition(titleLogoPos_);
-	
+
 	// プレイヤーの更新処理
 	player_->Update();
 
@@ -95,7 +94,6 @@ void ResultScene::Update() {
 
 		TutorialUpdate();
 	}
-
 }
 
 void ResultScene::NotTutorialUpdate() {
@@ -135,11 +133,11 @@ void ResultScene::TutorialUpdate() {
 	}
 
 	if (player_->GetMarkerPos().x > 1800.0f) {
-		if (audio_->IsPlaying(BGMHandle_)) {
-			audio_->StopWave(BGMHandle_);
-		}
-
 		if (player_->GetPosition().x > 1800.0f) {
+			if (audio_->IsPlaying(BGMHandle_)) {
+				audio_->StopWave(BGMHandle_);
+			}
+
 			sceneNum = TITLE;
 		}
 	}
