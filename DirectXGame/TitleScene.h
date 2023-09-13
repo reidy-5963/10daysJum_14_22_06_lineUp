@@ -106,6 +106,7 @@ private: // メンバ変数
 
 	Vector2 enemyEndPos_[6];
 	float bolume = 0.01f;
+	float SEvolume = 0.1f;
 
 	uint32_t BGMHandle_ = 0u;
 
@@ -113,7 +114,8 @@ private: // メンバ変数
 	uint32_t leftClick_tex_ = 0u;
 	Vector2 leftClick_pos_{};
 
-	
+	uint32_t pickUpTailSEHandle_;
+
 	Vector2 leftClick_StartPos_{};
 	Vector2 leftClick_EndPos_{};
 	float leftClick_t_ = 0.0f;

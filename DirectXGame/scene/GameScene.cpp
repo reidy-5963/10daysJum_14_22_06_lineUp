@@ -18,6 +18,9 @@ GameScene::~GameScene() {
 	if (audio_->IsPlaying(BGMHandle_)) {
 		audio_->StopWave(BGMHandle_);
 	}
+	if (audio_->IsPlaying(pickUpTailSEHandle_)) {
+		audio_->StopWave(pickUpTailSEHandle_);
+	}
 }
 
 /// <summary>

@@ -13,7 +13,14 @@ TitleScene::TitleScene() {}
 /// <summary>
 /// デストラクタ
 /// </summary>
-TitleScene::~TitleScene() {}
+TitleScene::~TitleScene() {
+	if (audio_->IsPlaying(BGMHandle_)) {
+		audio_->StopWave(BGMHandle_);
+	}
+	if (audio_->IsPlaying(pickUpTailSEHandle_)) {
+		audio_->StopWave(pickUpTailSEHandle_);
+	}
+}
 
 void TitleScene::Initialize() {
 	// このシーンはタイトル
@@ -21,6 +28,7 @@ void TitleScene::Initialize() {
 	// 静的変数の初期化
 	StaticValueInitialize();
 	BGMHandle_ = Audio::GetInstance()->LoadWave("music/GameScene.wav");
+	pickUpTailSEHandle_ = Audio::GetInstance()->LoadWave("music/pickUpTail.wav");
 
 	Scroll::GetInstance()->Initialize();
 
@@ -329,6 +337,8 @@ void TitleScene::CheckAllCollision() {
 			if (!player_->GetIsInvisible() && !enemy->GetIsDead()) {
 				// コールバック
 				if (enemy->IsParasite()) {
+					Audio::GetInstance()->PlayWave(pickUpTailSEHandle_, false, SEvolume);
+
 					player_->AddTails();
 					if (player_->GetTail() >= 6) {
 						// gameTimer += pickUpTailTime;
@@ -351,6 +361,7 @@ void TitleScene::CheckAllCollision() {
 			else if (player_->GetIsInvisible()) {
 				if (enemy->IsParasite()) {
 					// gameTimer += pickUpTailTime;
+					Audio::GetInstance()->PlayWave(pickUpTailSEHandle_, false, SEvolume);
 
 					player_->AddTails();
 					enemy->SetIsDead(true);
