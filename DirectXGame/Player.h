@@ -253,12 +253,12 @@ private: // メンバ変数
 	int scoreCOunt = 0;
 #pragma region 当たり判定処理系
 
-	int kInvisibleTimer_ = 30;
+	int kInvisibleTimer_ = 10;
 
 	int invisibleTimeCount_;
 
 	bool isInvisible_ = false;
-
+	bool isDamage = false;
 #pragma endregion
 
 #pragma region マーカー
@@ -430,4 +430,8 @@ private: // メンバ変数
 	uint32_t markerSetSEHandle_ = 0u;
 
 	float volume = 0.09f;
+
+	bool isRefresh_ = false;
+	int SetRefreshTime = 120;
+	int refreshTimer = SetRefreshTime;
 };

@@ -330,6 +330,7 @@ void Player::InitializeGrobalVariables() {
 /// 更新処理
 /// </summary>
 void Player::Update() {
+
 	// グローバル変数の値を取得
 	ApplyGrobalVariables();
 	ScreenPosInitialize();
@@ -424,7 +425,10 @@ void Player::Update() {
 	ScreenPos += shakeVelo_;
 	// ベースの更新処理
 	BaseCharacter::Update();
-
+	if (isDamage) {
+		color_ = {1.0f, 1.0f, 1.0f, 1.0f};
+		isDamage = false;
+	}
 	if (isInvisible_) {
 		invisibleTimeCount_ += 1;
 		color_ = {1.0f, 0.7f, 0.7f, 0.8f};
@@ -440,6 +444,7 @@ void Player::Update() {
 		tails_.back()->SetHp(damageCount);
 		if (damageCount <= 0) {
 			damageCount = setDamageCount;
+			isInvisible_ = true;
 			tails_.back()->SetIsCollapse(true);
 			Audio::GetInstance()->PlayWave(collapseHandle_, false, volume);
 		}
@@ -508,9 +513,10 @@ void Player::OnCollision() {
 		// もし当たったらシェイクフラグを有効に
 		isDamageShake = true;
 		damageCount--;
+		isDamage = true;
+
 		// 揺れ幅を設定
 		amplitNum = 30;
-		isInvisible_ = true;
 		color_ = {1.0f, 0.1f, 0.1f, 1.0f};
 	}
 }
