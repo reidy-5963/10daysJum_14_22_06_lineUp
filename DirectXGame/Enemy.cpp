@@ -41,7 +41,9 @@ void Enemy::Update() {
 	ImGui::End();
 
 #endif // _DEBUG
-
+	if (isBossParasite_) {
+		isParasite_ = true;
+	}
 	if (!isParasite_) {
 		RootStateUpdate();
 	} else if (isParasite_) {
@@ -99,6 +101,10 @@ void Enemy::ParasiteStateUpdate() {
 	}
 
 	if (isPossiblePickUp && !isCollapse_) {
+		if (isBossParasite_) {
+			isCollapse_ = true;
+		}
+
 		if (--deleteTimer < 0) {
 			isCollapse_ = true;
 		}

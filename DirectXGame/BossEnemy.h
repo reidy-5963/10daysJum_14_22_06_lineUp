@@ -148,6 +148,8 @@ public:	// 設定・取得
 
 	bool IsAlive() { return isAlive_; }
 
+	bool IsParasite() { return isParasite_; }
+
 private:
 	// 入力
 	Input* input_ = nullptr;
@@ -275,4 +277,11 @@ private: // 揺らす系
 	Vector4 color_ = {1.0f, 1.0f, 1.0f, 1.0f};
 
 	float alphaOffset = 0.007f;
+	bool isParasite_ = false;
+	int collapseAniTimer = 0;
+	int collapseAniNumber = 0;
+	int collapseAniScene = 5;
+	int collapseAnioneTime = 20;
+
+	uint32_t parasiteTex_;
 };

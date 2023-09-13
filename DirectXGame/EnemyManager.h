@@ -154,8 +154,10 @@ public: // 敵の生成関数
 	/// <param name="size"></param>
 	void SetTailSize(int size) { tailSize_ = size; }
 
-private:
+	void SetIsBossParasite(bool isParasite) { isBossParasite = isParasite; }
 
+private:
+	bool isBossParasite = false;
 	Input* input_ = nullptr;
 
 	// 共通テクスチャ

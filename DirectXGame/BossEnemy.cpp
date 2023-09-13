@@ -13,6 +13,7 @@
 BossEnemy::BossEnemy() {
 	// キャラ
 	charaTex_ = TextureManager::Load("BossEnemy.png");
+	parasiteTex_ = TextureManager::Load("bossbreak.png");
 	// 弾
 	bulletTex_ = TextureManager::Load("BossBullet.png");
 	// ファンネル
@@ -145,82 +146,99 @@ void BossEnemy::Update()
 
 	/// 死ぬ処理
 	if (isAlive_ && hp_ <= 0) {
-		isDead_ = true;
+		isParasite_ = true;
+		//isDead_ = true;
 		isAlive_ = false;
 	}
 
 	ScreenPosInitialize();
 
-	Animation::Anime(animationTimer, animationNumber, animationScene, oneTime);
-	// リクエスト
-	if (behaviorRequest_) {
-		// 行動変更
-		behavior_ = behaviorRequest_.value();
-		// 行動状態のカウントリセット
-		modeCount_ = 0;
-		// それぞれの初期化
+	if (!isParasite_) {
+		// リクエスト
+		if (behaviorRequest_) {
+			// 行動変更
+			behavior_ = behaviorRequest_.value();
+			// 行動状態のカウントリセット
+			modeCount_ = 0;
+			// それぞれの初期化
+			switch (behavior_) {
+			case BossEnemy::Behavior::kRoot:
+				RootInitialize();
+				break;
+			// 突進初期化
+			case BossEnemy::Behavior::kRush:
+				RushAttackInitialize();
+				break;
+			// 誘導弾初期化
+			case BossEnemy::Behavior::kGuided:
+				GuidedAttackInitialize();
+				break;
+			// 弾幕初期化
+			case BossEnemy::Behavior::kBarrage:
+				BarrageAttackInitialize();
+				break;
+			// ビーム初期化
+			case BossEnemy::Behavior::kRushAlert:
+				RushAlertInitialize();
+				break;
+			// ファンネル初期化
+			case BossEnemy::Behavior::kFunnel:
+				FunnelAttackInitialize();
+				break;
+			case BossEnemy::Behavior::kCross:
+				CrossAttackInitialize();
+				break;
+			}
+			behaviorRequest_ = std::nullopt;
+		}
+		// リクエストごとの更新処理
 		switch (behavior_) {
+		/// 通常時の処理
 		case BossEnemy::Behavior::kRoot:
-			RootInitialize();
+			RootUpdate();
 			break;
-		// 突進初期化
+		/// 突進処理
 		case BossEnemy::Behavior::kRush:
-			RushAttackInitialize();
+			RushAttack();
 			break;
-		// 誘導弾初期化
+		/// 誘導弾処理
 		case BossEnemy::Behavior::kGuided:
-			GuidedAttackInitialize();
+			GuidedAttack();
 			break;
-		// 弾幕初期化
+		/// 弾幕処理
 		case BossEnemy::Behavior::kBarrage:
-			BarrageAttackInitialize();
+			BarrageAttack();
 			break;
-		// ビーム初期化
+		/// ビーム処理
 		case BossEnemy::Behavior::kRushAlert:
-			RushAlertInitialize();
+			RushAlert();
 			break;
-		// ファンネル初期化
+		/// ファンネル処理
 		case BossEnemy::Behavior::kFunnel:
-			FunnelAttackInitialize();
+			FunnelAttack();
 			break;
 		case BossEnemy::Behavior::kCross:
-			CrossAttackInitialize();
+			CrossAttack();
 			break;
 		}
-		behaviorRequest_ = std::nullopt;
+		// シェイク
+		MyMath::ShakeUpdate(shakeVelo_, isDamageShake, amplitNum);
+		Animation::Anime(animationTimer, animationNumber, animationScene, oneTime);
+
 	}
-	// リクエストごとの更新処理
-	switch (behavior_) {
-	/// 通常時の処理
-	case BossEnemy::Behavior::kRoot:
-		RootUpdate();
-		break;
-	/// 突進処理
-	case BossEnemy::Behavior::kRush:
-		RushAttack();
-		break;
-	/// 誘導弾処理
-	case BossEnemy::Behavior::kGuided:
-		GuidedAttack();
-		break;
-	/// 弾幕処理
-	case BossEnemy::Behavior::kBarrage:
-		BarrageAttack();
-		break;
-	/// ビーム処理
-	case BossEnemy::Behavior::kRushAlert:
-		RushAlert();
-		break;
-	/// ファンネル処理
-	case BossEnemy::Behavior::kFunnel:
-		FunnelAttack();
-		break;
-	case BossEnemy::Behavior::kCross:
-		CrossAttack();
-		break;
+	if (isParasite_) {
+		sprite_->SetTextureHandle(parasiteTex_);
+		Animation::Anime(collapseAniTimer, animationNumber, collapseAniScene, collapseAnioneTime);
+		isDamageShake = true;
+		amplitNum = 18;
+		MyMath::ShakeUpdate(shakeVelo_, isDamageShake, amplitNum);
+
+		if (collapseAniTimer >= collapseAniScene * collapseAnioneTime) {
+
+			isDead_ = true;
+		}
 	}
-	// シェイク
-	MyMath::ShakeUpdate(shakeVelo_, isDamageShake, amplitNum);
+	
 	// HPサイズ
 	float hpSize = (float(hp_) / float(SetMaxHp)) * hpGaugeSize.x;
 	// スプライトの設定
