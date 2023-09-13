@@ -40,8 +40,8 @@ void ResultScene::Initialize() {
 	isAriaMove_ = false;
 
 #pragma region 背景
-	backTex = TextureManager::Load("white1x1.png");
-	back.reset(Sprite::Create(backTex, {0.0f, 0.0f}, {0.01f, 0.01f, 0.01f, 1.0f}, {0.0f, 0.0f}));
+	backTex = TextureManager::Load("back.png");
+	back.reset(Sprite::Create(backTex, {0.0f, 0.0f}, {1.0f, 1.0f, 1.0f, 1.0f}, {0.0f, 0.0f}));
 	Vector2 size = {1920, 1080};
 	back->SetSize(size);
 #pragma endregion

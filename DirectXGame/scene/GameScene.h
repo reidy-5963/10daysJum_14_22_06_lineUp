@@ -103,9 +103,10 @@ private: // メンバ変数
 
 #pragma region 背景
 	// 背景スプライト関係
-	std::unique_ptr<Sprite> back;
+	std::unique_ptr<Sprite> back[4];
+
 	uint32_t backTex;
-	Vector2 backPos = {0.0f, 0.0f};
+	Vector2 backPos[4];
 #pragma endregion
 
 #pragma region 音 

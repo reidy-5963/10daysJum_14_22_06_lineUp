@@ -77,10 +77,17 @@ void GameScene::Initialize() {
 #pragma endregion
 
 #pragma region 背景
-	backTex = TextureManager::Load("white1x1.png");
-	back.reset(Sprite::Create(backTex, {0.0f, 0.0f}, {0.01f, 0.01f, 0.01f, 1.0f}, {0.0f, 0.0f}));
-	Vector2 size = {1920 * 3, 1080 * 3};
-	back->SetSize(size);
+	backTex = TextureManager::Load("back.png");
+	back[0].reset(Sprite::Create(backTex, {0.0f, 0.0f}, {1.0f, 1.0f, 1.0f, 1.0f}, {0.0f, 0.0f}));
+	back[1].reset(Sprite::Create(backTex, {0.0f, 0.0f}, {1.0f, 1.0f, 1.0f, 1.0f}, {0.0f, 0.0f}));
+	back[2].reset(Sprite::Create(backTex, {0.0f, 0.0f}, {1.0f, 1.0f, 1.0f, 1.0f}, {0.0f, 0.0f}));
+	back[3].reset(Sprite::Create(backTex, {0.0f, 0.0f}, {1.0f, 1.0f, 1.0f, 1.0f}, {0.0f, 0.0f}));
+
+	backPos[0] = {0.0f, 0.0f};
+	backPos[1] = {1920.0f, 0.0f};
+	backPos[2] = {0.0f, 1080.0f};
+	backPos[3] = {1920.0f, 1080.0f};
+
 #pragma endregion
 
 #pragma region タイマー
@@ -226,6 +233,12 @@ void GameScene::Update() {
 	funnelDamage = 60 * setTailTime;
 	eneBulletDamage = 60 * setEneBulletDamage;
 	bossEnemyDamage = 60 * setBossEnemyDamage;
+
+
+	for (int i = 0; i < 4; i++) {
+		back[i]->SetPosition(backPos[i] + sceneShakevelo_ - scroll_->GetAddScroll());
+	}
+
 }
 
 /// <summary>
@@ -244,8 +257,9 @@ void GameScene::Draw() {
 	/// </summary>
 
 	// 背景の描画
-	back->Draw();
-
+	for (int i = 0; i < 4; i++) {
+		back[i]->Draw();
+	}
 	// 敵の描画
 	enemyManager_->Draw();
 
