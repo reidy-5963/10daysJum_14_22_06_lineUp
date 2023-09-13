@@ -57,6 +57,7 @@ void Player::Initialize() {
 	BulletSEHandle_ = Audio::GetInstance()->LoadWave("music/p_bullet02.wav");
 	DamageSEHandle_ = Audio::GetInstance()->LoadWave("music/p_Damage.wav");
 	collapseHandle_ = Audio::GetInstance()->LoadWave("music/Collapse.wav");
+	markerSetSEHandle_ = Audio::GetInstance()->LoadWave("music/markerSet.wav");
 
 	// アニメーションで使う変数の初期化
 	AnimationValueInitialize();
@@ -573,6 +574,8 @@ void Player::KeyMove() { // 移動距離
 /// 左クリックの処理
 /// </summary>
 void Player::LeftClickUpdate() {
+	Audio::GetInstance()->PlayWave(markerSetSEHandle_, false, 0.045f);
+
 	// 前フレームのマーカー位置を取得
 	preMarkerPos_ = markerPos_;
 
@@ -620,6 +623,9 @@ void Player::AudioStop() {
 	}
 	if (Audio::GetInstance()->IsPlaying(collapseHandle_)) {
 		Audio::GetInstance()->StopWave(collapseHandle_);
+	}
+	if (Audio::GetInstance()->IsPlaying(markerSetSEHandle_)) {
+		Audio::GetInstance()->StopWave(markerSetSEHandle_);
 	}
 }
 

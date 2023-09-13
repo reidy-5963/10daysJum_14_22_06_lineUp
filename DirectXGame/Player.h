@@ -427,6 +427,7 @@ private: // メンバ変数
 	uint32_t BulletSEHandle_ = 0u;
 	uint32_t DamageSEHandle_ = 0u;
 	uint32_t collapseHandle_ = 0u;
+	uint32_t markerSetSEHandle_ = 0u;
 
 	float volume = 0.09f;
 };
