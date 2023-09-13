@@ -124,7 +124,6 @@ void GameScene::Initialize() {
 	}
 #pragma endregion
 
-	ShowCursor(false);
 	InitializeGrobalVariables();
 	BGMHandle_ = Audio::GetInstance()->LoadWave("music/GameScene.wav");
 	pickUpTailSEHandle_ = Audio::GetInstance()->LoadWave("music/pickUpTail.wav");
