@@ -1,4 +1,5 @@
 ﻿#include "BossEnemy.h"
+#include "Audio.h"
 
 #include <cmath>
 #include <numbers>
@@ -93,7 +94,7 @@ void BossEnemy::GuidedAttackInitialize() { kModeEndTimer_ = ConvertSeconds(5); }
 void BossEnemy::BarrageAttack() {
 	modeCount_ += 1;
 	float bulletSpeed = 10.0f;
-	int barrageInterval = 15;
+	int barrageInterval = 25;
 	if (modeCount_ == kModeEndTimer_) {
 		behaviorRequest_ = Behavior::kRoot;
 		actions_.pop_back();
@@ -146,6 +147,7 @@ void BossEnemy::FunnelAttack() {
 		funnelCount_++;
 		GenerateFunnel(BossFunnel::kHorizontal);
 		GenerateFunnel(BossFunnel::kVertical);
+		//Audio::GetInstance()->PlayWave(funnelSEHandle_, false, 0.3f);
 	}
 	if (modeCount_ >= kModeEndTimer_) {
 		if (funnels_.empty() && isFunnelAttackNow_) {
@@ -185,7 +187,7 @@ void BossEnemy::CrossAttack()
 		GenerateBullet(direct, speed);
 	}
 	speed = 12.5f;
-	if (modeCount_ == 80) {
+	if (modeCount_ == 100) {
 		Vector2 direct = {1.0f, 0.0f};
 		GenerateBullet(direct, speed);
 		direct = {-1.0f, 0.0f};

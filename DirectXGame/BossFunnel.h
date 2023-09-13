@@ -60,4 +60,13 @@ private: // ファンネル用変数
 	std::unique_ptr<ParticleManager> particle_ = nullptr;
 	uint32_t particleTex_ = 0u;
 	Vector4 color_ = {1.0f, 1.0f, 1.0f, 1.0f};
+
+	bool isSENow_ = false;
+
+	// SE用のハンドル
+	uint32_t SEHandle_ = 0;
+
+public:
+
+	void SetSE(int Handle) { SEHandle_ = Handle; }
 };

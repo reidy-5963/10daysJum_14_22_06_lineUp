@@ -1,6 +1,8 @@
 ﻿#include "BossFunnel.h"
 #include "ImGuiManager.h"
 #include "MyMath.h"
+#include "Audio.h"
+
 #include <cassert>
 #include <cmath>
 #include "Animation.h"
@@ -37,6 +39,7 @@ void BossFunnel::Initialize(uint32_t texture, int type, Vector2& startPos, Vecto
 	animationScene = 6;
 	oneTime = 5;
 	isAnimation = true;
+	isSENow_ = false;
 
 	// スプライトの生成
 	sprite_.reset(Sprite::Create(texture, pos_, {1.0f, 1.0f, 1.0f, 1.0f}, {0.5f, 0.5f}));
@@ -58,8 +61,13 @@ void BossFunnel::Update(Vector2& playerPos) {
 
 			move_t_ = 0;
 			isMove_ = false;
+			isSENow_ = false;
 		} else {
 			move_t_ += 0.02f;
+			if (!isSENow_ && move_t_ >= 0.15f) {
+				isSENow_ = true;
+				Audio::GetInstance()->PlayWave(SEHandle_, false, 0.05f);
+			}
 		}
 	} 
 	// 直進し続ける処理
@@ -68,6 +76,10 @@ void BossFunnel::Update(Vector2& playerPos) {
 		pos_ += Vector2(moveDirect_.x * kMoveSpeed_, moveDirect_.y * kMoveSpeed_);
 		if (kMoveSpeed_ < 0.5f) {
 			isDead_ = true;
+		}
+		if (!isSENow_ && kMoveSpeed_ >= 1.0f) {
+			isSENow_ = true;
+			Audio::GetInstance()->PlayWave(SEHandle_, false, 0.05f);
 		}
 	}
 	// 移動していないカウント

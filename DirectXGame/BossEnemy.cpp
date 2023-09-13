@@ -7,6 +7,8 @@
 #include "Animation.h"
 #include "Scroll.h"
 #include "GlobalVariables.h"
+#include "Audio.h"
+
 #include <numbers>
 #include <cmath>
 
@@ -18,6 +20,9 @@ BossEnemy::BossEnemy() {
 	// ファンネル
 	funnelTex_ = TextureManager::Load("Fannel.png");
 	particleTex = TextureManager::Load("FunnelParticle.png");
+
+	funnelSEHandle_ = Audio::GetInstance()->LoadWave("music/FunnelSE.mp3");
+
 	// 突進先
 	rushPointTex_ = TextureManager::Load("bossAttack.png");
 	// HP
@@ -45,6 +50,8 @@ void BossEnemy::RespownBoss()
 	oneTime = 5;
 	isAnimation = true;
 	actions_.push_back(Behavior::kRushAlert);
+	prevAction_ = 20;
+	behaviorRand_ = 20;
 }
 
 void BossEnemy::RandomActionManager() 
@@ -87,6 +94,7 @@ void BossEnemy::GenerateFunnel(int type)
 		newFunnel->Initialize(funnelTex_, type, prevBossPos_, endPoint);
 		break;
 	}
+	newFunnel->SetSE(funnelSEHandle_);
 	// リストに追加
 	funnels_.push_back(newFunnel);
 }
@@ -395,9 +403,15 @@ void BossEnemy::ActionControl()
 
 void BossEnemy::ActionTable() 
 {
-	int behaviorRand = rand() % 5;
+	prevAction_ = behaviorRand_;
+	behaviorRand_ = rand() % 5;
+
+	if (prevAction_ == behaviorRand_) {
+		return;
+	}
+
 	/// 下から順番に呼び出す
-	switch (behaviorRand) {
+	switch (behaviorRand_) {
 	case 0:
 		actions_.push_back(Behavior::kBarrage);
 		actions_.push_back(Behavior::kGuided);

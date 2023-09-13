@@ -180,6 +180,12 @@ private:
 	// イージングを判定する距離
 	float easeInRange_ = 1000.0f;
 
+private:
+	uint32_t funnelSEHandle_ = 0;
+	uint32_t rushSEHandle_ = 0;
+
+
+private:
 	// 弾のリスト
 	std::list<BossBullet*> bullets_;
 	// ミサイルファンネル
@@ -197,6 +203,10 @@ private:
 	int hp_ = SetMaxHp;
 	Vector2 hpGaugeSize{};
 	float MaxHpSize = 0.0f;
+
+	int prevAction_ = 0;
+
+	int behaviorRand_ = 0;
 
 	//
 	uint32_t particleTex = 0u;

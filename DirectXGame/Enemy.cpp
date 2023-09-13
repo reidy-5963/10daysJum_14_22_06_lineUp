@@ -4,6 +4,7 @@
 #include "Sprite.h"
 #include "TextureManager.h"
 #include <numbers>
+#include "Audio.h"
 
 void Enemy::Initialize() {
 	// 変数系初期化
@@ -81,7 +82,7 @@ void Enemy::OnCollision() {
 	if (!isParasite_) {
 		ParasiteAnimationInitialize();
 		isParasite_ = true;
-
+		Audio::GetInstance()->PlayWave(deadSEHandle_, false, 0.3f);
 	}
 }
 
