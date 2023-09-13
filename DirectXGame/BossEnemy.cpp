@@ -107,7 +107,7 @@ void BossEnemy::GenerateBullet(Vector2& velocity, float speedValue)
 	newBullet->SetBulletSpeed(speedValue);
 	// リストに追加
 	bullets_.push_back(newBullet);
-	Audio::GetInstance()->PlayWave(bulletSEHandle_, false, 0.1f);
+	Audio::GetInstance()->PlayWave(bulletSEHandle_, false, 0.05f);
 }
 
 void BossEnemy::GenerateFunnel(int type) 
@@ -508,27 +508,32 @@ void BossEnemy::ActionTable()
 		break;
 	case 1:
 		actions_.push_back(Behavior::kCenterAlert);
+		actions_.push_back(Behavior::kBarrage);
 		actions_.push_back(Behavior::kRushAlert);
 		actions_.push_back(Behavior::kCross);
 		actions_.push_back(Behavior::kFunnel);
+
 		break;
 	case 2:
 		actions_.push_back(Behavior::kCenterAlert);
 		actions_.push_back(Behavior::kBarrage);
 		actions_.push_back(Behavior::kRushAlert);
+		actions_.push_back(Behavior::kRushAlert);
+		actions_.push_back(Behavior::kRushAlert);
 		break;
 	case 3:
 		actions_.push_back(Behavior::kCenterAlert);
+		actions_.push_back(Behavior::kCross);
 		actions_.push_back(Behavior::kRushAlert);
 		actions_.push_back(Behavior::kFunnel);
 
 		break;
 	case 4:
 		actions_.push_back(Behavior::kCenterAlert);
+		actions_.push_back(Behavior::kFunnel);
+		actions_.push_back(Behavior::kBarrage);
 		actions_.push_back(Behavior::kRushAlert);
-		actions_.push_back(Behavior::kBarrage);
 		actions_.push_back(Behavior::kCross);
-		actions_.push_back(Behavior::kBarrage);
 
 		break;
 	}
