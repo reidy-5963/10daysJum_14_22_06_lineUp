@@ -258,7 +258,7 @@ private: // メンバ変数
 	int invisibleTimeCount_;
 
 	bool isInvisible_ = false;
-
+	bool isDamage = false;
 #pragma endregion
 
 #pragma region マーカー
