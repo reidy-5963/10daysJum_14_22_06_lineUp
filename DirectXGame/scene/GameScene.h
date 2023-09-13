@@ -136,6 +136,11 @@ private: // メンバ変数
 	int enemyOne = 0;
 
 	uint32_t pickUpTailSEHandle_;
+
+	std::unique_ptr<Sprite> enemy_UI;
+	Vector2 enemyUIPos_;
+	uint32_t enemyUITex_;
+
 #pragma region
 	int setTailTime = 3;
 	int pickUpTailTime = 60 * setTailTime;

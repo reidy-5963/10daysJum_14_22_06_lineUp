@@ -146,6 +146,7 @@ public: // メンバ関数
 
 	void AnimationUpdate();
 
+	void AliveUpdate();
 #pragma endregion
 
 #pragma region 描画系
@@ -247,6 +248,7 @@ private: // メンバ変数
 	// プレイヤーの向き
 	Vector2 direction_{};
 
+	uint32_t playerBreakTex_;
 	// プレイヤーの残機(尻尾の数)
 	const int setDamageCount = 3;
 	int damageCount = setDamageCount;
@@ -434,4 +436,11 @@ private: // メンバ変数
 	bool isRefresh_ = false;
 	int SetRefreshTime = 120;
 	int refreshTimer = SetRefreshTime;
+
+
+	bool isPlayerBreak;
+	int playerBreakAniTimer = 0;
+	int playerBreakAniNumber = 0;
+	int playerBreakAniScene = 8;
+	int playerBreakAnioneTime = 6;
 };

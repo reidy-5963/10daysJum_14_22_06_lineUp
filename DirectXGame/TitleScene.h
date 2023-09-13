@@ -103,7 +103,7 @@ private: // メンバ変数
 	bool TitleTutrialStart = false;
 	// エネミー
 	EnemyManager* enemyManager_;
-
+	const int enemyNum = 4;
 	Vector2 enemyEndPos_[6];
 	float bolume = 0.01f;
 	float SEvolume = 0.1f;
@@ -121,5 +121,10 @@ private: // メンバ変数
 	float leftClick_t_ = 0.0f;
 	bool leftClick_Move_ = false;
 
-
+	uint32_t hitTex_;
+	std::unique_ptr<Sprite> HitText_[4];
+	Vector2 HitPos_[4];
+	uint32_t pickedTex_;
+	std::unique_ptr<Sprite> PickedText_[4];
+	Vector2 PickedPos_[4];
 };
