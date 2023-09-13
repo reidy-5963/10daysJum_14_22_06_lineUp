@@ -141,6 +141,10 @@ private: // メンバ変数
 	Vector2 enemyUIPos_;
 	uint32_t enemyUITex_;
 
+	std::unique_ptr<Sprite> timer_UI;
+	Vector2 timerUIPos_;
+	uint32_t timerUITex_;
+
 #pragma region
 	int setTailTime = 3;
 	int pickUpTailTime = 60 * setTailTime;

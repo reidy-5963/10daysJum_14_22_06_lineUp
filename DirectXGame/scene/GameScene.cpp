@@ -134,6 +134,12 @@ void GameScene::Initialize() {
 	    Sprite::Create(enemyUITex_, enemyUIPos_, {1.0f, 1.0f, 1.0f, 1.0f}, {0.5f, 0.5f}));
 	enemy_UI->SetTextureRect({0.0f, 0.0f}, {128.0f, 128.0f});
 	enemy_UI->SetSize({150.0f, 150.0f});
+
+	timerUITex_ = TextureManager::Load("TimerUI.png");
+	timer_UI.reset(
+	    Sprite::Create(timerUITex_, timerUIPos_, {1.0f, 1.0f, 1.0f, 1.0f}, {0.5f, 0.5f}));
+	timer_UI->SetSize({380.0f, 96.0f});
+
 }
 
 /// <summary>
@@ -267,6 +273,8 @@ void GameScene::Update() {
 	}
 	enemy_UI->SetPosition(enemyUIPos_);
 	enemy_UI->SetRotation((3.14f * 0.5f));
+
+	timer_UI->SetPosition(timerUIPos_);
 }
 
 /// <summary>
@@ -334,7 +342,9 @@ void GameScene::Draw() {
 		enemyNum[0]->Draw();
 		enemyNum[1]->Draw();
 	}
+	if (!boss_->IsAlive())
 	enemy_UI->Draw();
+	timer_UI->Draw();
 	player_->DrawCursor();
 
 	// スプライト描画後処理
@@ -359,7 +369,7 @@ void GameScene::InitializeGrobalVariables() { // グローバル変数系のシ�
 	gloVars->AddItem(groupName, "setBossEnemyDamage", setBossEnemyDamage);
 
 	gloVars->AddItem(groupName, "enemyUIPos_", enemyUIPos_);
-
+	gloVars->AddItem(groupName, "timerUIPos_", timerUIPos_);
 
 }
 
@@ -377,6 +387,7 @@ void GameScene::ApplyGrobalVariables() { // グローバル変数系のシング
 	setBossEnemyDamage = gloVars->GetIntValue(groupName, "setBossEnemyDamage");
 	
 	enemyUIPos_ = gloVars->GetVector2Value(groupName, "enemyUIPos_");
+	timerUIPos_ = gloVars->GetVector2Value(groupName, "timerUIPos_");
 }
 
 /// <summary>

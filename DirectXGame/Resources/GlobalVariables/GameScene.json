@@ -23,6 +23,10 @@
         "setBossEnemyDamage": 3,
         "setEneBulletDamage": 1,
         "setFunnelDamage": 2,
-        "setTailTime": 3
+        "setTailTime": 3,
+        "timerUIPos_": [
+            1720.0,
+            190.0
+        ]
     }
 }
