@@ -124,6 +124,8 @@ public:	// リスポーンタイプ
 	/// </summary>
 	void StartSpawn();
 
+	void RandomSpawn();
+
 public: // 敵の生成関数
 	// 四隅
 	void CreateEnemy(int spownPoint);

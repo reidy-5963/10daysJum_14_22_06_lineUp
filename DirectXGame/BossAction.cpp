@@ -79,6 +79,7 @@ void BossEnemy::RushAlert()
 
 void BossEnemy::RushAlertInitialize() 
 {
+	kRushTimer_ = 120;
 	sprite_->SetTextureHandle(bossRushTex_);
 	RushAttackSetup();
 	float volume = 0.2f;
@@ -102,7 +103,7 @@ void BossEnemy::GuidedAttack() {
 void BossEnemy::GuidedAttackInitialize() 
 { 
 	sprite_->SetTextureHandle(charaTex_);
-
+	isGuided_ = true;
 	kModeEndTimer_ = ConvertSeconds(5);
 }
 
@@ -274,7 +275,40 @@ void BossEnemy::CenterMoveInitialize()
 	// 補間レート初期化
 	this->rushMove_t_ = 0;
 	isRushNow_ = true;
+	isRush_ = false;
+	CenterMoveSetup();
+}
+
+void BossEnemy::CenterMoveSetup() 
+{
+	isRush_ = true;
 	// 座標初期化
 	prevBossPos_ = pos_;
-	prevPlayerPos_ = Vector2(1920.0f, 1080.0f);
+	prevPlayerPos_ = Vector2(1920.0f,1080.0f);
+}
+
+void BossEnemy::CenterAlert() 
+{
+#pragma region 突進の警告から開始まで
+	/// 突進までの処理
+	if (isRush_) {
+		rushCount_ += 1;
+		if (rushCount_ > kRushTimer_) {
+			// 突進カウント・フラグ初期化
+			rushCount_ = 0;
+			isRush_ = false;
+			// リクエスト
+			behaviorRequest_ = Behavior::kCenter;
+		}
+	}
+#pragma endregion
+}
+
+void BossEnemy::CenterAlertInitialize() 
+{
+	kRushTimer_ = 60;
+	sprite_->SetTextureHandle(bossNoneActionTex_);
+	CenterMoveSetup();
+	float volume = 0.2f;
+	Audio::GetInstance()->PlayWave(rushAlertSEHandle_, false, volume);
 }

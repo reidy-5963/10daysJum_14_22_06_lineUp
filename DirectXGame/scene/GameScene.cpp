@@ -146,44 +146,50 @@ void GameScene::Update() {
 		// Scroll* scroll = Scroll::GetInstance();
 		scroll_->Update();
 
-	// 敵の更新処理
-	enemyManager_->SetPlayer(player_->GetPosition());
-	enemyManager_->SetBoss(boss_->GetPosition());
-	enemyManager_->SetSceneVelo(sceneShakevelo_);
-	enemyManager_->SetIsBossAlive(boss_->IsAlive());
-	enemyManager_->SetIsBossParasite(boss_->IsParasite());
-	enemyManager_->SetTailSize(player_->GetTail());
-	enemyManager_->Update();
+		// 敵の更新処理
+		enemyManager_->SetPlayer(player_->GetPosition());
+		enemyManager_->SetBoss(boss_->GetPosition());
+		enemyManager_->SetSceneVelo(sceneShakevelo_);
+		enemyManager_->SetIsBossAlive(boss_->IsAlive());
+		enemyManager_->SetIsBossParasite(boss_->IsParasite());
+		enemyManager_->SetTailSize(player_->GetTail());
+		enemyManager_->Update();
 
-	// プレイヤーの更新処理
-	player_->Update();
+		// プレイヤーの更新処理
+		player_->Update();
 
-	// 当たり判定
-	CheckAllCollision();
+		// 当たり判定
+		CheckAllCollision();
 
-	// 画面の揺れ更新処理
-	MyMath::ShakeUpdate(sceneShakevelo_, issceneShake, sceneaAmplitNum);
-	player_->SetSceneVelo(sceneShakevelo_);
-	boss_->SetSceneVelo(sceneShakevelo_);
+		// 画面の揺れ更新処理
+		MyMath::ShakeUpdate(sceneShakevelo_, issceneShake, sceneaAmplitNum);
+		player_->SetSceneVelo(sceneShakevelo_);
+		boss_->SetSceneVelo(sceneShakevelo_);
 
-	if (killCount_ >= setKillCount && !isBossRespown_) {
-		isBossRespown_ = true;
-		boss_->RespownBoss();
-	}
+		if (killCount_ >= setKillCount && !isBossRespown_) {
+			isBossRespown_ = true;
+			boss_->RespownBoss();
+		}
 
-	// ボスの更新処理
-	boss_->SetPlayer(player_->GetPosition());
-	boss_->Update();
+		// ボスの更新処理
+		boss_->SetPlayer(player_->GetPosition());
+		boss_->Update();
 
-	if (boss_->GetIsLastAction()) {
-		enemyManager_->RushSpawn();
-		boss_->SetIsLastAction(false);
-	}
+		if (boss_->GetIsLastAction()) {
+			enemyManager_->RushSpawn();
+			enemyManager_->RandomSpawn();
+			boss_->SetIsLastAction(false);
+		}
 
-	//if (boss_->GetIsCrossForm()) {
-	//	boss_->SetIsCrossForm(false);
-	//	enemyManager_->DiagonalBehavior();
-	//}
+		if (boss_->GetIsCrossForm()) {
+			boss_->SetIsCrossForm(false);
+			enemyManager_->DiagonalBehavior();
+		}
+
+		if (boss_->GetIsGuided()) {
+			boss_->SetIsGuided(false);
+			enemyManager_->ArrowBehaviorPlay();
+		}
 	
 
 		if (--gameTimer < 0) {

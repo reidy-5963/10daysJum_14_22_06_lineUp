@@ -116,6 +116,12 @@ private:	// 行動関数
 
 	void CenterMoveInitialize();
 
+	void CenterMoveSetup();
+
+	void CenterAlert();
+
+	void CenterAlertInitialize();
+
 	/// <summary>
 	/// 通常の動き
 	/// </summary>
@@ -280,6 +286,7 @@ private: // 行動管理用変数
 		kFunnel,
 		kCross,
 		kCenter,
+		kCenterAlert,
 	};
 	// 行動のリクエストリスト
 	std::list<Behavior> actions_;
@@ -308,16 +315,22 @@ private: // 動きの管理
 	bool isLastAction_ = false;
 	// 上下クロスのフラグ
 	bool isCrossForm_ = false;
+	// 誘導弾のフラグ
+	bool isGuided_ = false;
 
 public:
 	// 最後の行動かの取得
 	bool GetIsLastAction() { return isLastAction_; }
 	// 最後の行動かの設定
 	void SetIsLastAction(bool flag) { isLastAction_ = flag; }
-
+	// 十字の取得
 	bool GetIsCrossForm() { return isCrossForm_; }
-
+	// 十字の設定
 	void SetIsCrossForm(bool flag) { isCrossForm_ = flag; }
+	// 誘導弾の取得
+	bool GetIsGuided() { return isGuided_; }
+	// 誘導弾の設定
+	void SetIsGuided(bool flag) { isGuided_ = flag; }
 
 private: // 揺らす系
 	Vector2 shakeVelo_{};

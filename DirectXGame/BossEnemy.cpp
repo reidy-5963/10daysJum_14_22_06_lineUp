@@ -169,7 +169,9 @@ void BossEnemy::Initialize()
 	    directArrowTex_, {directArrowPos_.x, directArrowPos_.y}, {1.0f, 1.0f, 1.0f, 1.0f},
 	    {0.5f, 0.5f}));
 
-	directSprite_->SetSize(Vector2(directSprite_->GetSize().x / 2, directSprite_->GetSize().x / 2));
+	Vector2 size = directSprite_->GetSize();
+
+	directSprite_->SetSize(Vector2(size.x - directSprite_->GetSize().x / 3, size.y - directSprite_->GetSize().x / 3));
 
 	hpSprite_->SetSize(Vector2(1200.0f, 60.0f));
 	hpShadowSprite_->SetSize(Vector2(1200.0f, 60.0f));
@@ -250,6 +252,9 @@ void BossEnemy::Update()
 			case BossEnemy::Behavior::kCenter:
 				CenterMoveInitialize();
 				break;
+			case BossEnemy::Behavior::kCenterAlert:
+				CenterAlertInitialize();
+				break;
 			}
 			behaviorRequest_ = std::nullopt;
 		}
@@ -284,6 +289,9 @@ void BossEnemy::Update()
 			break;
 		case BossEnemy::Behavior::kCenter:
 			CenterMove();
+			break;
+		case BossEnemy::Behavior::kCenterAlert:
+			CenterAlert();
 			break;
 		}
 		// シェイク
@@ -438,13 +446,7 @@ void BossEnemy::ActionControl()
 	/// 突進起動キー処理
 	if (input_->TriggerKey(DIK_D)) {
 		actions_.push_back(Behavior::kBarrage);
-		actions_.push_back(Behavior::kRushAlert);
-		actions_.push_back(Behavior::kBarrage);
-		actions_.push_back(Behavior::kRushAlert);
-		actions_.push_back(Behavior::kBarrage);
-		actions_.push_back(Behavior::kRushAlert);
-		actions_.push_back(Behavior::kBarrage);
-		actions_.push_back(Behavior::kRushAlert);
+		actions_.push_back(Behavior::kGuided);
 	}
 	/// 誘導
 	if (input_->TriggerKey(DIK_F)) {
@@ -497,7 +499,7 @@ void BossEnemy::ActionTable()
 	/// 下から順番に呼び出す
 	switch (behaviorRand_) {
 	case 0:
-		actions_.push_back(Behavior::kCenter);
+		actions_.push_back(Behavior::kCenterAlert);
 		actions_.push_back(Behavior::kBarrage);
 		actions_.push_back(Behavior::kGuided);
 		actions_.push_back(Behavior::kFunnel);
@@ -505,24 +507,24 @@ void BossEnemy::ActionTable()
 
 		break;
 	case 1:
-		actions_.push_back(Behavior::kCenter);
+		actions_.push_back(Behavior::kCenterAlert);
 		actions_.push_back(Behavior::kRushAlert);
 		actions_.push_back(Behavior::kCross);
 		actions_.push_back(Behavior::kFunnel);
 		break;
 	case 2:
-		actions_.push_back(Behavior::kCenter);
+		actions_.push_back(Behavior::kCenterAlert);
 		actions_.push_back(Behavior::kBarrage);
 		actions_.push_back(Behavior::kRushAlert);
 		break;
 	case 3:
-		actions_.push_back(Behavior::kCenter);
+		actions_.push_back(Behavior::kCenterAlert);
 		actions_.push_back(Behavior::kRushAlert);
 		actions_.push_back(Behavior::kFunnel);
 
 		break;
 	case 4:
-		actions_.push_back(Behavior::kCenter);
+		actions_.push_back(Behavior::kCenterAlert);
 		actions_.push_back(Behavior::kRushAlert);
 		actions_.push_back(Behavior::kBarrage);
 		actions_.push_back(Behavior::kCross);

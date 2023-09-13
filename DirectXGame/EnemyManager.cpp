@@ -95,31 +95,7 @@ void EnemyManager::FormationSpawnUpdate()
 	kInterval_ = 60 * kIntervalSecond_;
 
 	if (patternInterval_ >= kInterval_) {
-		int random = rand() % 6;
-		patternInterval_ = 0;
-		switch (random) {
-		case 0:
-			DiagonalBehavior();
-			break;
-		case 1:
-			DiagonalClockWiseBehavior();
-			break;
-		case 2:
-			ArrowBehaviorPlay();
-			break;
-		case 3:
-			DiagonalBehavior();
-			DiagonalClockWiseBehavior();
-			break;
-		case 4:
-			ArrowBehaviorPlay();
-			VerticalSpawn();
-			break;
-		case 5:
-			ArrowBehaviorPlay();
-			HorizontalSpawn();
-			break;
-		}
+		RandomSpawn();
 	}
 
 
@@ -300,6 +276,35 @@ void EnemyManager::StartSpawn() {
 	    ankerPoint.x + float(WinApp::kWindowWidth / 4),
 	    ankerPoint.y - float(WinApp::kWindowHeight / 2) - offset);
 	AddEnemy(spawnPoint, MyMath::Normalize(spawnPoint - ankerPoint));
+}
+
+void EnemyManager::RandomSpawn() 
+{
+	int random = rand() % 6;
+	patternInterval_ = 0;
+	switch (random) {
+	case 0:
+		DiagonalBehavior();
+		break;
+	case 1:
+		DiagonalClockWiseBehavior();
+		break;
+	case 2:
+		ArrowBehaviorPlay();
+		break;
+	case 3:
+		DiagonalBehavior();
+		DiagonalClockWiseBehavior();
+		break;
+	case 4:
+		ArrowBehaviorPlay();
+		VerticalSpawn();
+		break;
+	case 5:
+		ArrowBehaviorPlay();
+		HorizontalSpawn();
+		break;
+	}
 }
 
 void EnemyManager::DiagonalBehavior() 
