@@ -108,4 +108,8 @@ private: // メンバ変数
 	float bolume = 0.01f;
 
 	uint32_t BGMHandle_ = 0u;
+
+
+
+
 };

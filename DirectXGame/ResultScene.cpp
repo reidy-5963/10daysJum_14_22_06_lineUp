@@ -43,7 +43,7 @@ void ResultScene::Initialize() {
 #pragma endregion
 
 #pragma region シーン遷移エリア
-	ariaTex_ = TextureManager::Load("T2GaSceneAria.png");
+	ariaTex_ = TextureManager::Load("title_Aria.png");
 	title2gameSceneAria_.reset(Sprite::Create(ariaTex_, ariaPos_, ariaColor_, {0.0f, 0.0f}));
 	ariaPos_ = {1800.0f, 0.0f};
 
