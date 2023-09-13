@@ -1,16 +1,20 @@
 {
     "GameScene": {
         "TimerNumPos_": [
-            1720.0,
-            70.0
+            1700.0,
+            120.0
         ],
         "enemyNumPos_": [
             1040.0,
-            100.0
+            120.0
         ],
         "enemyUIPos_": [
             830.0,
-            100.0
+            90.0
+        ],
+        "enemy_UI2Pos_": [
+            830.0,
+            160.0
         ],
         "scoreNumPos_": [
             980.0,
@@ -25,8 +29,8 @@
         "setFunnelDamage": 2,
         "setTailTime": 3,
         "timerUIPos_": [
-            1720.0,
-            190.0
+            1740.0,
+            220.0
         ]
     }
 }

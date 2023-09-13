@@ -1,11 +1,11 @@
 #include "GameScene.h"
+#include "Animation.h"
 #include "GlobalVariables.h"
 #include "ImGuiManager.h"
 #include "Scroll.h"
 #include "TextureManager.h"
 #include <cassert>
 #include <cmath>
-#include "Animation.h"
 
 /// <summary>
 /// コンストクラタ
@@ -41,7 +41,6 @@ void GameScene::Initialize() {
 	isGameSet_ = false;
 
 	boss_.release();
-	
 
 	// 乱数
 	unsigned int currentTime = (int)time(nullptr);
@@ -83,7 +82,7 @@ void GameScene::Initialize() {
 		back[i].reset(
 		    Sprite::Create(backTex, {0.0f, 0.0f}, {1.0f, 1.0f, 1.0f, 1.0f}, {0.0f, 0.0f}));
 		Vector2 size = back[i]->GetSize();
-		
+
 		back[i]->SetSize(size * 1.25f);
 	}
 	// 1920 1080
@@ -105,7 +104,8 @@ void GameScene::Initialize() {
 	timerNumPos[2] = {timerNumPos[1].x - 128.0f, timerNumPos[1].y};
 
 	for (int i = 0; i < 3; i++) {
-		timerNum[i].reset(Sprite::Create(timerNumTex_, timerNumPos[i], {1.0f, 1.0f, 1.0f, 1.0f}, {0.5f, 0.5f}));
+		timerNum[i].reset(
+		    Sprite::Create(timerNumTex_, timerNumPos[i], {1.0f, 1.0f, 1.0f, 1.0f}, {0.5f, 0.5f}));
 		Vector2 tmpSize = {128.0f, 128.0f};
 		timerNum[i]->SetSize(tmpSize);
 	}
@@ -133,20 +133,24 @@ void GameScene::Initialize() {
 	enemy_UI.reset(
 	    Sprite::Create(enemyUITex_, enemyUIPos_, {1.0f, 1.0f, 1.0f, 1.0f}, {0.5f, 0.5f}));
 	enemy_UI->SetTextureRect({0.0f, 0.0f}, {128.0f, 128.0f});
-	enemy_UI->SetSize({150.0f, 150.0f});
+	enemy_UI->SetSize({140.0f, 140.0f});
 
 	timerUITex_ = TextureManager::Load("TimerUI.png");
 	timer_UI.reset(
 	    Sprite::Create(timerUITex_, timerUIPos_, {1.0f, 1.0f, 1.0f, 1.0f}, {0.5f, 0.5f}));
-	timer_UI->SetSize({380.0f, 96.0f});
+	timer_UI->SetSize({380.0f * 0.75f, 96.0f * 0.75f});
 
+	enemy_UI2Tex_ = TextureManager::Load("TimerUI.png");
+	enemy_UI2.reset(
+	    Sprite::Create(enemy_UI2Tex_, enemy_UI2Pos_, {1.0f, 0.01f, 0.01f, 1.0f}, {0.5f, 0.5f}));
+	enemy_UI2->SetSize({260.0f * 0.35f, 128.0f * 0.35f});
+	enemy_UI2->SetTextureRect({0.0f, 0.0f}, {285.0f, 128.0f});
 }
 
 /// <summary>
 /// 毎フレーム処理
 /// </summary>
 void GameScene::Update() {
-
 
 	ApplyGrobalVariables();
 	enemyNumPos[0] = {enemyNumPos_.x - 64.0f, enemyNumPos_.y};
@@ -156,7 +160,7 @@ void GameScene::Update() {
 	timerNumPos[1] = {TimerNumPos_.x, TimerNumPos_.y};
 	timerNumPos[2] = {TimerNumPos_.x + 128.0f, TimerNumPos_.y};
 
-	if (!isGameSet_) { 
+	if (!isGameSet_) {
 		// BGM再生
 		if (audio_->IsPlaying(BGMHandle_) == 0 || BGMHandle_ == -1) {
 			BGMHandle_ = audio_->PlayWave(BGMHandle_, true, volume);
@@ -210,7 +214,6 @@ void GameScene::Update() {
 			boss_->SetIsGuided(false);
 			enemyManager_->ArrowBehaviorPlay();
 		}
-	
 
 		if (--gameTimer < 0) {
 			isGameSet_ = true;
@@ -219,13 +222,13 @@ void GameScene::Update() {
 		// 背景の更新処理
 	}
 	//
-	
+
 	if (isGameSet_ || player_->IsDead() || (boss_->IsDead() && !boss_->IsAlive())) {
 		if (audio_->IsPlaying(BGMHandle_)) {
 			audio_->StopWave(BGMHandle_);
 		}
 		sceneNum = CLEAR;
-	
+
 		if ((boss_->IsDead() && !boss_->IsAlive())) {
 			scroll_->GetInstance();
 			isBossDead = true;
@@ -267,7 +270,6 @@ void GameScene::Update() {
 	eneBulletDamage = 60 * setEneBulletDamage;
 	bossEnemyDamage = 60 * setBossEnemyDamage;
 
-
 	for (int i = 0; i < 4; i++) {
 		back[i]->SetPosition(backPos[i] + sceneShakevelo_ - scroll_->GetAddScroll());
 	}
@@ -275,6 +277,7 @@ void GameScene::Update() {
 	enemy_UI->SetRotation((3.14f * 0.5f));
 
 	timer_UI->SetPosition(timerUIPos_);
+	enemy_UI2->SetPosition(enemy_UI2Pos_);
 }
 
 /// <summary>
@@ -338,15 +341,16 @@ void GameScene::Draw() {
 	timerNum[1]->Draw();
 	timerNum[2]->Draw();
 
-	if (killCount_ < 30) {
+	if (!boss_->IsAlive()) {
 		enemyNum[0]->Draw();
 		enemyNum[1]->Draw();
+		enemy_UI->Draw();
+		enemy_UI2->Draw();
 	}
-	if (!boss_->IsAlive())
-	enemy_UI->Draw();
-	timer_UI->Draw();
-	player_->DrawCursor();
 
+	timer_UI->Draw();
+
+	player_->DrawCursor();
 	// スプライト描画後処理
 	Sprite::PostDraw();
 
@@ -370,7 +374,7 @@ void GameScene::InitializeGrobalVariables() { // グローバル変数系のシ�
 
 	gloVars->AddItem(groupName, "enemyUIPos_", enemyUIPos_);
 	gloVars->AddItem(groupName, "timerUIPos_", timerUIPos_);
-
+	gloVars->AddItem(groupName, "enemy_UI2Pos_", enemy_UI2Pos_);
 }
 
 void GameScene::ApplyGrobalVariables() { // グローバル変数系のシングルトンインスタンスを取得
@@ -385,9 +389,10 @@ void GameScene::ApplyGrobalVariables() { // グローバル変数系のシング
 	setFunnelDamage = gloVars->GetIntValue(groupName, "setFunnelDamage");
 	setEneBulletDamage = gloVars->GetIntValue(groupName, "setEneBulletDamage");
 	setBossEnemyDamage = gloVars->GetIntValue(groupName, "setBossEnemyDamage");
-	
+
 	enemyUIPos_ = gloVars->GetVector2Value(groupName, "enemyUIPos_");
 	timerUIPos_ = gloVars->GetVector2Value(groupName, "timerUIPos_");
+	enemy_UI2Pos_ = gloVars->GetVector2Value(groupName, "enemy_UI2Pos_");
 }
 
 /// <summary>
@@ -442,8 +447,7 @@ void GameScene::CheckAllCollision() {
 					// gameTimer -= eneBulletDamage;
 					enemy->SetIsDead(true);
 				}
-			}
-			else if (player_->GetIsInvisible()) {
+			} else if (player_->GetIsInvisible()) {
 				if (enemy->IsParasite()) {
 					// gameTimer += pickUpTailTime;
 					Audio::GetInstance()->PlayWave(pickUpTailSEHandle_, false, SEvolume);
