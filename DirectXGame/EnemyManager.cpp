@@ -164,6 +164,7 @@ void EnemyManager::CreateEnemy(int spownPoint) {
 	newEnemy->SetParasiteTexture(parasiteTex_);
 	newEnemy->SetParticleTex(particleTex_);
 	newEnemy->SetCollapseTexture(collapseTex_);
+	newEnemy->SetIsGameMode(isGameMode_);
 
 	enemys_.push_back(newEnemy);
 	
@@ -181,6 +182,7 @@ void EnemyManager::AddEnemy(const Vector2& position, const Vector2& velocity) {
 	newEnemy->SetParticleTex(particleTex_);
 	newEnemy->SetCollapseTexture(collapseTex_);
 	newEnemy->SetSEHandle(deadSEHandel_);
+	newEnemy->SetIsGameMode(isGameMode_);
 
 	enemys_.push_back(newEnemy);
 }
@@ -199,6 +201,7 @@ void EnemyManager::AddEnemy(
 	newEnemy->SetParasiteTexture(parasiteTex_);
 	newEnemy->SetParticleTex(particleTex_);
 	newEnemy->SetSEHandle(deadSEHandel_);
+	newEnemy->SetIsGameMode(isGameMode_);
 
 	enemys_.push_back(newEnemy);
 }
@@ -340,6 +343,7 @@ void EnemyManager::DiagonalBehavior()
 		newEnemy->SetParasiteTexture(parasiteTex_);
 		newEnemy->SetParticleTex(particleTex_);
 		newEnemy->SetCollapseTexture(collapseTex_);
+		newEnemy->SetIsGameMode(isGameMode_);
 
 		// リストに追加
 		enemys_.push_back(newEnemy);
@@ -378,6 +382,7 @@ void EnemyManager::DiagonalBehavior()
 		newEnemy->SetParasiteTexture(parasiteTex_);
 		newEnemy->SetParticleTex(particleTex_);
 		newEnemy->SetCollapseTexture(collapseTex_);
+		newEnemy->SetIsGameMode(isGameMode_);
 
 		// リストに追加
 		enemys_.push_back(newEnemy);
@@ -416,6 +421,7 @@ void EnemyManager::DiagonalBehavior()
 		newEnemy->SetParasiteTexture(parasiteTex_);
 		newEnemy->SetParticleTex(particleTex_);
 		newEnemy->SetCollapseTexture(collapseTex_);
+		newEnemy->SetIsGameMode(isGameMode_);
 
 		// リストに追加
 		enemys_.push_back(newEnemy);
@@ -454,6 +460,7 @@ void EnemyManager::DiagonalBehavior()
 		newEnemy->SetParasiteTexture(parasiteTex_);
 		newEnemy->SetParticleTex(particleTex_);
 		newEnemy->SetCollapseTexture(collapseTex_);
+		newEnemy->SetIsGameMode(isGameMode_);
 
 		// リストに追加
 		enemys_.push_back(newEnemy);
@@ -491,6 +498,7 @@ void EnemyManager::DiagonalClockWiseBehavior()
 		newEnemy->SetParasiteTexture(parasiteTex_);
 		newEnemy->SetParticleTex(particleTex_);
 		newEnemy->SetCollapseTexture(collapseTex_);
+		newEnemy->SetIsGameMode(isGameMode_);
 
 		// リストに追加
 		enemys_.push_back(newEnemy);
@@ -521,6 +529,7 @@ void EnemyManager::DiagonalClockWiseBehavior()
 		newEnemy->SetParasiteTexture(parasiteTex_);
 		newEnemy->SetParticleTex(particleTex_);
 		newEnemy->SetCollapseTexture(collapseTex_);
+		newEnemy->SetIsGameMode(isGameMode_);
 
 		// リストに追加
 		enemys_.push_back(newEnemy);
@@ -551,6 +560,7 @@ void EnemyManager::DiagonalClockWiseBehavior()
 		newEnemy->SetParasiteTexture(parasiteTex_);
 		newEnemy->SetParticleTex(particleTex_);
 		newEnemy->SetCollapseTexture(collapseTex_);
+		newEnemy->SetIsGameMode(isGameMode_);
 
 		// リストに追加
 		enemys_.push_back(newEnemy);
@@ -581,6 +591,7 @@ void EnemyManager::DiagonalClockWiseBehavior()
 		newEnemy->SetParasiteTexture(parasiteTex_);
 		newEnemy->SetParticleTex(particleTex_);
 		newEnemy->SetCollapseTexture(collapseTex_);
+		newEnemy->SetIsGameMode(isGameMode_);
 
 		// リストに追加
 		enemys_.push_back(newEnemy);
@@ -620,6 +631,7 @@ void EnemyManager::ArrowBehavior(int switchPatt)
 			newEnemy->SetParasiteTexture(parasiteTex_);
 			newEnemy->SetParticleTex(particleTex_);
 			newEnemy->SetCollapseTexture(collapseTex_);
+			newEnemy->SetIsGameMode(isGameMode_);
 
 			// リストに追加
 			enemys_.push_back(newEnemy);
@@ -642,6 +654,7 @@ void EnemyManager::ArrowBehavior(int switchPatt)
 			newEnemy->SetParasiteTexture(parasiteTex_);
 			newEnemy->SetParticleTex(particleTex_);
 			newEnemy->SetCollapseTexture(collapseTex_);
+			newEnemy->SetIsGameMode(isGameMode_);
 
 			// リストに追加
 			enemys_.push_back(newEnemy);
@@ -669,6 +682,7 @@ void EnemyManager::ArrowBehavior(int switchPatt)
 			newEnemy->SetParasiteTexture(parasiteTex_);
 			newEnemy->SetParticleTex(particleTex_);
 			newEnemy->SetCollapseTexture(collapseTex_);
+			newEnemy->SetIsGameMode(isGameMode_);
 
 			// リストに追加
 			enemys_.push_back(newEnemy);
@@ -691,6 +705,7 @@ void EnemyManager::ArrowBehavior(int switchPatt)
 			newEnemy->SetParasiteTexture(parasiteTex_);
 			newEnemy->SetParticleTex(particleTex_);
 			newEnemy->SetCollapseTexture(collapseTex_);
+			newEnemy->SetIsGameMode(isGameMode_);
 
 			// リストに追加
 			enemys_.push_back(newEnemy);
@@ -718,6 +733,7 @@ void EnemyManager::ArrowBehavior(int switchPatt)
 			newEnemy->SetParasiteTexture(parasiteTex_);
 			newEnemy->SetParticleTex(particleTex_);
 			newEnemy->SetCollapseTexture(collapseTex_);
+			newEnemy->SetIsGameMode(isGameMode_);
 
 			// リストに追加
 			enemys_.push_back(newEnemy);
@@ -740,6 +756,7 @@ void EnemyManager::ArrowBehavior(int switchPatt)
 			newEnemy->SetParasiteTexture(parasiteTex_);
 			newEnemy->SetParticleTex(particleTex_);
 			newEnemy->SetCollapseTexture(collapseTex_);
+			newEnemy->SetIsGameMode(isGameMode_);
 
 			// リストに追加
 			enemys_.push_back(newEnemy);
@@ -768,6 +785,7 @@ void EnemyManager::ArrowBehavior(int switchPatt)
 			newEnemy->SetParasiteTexture(parasiteTex_);
 			newEnemy->SetParticleTex(particleTex_);
 			newEnemy->SetCollapseTexture(collapseTex_);
+			newEnemy->SetIsGameMode(isGameMode_);
 
 			// リストに追加
 			enemys_.push_back(newEnemy);
@@ -790,6 +808,7 @@ void EnemyManager::ArrowBehavior(int switchPatt)
 			newEnemy->SetParasiteTexture(parasiteTex_);
 			newEnemy->SetParticleTex(particleTex_);
 			newEnemy->SetCollapseTexture(collapseTex_);
+			newEnemy->SetIsGameMode(isGameMode_);
 
 			// リストに追加
 			enemys_.push_back(newEnemy);

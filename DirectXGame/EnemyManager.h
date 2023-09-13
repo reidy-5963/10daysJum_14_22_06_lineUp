@@ -155,6 +155,8 @@ public: // 敵の生成関数
 	void SetTailSize(int size) { tailSize_ = size; }
 
 	void SetIsBossParasite(bool isParasite) { isBossParasite = isParasite; }
+	
+	void SetIsGameMode(bool isGameMode) { isGameMode_ = isGameMode; }
 
 private:
 	bool isBossParasite = false;
@@ -229,6 +231,8 @@ private: // ステージでの管理系
 
 	// マップ全体のサイズ
 	Vector2 screenSize_ = {1920 * 2, 1080 * 2};
+
+	bool isGameMode_ = false;
 
 private: // 全体マップを縦横3分割ごと
 	float scWidthHalfSize = (float)1280 / 2;

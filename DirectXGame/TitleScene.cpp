@@ -83,6 +83,7 @@ void TitleScene::Initialize() {
 
 	enemyManager_ = EnemyManager::GetInstance();
 	enemyManager_->Initialize();
+	enemyManager_->SetIsGameMode(false);
 
 	title2gameSceneAria_->SetPosition(ariaStartPos_);
 

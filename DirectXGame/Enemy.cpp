@@ -51,11 +51,14 @@ void Enemy::Update() {
 		ParasiteStateUpdate();
 	}
 
-	if (isCollapse_) {
-		sprite_->SetTextureHandle(collapseTex_);
-		Animation::Anime(collapseAniTimer, animationNumber, collapseAniScene, collapseAnioneTime);
-		if (collapseAniTimer >= collapseAnioneTime * collapseAniScene) {
-			isDead_ = true;
+	if (isGameMode_) {
+		if (isCollapse_) {
+			sprite_->SetTextureHandle(collapseTex_);
+			Animation::Anime(
+			    collapseAniTimer, animationNumber, collapseAniScene, collapseAnioneTime);
+			if (collapseAniTimer >= collapseAnioneTime * collapseAniScene) {
+				isDead_ = true;
+			}
 		}
 	}
 

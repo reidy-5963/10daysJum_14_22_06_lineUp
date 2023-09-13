@@ -65,6 +65,7 @@ void GameScene::Initialize() {
 
 	enemyManager_ = EnemyManager::GetInstance();
 	enemyManager_->Initialize();
+	enemyManager_->SetIsGameMode(true);
 	enemyManager_->StartSpawn();
 #pragma endregion
 
