@@ -15,6 +15,9 @@
 BossEnemy::BossEnemy() {
 	// キャラ
 	charaTex_ = TextureManager::Load("BossEnemy.png");
+	bossFunnelTex_ = TextureManager::Load("parpleBoss.png");
+	bossRushTex_ = TextureManager::Load("blueBoss.png");
+
 	parasiteTex_ = TextureManager::Load("bossbreak.png");
 	// 弾
 	bulletTex_ = TextureManager::Load("BossBullet.png");
@@ -22,13 +25,22 @@ BossEnemy::BossEnemy() {
 	funnelTex_ = TextureManager::Load("Fannel.png");
 	particleTex = TextureManager::Load("FunnelParticle.png");
 
-	funnelSEHandle_ = Audio::GetInstance()->LoadWave("music/FunnelSE.mp3");
-
 	// 突進先
 	rushPointTex_ = TextureManager::Load("bossAttack.png");
 	// HP
 	hpTex_ = TextureManager::Load("HP_Out_Tex.png");
 	hpShadowTex_ = TextureManager::Load("Hp_Gauge_Out_Tex.png");
+
+#pragma region サウンドテクスチャ
+	// ファンネル
+	funnelSEHandle_ = Audio::GetInstance()->LoadWave("music/FunnelSE.mp3");
+	// 突進
+	rushSEHandle_ = Audio::GetInstance()->LoadWave("music/RushSound.mp3");
+	rushAlertSEHandle_ = Audio::GetInstance()->LoadWave("music/RushAlert.mp3");
+	rushSpawnSEHandle_ = Audio::GetInstance()->LoadWave("music/rushSpawnSE.mp3");
+	// 射撃
+	bulletSEHandle_ = Audio::GetInstance()->LoadWave("music/bossBulletSE.mp3");
+#pragma endregion
 }
 
 void BossEnemy::RespownBoss() 
@@ -55,19 +67,6 @@ void BossEnemy::RespownBoss()
 	behaviorRand_ = 20;
 }
 
-void BossEnemy::RandomActionManager() 
-{ 
-	//if (behavior_ == Behavior::kRoot && !isRush_ && !isFunnelAttackNow_) {
-	//	actionTimer_++;
-	//}
-	//if (actionTimer_ == kActionCoolTime_) {
-	//	if (isActionNow_ == kNowNone) {
-	//		ActionTable();
-	//		actionTimer_ = 0;
-	//	}
-	//}
-}
-
 void BossEnemy::GenerateBullet(Vector2& velocity, float speedValue) 
 {
 	// 生成・初期化
@@ -76,6 +75,7 @@ void BossEnemy::GenerateBullet(Vector2& velocity, float speedValue)
 	newBullet->SetBulletSpeed(speedValue);
 	// リストに追加
 	bullets_.push_back(newBullet);
+	Audio::GetInstance()->PlayWave(bulletSEHandle_, false, 0.1f);
 }
 
 void BossEnemy::GenerateFunnel(int type) 
@@ -463,12 +463,12 @@ void BossEnemy::ActionTable()
 void BossEnemy::RootUpdate() {
 	ActionControl();
 
-	if (isAlive_) {
-		RandomActionManager();
-	}
 }
 
-void BossEnemy::RootInitialize() { actionTimer_ = 0; }
+void BossEnemy::RootInitialize() {
+	sprite_->SetTextureHandle(charaTex_);
+	actionTimer_ = 0;
+}
 
 void BossEnemy::InitializeGrobalVariables() {
 	GlobalVariables* gloVars = GlobalVariables::GetInstance();

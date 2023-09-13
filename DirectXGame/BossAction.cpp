@@ -14,13 +14,17 @@ void BossEnemy::RushAttack() {
 		actions_.pop_back();
 		if (actions_.back() == Behavior::kRoot) {
 			isLastAction_ = true;
+			Audio::GetInstance()->PlayWave(rushSpawnSEHandle_, false, 0.2f);
 		} else {
 			isLastAction_ = false;
 		}
-		// behaviorRequest_ = actions_.front();
-		//actions_.pop_front();
 	} else {
 		rushMove_t_ += 0.02f;
+		float volume = 0.3f;
+		if (!isRushSound_ && rushMove_t_ >= 0.2f) {
+			isRushSound_ = true;
+			Audio::GetInstance()->PlayWave(rushSEHandle_, false, volume);
+		}
 	}
 	// 座標移動ー線形補間
 	float distance = MyMath::Length(prevPlayerPos_ - prevBossPos_);
@@ -53,6 +57,7 @@ void BossEnemy::RushAttackSetup() {
 	// 座標初期化
 	prevBossPos_ = pos_;
 	prevPlayerPos_ = nowPlayerPos_;
+	isRushSound_ = false;
 }
 
 void BossEnemy::RushAlert() 
@@ -61,7 +66,7 @@ void BossEnemy::RushAlert()
 	/// 突進までの処理
 	if (isRush_) {
 		rushCount_ += 1;
-		if (/*behavior_ != Behavior::kRush && */rushCount_ > kRushTimer_) {
+		if (rushCount_ > kRushTimer_) {
 			// 突進カウント・フラグ初期化
 			rushCount_ = 0;
 			isRush_ = false;
@@ -73,7 +78,12 @@ void BossEnemy::RushAlert()
 }
 
 void BossEnemy::RushAlertInitialize() 
-{ RushAttackSetup(); }
+{
+	sprite_->SetTextureHandle(bossRushTex_);
+	RushAttackSetup();
+	float volume = 0.2f;
+	Audio::GetInstance()->PlayWave(rushAlertSEHandle_, false, volume);
+}
 
 void BossEnemy::GuidedAttack() {
 	modeCount_ += 1;	
@@ -89,7 +99,12 @@ void BossEnemy::GuidedAttack() {
 	}
 }
 
-void BossEnemy::GuidedAttackInitialize() { kModeEndTimer_ = ConvertSeconds(5); }
+void BossEnemy::GuidedAttackInitialize() 
+{ 
+	sprite_->SetTextureHandle(charaTex_);
+
+	kModeEndTimer_ = ConvertSeconds(5);
+}
 
 void BossEnemy::BarrageAttack() {
 	modeCount_ += 1;
@@ -135,7 +150,7 @@ void BossEnemy::BarrageAttack() {
 }
 
 void BossEnemy::BarrageAttackInitialize() {
-
+	sprite_->SetTextureHandle(charaTex_);
 	kModeEndTimer_ = 150;
 	rotateDegree = 180.0f / float(std::numbers::pi) * sprite_->GetRotation();
 }
@@ -163,6 +178,7 @@ void BossEnemy::FunnelAttackInitialize() {
 	kModeEndTimer_ = 260;
 	prevBossPos_ = pos_;
 	isFunnelAttackNow_ = true;
+	sprite_->SetTextureHandle(bossFunnelTex_);
 }
 
 void BossEnemy::CrossAttack()
@@ -205,5 +221,6 @@ void BossEnemy::CrossAttack()
 
 void BossEnemy::CrossAttackInitialize() 
 { 
+	sprite_->SetTextureHandle(charaTex_);
 	kModeEndTimer_ = ConvertSeconds(2);
 }

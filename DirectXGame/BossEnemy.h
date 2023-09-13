@@ -157,6 +157,10 @@ private:
 	std::unique_ptr<Sprite> rushSprite_;
 	std::unique_ptr<Sprite> hpSprite_;
 	std::unique_ptr<Sprite> hpShadowSprite_;
+	// 
+	uint32_t bossRushTex_ = 0u;
+	// 
+	uint32_t bossFunnelTex_ = 0u;
 
 	// 弾用のテクスチャ
 	uint32_t bulletTex_ = 0u;
@@ -183,8 +187,18 @@ private:
 	float easeInRange_ = 1000.0f;
 
 private:
+	// ファンネルのSE
 	uint32_t funnelSEHandle_ = 0;
+	// 突進のSE
 	uint32_t rushSEHandle_ = 0;
+	// 突進の出現
+	uint32_t rushSpawnSEHandle_ = 0;
+	// 突進の警告
+	uint32_t rushAlertSEHandle_ = 0;
+	// ボスの弾の音
+	uint32_t bulletSEHandle_ = 0;
+
+	bool isRushSound_ = 0;
 
 
 private:
@@ -266,7 +280,7 @@ private: // 動きの管理
 	// 行動の間隔
 	int kActionCoolTime_ = 60 * 5;
 	// ランダムアクション用
-	void RandomActionManager();
+	//void RandomActionManager();
 	// 秒数に変換の関数
 	int ConvertSeconds(int second) { return int(second * 60); }
 	// アクション中か
