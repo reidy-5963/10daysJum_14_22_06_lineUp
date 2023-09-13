@@ -1,5 +1,6 @@
 #include "Player.h"
 #include "Animation.h"
+#include "Audio.h"
 #include "GlobalVariables.h"
 #include "ImGuiManager.h"
 #include "MyMath.h"
@@ -9,7 +10,6 @@
 #include <cassert>
 #include <cmath>
 #include <complex>
-#include "Audio.h"
 
 /// <summary>
 /// コンストラクタ
@@ -19,14 +19,7 @@ Player::Player() {}
 /// <summary>
 /// デストラクタ
 /// </summary>
-Player::~Player() {
-	if (Audio::GetInstance()->IsPlaying(BulletSEHandle_)) {
-		Audio::GetInstance()->StopWave(BulletSEHandle_);
-	}
-	if (Audio::GetInstance()->IsPlaying(DamageSEHandle_)) {
-		Audio::GetInstance()->StopWave(DamageSEHandle_);
-	}
-}
+Player::~Player() {}
 
 #pragma region 初期化系
 
@@ -61,9 +54,10 @@ void Player::Initialize() {
 	invisibleTimeCount_ = 0;
 	isInvisible_ = false;
 
-	BulletSEHandle_ = 
-		 Audio::GetInstance()->LoadWave("music/p_bullet02.wav");
+	BulletSEHandle_ = Audio::GetInstance()->LoadWave("music/p_bullet02.wav");
 	DamageSEHandle_ = Audio::GetInstance()->LoadWave("music/p_Damage.wav");
+	collapseHandle_ = Audio::GetInstance()->LoadWave("music/Collapse.wav");
+	markerSetSEHandle_ = Audio::GetInstance()->LoadWave("music/markerSet.wav");
 
 	// アニメーションで使う変数の初期化
 	AnimationValueInitialize();
@@ -111,7 +105,7 @@ void Player::Initialize() {
 	p1.reset(Sprite::Create(markerTex_, markerPos_, {0.0f, 0.0f, 1.0f, 1.0f}, {0.5f, 0.5f}));
 	p2.reset(Sprite::Create(markerTex_, markerPos_, {0.0f, 0.0f, 0.0f, 1.0f}, {0.5f, 0.5f}));
 	origin_.reset(Sprite::Create(markerTex_, markerPos_, {0.5f, 0.5f, 0.5f, 1.0f}, {0.5f, 0.5f}));
-	
+
 	m1->SetTextureRect({0.0f, 0.0f}, {128.0f, 128.0f});
 	m1->SetSize({64.0f, 64.0f});
 
@@ -123,7 +117,7 @@ void Player::Initialize() {
 
 	p2->SetTextureRect({0.0f, 0.0f}, {128.0f, 128.0f});
 	p2->SetSize({64.0f, 64.0f});
-	
+
 	origin_->SetTextureRect({0.0f, 0.0f}, {128.0f, 128.0f});
 	origin_->SetSize({64.0f, 64.0f});
 
@@ -135,9 +129,9 @@ void Player::Initialize() {
 		clickPos_ = {700.0f, WinApp::kWindowHeight / 2};
 		yoClickPos_ = clickPos_;
 		// カーソルの位置取得
-		//GetCursor();
+		// GetCursor();
 		CursourCalicurate();
-		
+
 		MarkerControl();
 
 		// クリックしたときの位置を取得
@@ -156,7 +150,7 @@ void Player::Initialize() {
 		//
 		RootRotateMoveInitialize();
 
-		//RootRotateMove2();
+		// RootRotateMove2();
 
 		ismarkerMove_ = true;
 		predictionLineSize[0] = {0.0f, 3.0f};
@@ -165,16 +159,15 @@ void Player::Initialize() {
 		// マーカーの動き処理
 		MarkerMovement();
 
-
 	}
-	
+
 	else if (!isGameStart) {
 		clickPos_ = {(WinApp::kWindowWidth / 2) + 100.0f, (WinApp::kWindowHeight / 2) + 100.0f};
 		yoClickPos_ = clickPos_;
 		// カーソルの位置取得
-		//GetCursor();
+		// GetCursor();
 		CursourCalicurate();
-		
+
 		MarkerControl();
 
 		// クリックしたときの位置を取得
@@ -193,7 +186,7 @@ void Player::Initialize() {
 		//
 		RootRotateMoveInitialize();
 
-		//RootRotateMove2();
+		// RootRotateMove2();
 
 		ismarkerMove_ = true;
 		predictionLineSize[0] = {0.0f, 3.0f};
@@ -201,8 +194,6 @@ void Player::Initialize() {
 
 		// マーカーの動き処理
 		MarkerMovement();
-
-
 	}
 }
 
@@ -356,7 +347,6 @@ void Player::Update() {
 		DeleteTails();
 	}
 
-
 	////////////////////////////////////////////////////
 	// 通常状態の回転用の道順
 	p1->SetPosition(W2AddRadian[1] - scroll->GetAddScroll());
@@ -389,7 +379,6 @@ void Player::Update() {
 		LeftClickUpdate();
 		predictionLineSize[0] = {0.0f, 3.0f};
 		predictionLineSize[1] = {0.0f, 3.0f};
-
 	}
 
 	// マーカーの動き処理
@@ -417,8 +406,8 @@ void Player::Update() {
 
 	// マーカーの位置を反映させる
 	markerSprite_->SetPosition(markerPos_ - scroll->GetAddScroll() + sceneVelo);
-	//predictionLinePos_[0] = markerPos_;
-	//predictionLinePos_[1] = markerPos_;
+	// predictionLinePos_[0] = markerPos_;
+	// predictionLinePos_[1] = markerPos_;
 	predictionLinePos_[0].x = float(mousePos.x);
 	predictionLinePos_[0].y = float(mousePos.y);
 	predictionLinePos_[1].x = float(mousePos.x);
@@ -452,6 +441,7 @@ void Player::Update() {
 		if (damageCount <= 0) {
 			damageCount = setDamageCount;
 			tails_.back()->SetIsCollapse(true);
+			Audio::GetInstance()->PlayWave(collapseHandle_, false, volume);
 		}
 		if (tails_.back()->IsCollapseAniEnd()) {
 			DeleteTails();
@@ -468,8 +458,7 @@ void Player::Update() {
 	});
 
 	playerUI_->SetPosition(UIPlayerPos_ + sceneVelo + shakeVelo_);
-	
-		
+
 	if (tails_.size() > 0) {
 		if (damageCount == 3) {
 			tailUI_[int(tails_.size() - 1)]->SetTextureHandle(tailTexture_[0]);
@@ -500,8 +489,7 @@ void Player::Update() {
 
 	predictionLineSize[0].x = 1920;
 	predictionLineSize[1].x = 1920;
-		
-	
+
 	predictionLine_[0]->SetSize(predictionLineSize[0]);
 	predictionLine_[1]->SetSize(predictionLineSize[1]);
 
@@ -586,6 +574,8 @@ void Player::KeyMove() { // 移動距離
 /// 左クリックの処理
 /// </summary>
 void Player::LeftClickUpdate() {
+	Audio::GetInstance()->PlayWave(markerSetSEHandle_, false, 0.045f);
+
 	// 前フレームのマーカー位置を取得
 	preMarkerPos_ = markerPos_;
 
@@ -612,7 +602,7 @@ void Player::LeftClickUpdate() {
 	ismarkerMove_ = true;
 }
 
-void Player::CursourCalicurate() { 
+void Player::CursourCalicurate() {
 	RootRotateMove2();
 
 	Vector2 FireBulletDirection = yoM2AddRadian[0] - yoW2AddRadian[0];
@@ -621,11 +611,25 @@ void Player::CursourCalicurate() {
 	cursor_->SetRotation(markerROtate + (0.5f * 3.14f));
 	predictionLine_[0]->SetRotation(markerROtate - 0.35f);
 	predictionLine_[1]->SetRotation(markerROtate + 0.7f);
-
-
 }
 
-    /// <summary>
+void Player::AudioStop() {
+
+	if (Audio::GetInstance()->IsPlaying(BulletSEHandle_)) {
+		Audio::GetInstance()->StopWave(BulletSEHandle_);
+	}
+	if (Audio::GetInstance()->IsPlaying(DamageSEHandle_)) {
+		Audio::GetInstance()->StopWave(DamageSEHandle_);
+	}
+	if (Audio::GetInstance()->IsPlaying(collapseHandle_)) {
+		Audio::GetInstance()->StopWave(collapseHandle_);
+	}
+	if (Audio::GetInstance()->IsPlaying(markerSetSEHandle_)) {
+		Audio::GetInstance()->StopWave(markerSetSEHandle_);
+	}
+}
+
+/// <summary>
 /// カーソルの更新処理
 /// </summary>
 void Player::GetCursor() {
@@ -656,9 +660,9 @@ void Player::MarkerControl() {
 
 	else if (
 	    yoClickPos_.x > (WinApp::kWindowWidth * 1) + scroll->GetEdgePos().x +
-	                      (scroll->GetEdgePos().x - markerLimit_)) {
+	                        (scroll->GetEdgePos().x - markerLimit_)) {
 		yoClickPos_.x = (WinApp::kWindowWidth * 1) + scroll->GetEdgePos().x +
-		              (scroll->GetEdgePos().x - markerLimit_);
+		                (scroll->GetEdgePos().x - markerLimit_);
 	}
 
 	if (yoClickPos_.y < 0 + markerLimit_) {
@@ -667,9 +671,9 @@ void Player::MarkerControl() {
 
 	else if (
 	    yoClickPos_.y > (WinApp::kWindowHeight * 1) + scroll->GetEdgePos().y +
-	                      (scroll->GetEdgePos().y - markerLimit_)) {
+	                        (scroll->GetEdgePos().y - markerLimit_)) {
 		yoClickPos_.y = (WinApp::kWindowHeight * 1) + scroll->GetEdgePos().y +
-		              (scroll->GetEdgePos().y - markerLimit_);
+		                (scroll->GetEdgePos().y - markerLimit_);
 	}
 }
 
@@ -1043,10 +1047,9 @@ void Player::AnimationUpdate() {
 /// </summary>
 void Player::Draw() {
 	Scroll* scroll = Scroll::GetInstance();
-	
+
 	predictionLine_[0]->Draw();
 	predictionLine_[1]->Draw();
-	
 
 	if (markerPos_.x < 0 + scroll->GetAddScroll().x ||
 	    markerPos_.x > 1920 + scroll->GetAddScroll().x ||
@@ -1078,11 +1081,11 @@ void Player::Draw() {
 	// スプライトの描画
 	BaseCharacter::Draw();
 #ifdef _DEBUG
-	 m1->Draw();
-	 m2->Draw();
-	 p1->Draw();
-	 p2->Draw();
-	 origin_->Draw();
+	m1->Draw();
+	m2->Draw();
+	p1->Draw();
+	p2->Draw();
+	origin_->Draw();
 #endif // _DEBUG
 }
 
@@ -1137,9 +1140,9 @@ void Player::AddTails() {
 				// プレイヤーのポインタを設定
 				newTail->SetPlayer(this);
 				newTail->SetParticleTex(bulletParticle_);
+				newTail->SetCollapseSEHandle(collapseHandle_);
 				// リストに追加
 				tails_.push_back(newTail);
-
 			}
 			//
 		}
@@ -1151,9 +1154,10 @@ void Player::AddTails() {
 			// プレイヤーのポインタを設定
 			newTail->SetPlayer(this);
 			newTail->SetParticleTex(bulletParticle_);
+			newTail->SetCollapseSEHandle(collapseHandle_);
+
 			// リストに追加
 			tails_.push_back(newTail);
-
 		}
 	}
 	//

@@ -14,7 +14,14 @@ GameScene::GameScene() {}
 /// <summary>
 /// デストラクタ
 /// </summary>
-GameScene::~GameScene() {}
+GameScene::~GameScene() {
+	if (audio_->IsPlaying(BGMHandle_)) {
+		audio_->StopWave(BGMHandle_);
+	}
+	if (audio_->IsPlaying(pickUpTailSEHandle_)) {
+		audio_->StopWave(pickUpTailSEHandle_);
+	}
+}
 
 /// <summary>
 /// 初期化
@@ -70,10 +77,17 @@ void GameScene::Initialize() {
 #pragma endregion
 
 #pragma region 背景
-	backTex = TextureManager::Load("white1x1.png");
-	back.reset(Sprite::Create(backTex, {0.0f, 0.0f}, {0.01f, 0.01f, 0.01f, 1.0f}, {0.0f, 0.0f}));
-	Vector2 size = {1920 * 3, 1080 * 3};
-	back->SetSize(size);
+	backTex = TextureManager::Load("back.png");
+	back[0].reset(Sprite::Create(backTex, {0.0f, 0.0f}, {1.0f, 1.0f, 1.0f, 1.0f}, {0.0f, 0.0f}));
+	back[1].reset(Sprite::Create(backTex, {0.0f, 0.0f}, {1.0f, 1.0f, 1.0f, 1.0f}, {0.0f, 0.0f}));
+	back[2].reset(Sprite::Create(backTex, {0.0f, 0.0f}, {1.0f, 1.0f, 1.0f, 1.0f}, {0.0f, 0.0f}));
+	back[3].reset(Sprite::Create(backTex, {0.0f, 0.0f}, {1.0f, 1.0f, 1.0f, 1.0f}, {0.0f, 0.0f}));
+
+	backPos[0] = {0.0f, 0.0f};
+	backPos[1] = {1920.0f, 0.0f};
+	backPos[2] = {0.0f, 1080.0f};
+	backPos[3] = {1920.0f, 1080.0f};
+
 #pragma endregion
 
 #pragma region タイマー
@@ -105,6 +119,7 @@ void GameScene::Initialize() {
 	ShowCursor(false);
 	InitializeGrobalVariables();
 	BGMHandle_ = Audio::GetInstance()->LoadWave("music/GameScene.wav");
+	pickUpTailSEHandle_ = Audio::GetInstance()->LoadWave("music/pickUpTail.wav");
 }
 
 /// <summary>
@@ -124,7 +139,7 @@ void GameScene::Update() {
 	if (!isGameSet_) { 
 		// BGM再生
 		if (audio_->IsPlaying(BGMHandle_) == 0 || BGMHandle_ == -1) {
-			BGMHandle_ = audio_->PlayWave(BGMHandle_, true, bolume);
+			BGMHandle_ = audio_->PlayWave(BGMHandle_, true, volume);
 		}
 
 		// スクロールの更新処理
@@ -222,6 +237,12 @@ void GameScene::Update() {
 	funnelDamage = 60 * setTailTime;
 	eneBulletDamage = 60 * setEneBulletDamage;
 	bossEnemyDamage = 60 * setBossEnemyDamage;
+
+
+	for (int i = 0; i < 4; i++) {
+		back[i]->SetPosition(backPos[i] + sceneShakevelo_ - scroll_->GetAddScroll());
+	}
+
 }
 
 /// <summary>
@@ -240,8 +261,9 @@ void GameScene::Draw() {
 	/// </summary>
 
 	// 背景の描画
-	back->Draw();
-
+	for (int i = 0; i < 4; i++) {
+		back[i]->Draw();
+	}
 	// 敵の描画
 	enemyManager_->Draw();
 
@@ -372,6 +394,8 @@ void GameScene::CheckAllCollision() {
 				// コールバック
 				if (enemy->IsParasite()) {
 					player_->AddTails();
+					Audio::GetInstance()->PlayWave(pickUpTailSEHandle_, false, SEvolume);
+
 					if (player_->GetTail() >= 6) {
 						// gameTimer += pickUpTailTime;
 					}
@@ -393,6 +417,7 @@ void GameScene::CheckAllCollision() {
 			else if (player_->GetIsInvisible()) {
 				if (enemy->IsParasite()) {
 					// gameTimer += pickUpTailTime;
+					Audio::GetInstance()->PlayWave(pickUpTailSEHandle_, false, SEvolume);
 
 					player_->AddTails();
 					enemy->SetIsDead(true);

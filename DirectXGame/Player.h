@@ -21,6 +21,7 @@ public: // メンバ関数
 	~Player();
 
 #pragma region 初期化系
+
 	/// <summary>
 	/// 初期化処理
 	/// </summary>
@@ -70,6 +71,7 @@ public: // メンバ関数
 
 #pragma region 更新系
 	void CursourCalicurate();
+	void AudioStop();
 
 	/// <summary>
 	/// 更新処理
@@ -424,6 +426,8 @@ private: // メンバ変数
 
 	uint32_t BulletSEHandle_ = 0u;
 	uint32_t DamageSEHandle_ = 0u;
+	uint32_t collapseHandle_ = 0u;
+	uint32_t markerSetSEHandle_ = 0u;
 
 	float volume = 0.09f;
 };

@@ -103,13 +103,15 @@ private: // メンバ変数
 
 #pragma region 背景
 	// 背景スプライト関係
-	std::unique_ptr<Sprite> back;
+	std::unique_ptr<Sprite> back[4];
+
 	uint32_t backTex;
-	Vector2 backPos = {0.0f, 0.0f};
+	Vector2 backPos[4];
 #pragma endregion
 
 #pragma region 音 
-	float bolume = 0.01f;
+	float volume = 0.01f;
+	float SEvolume = 0.1f;
 
 	uint32_t BGMHandle_ = 0u;
 #pragma endregion
@@ -133,7 +135,7 @@ private: // メンバ変数
 	int enemyTen = 0;
 	int enemyOne = 0;
 
-
+	uint32_t pickUpTailSEHandle_;
 #pragma region
 	int setTailTime = 3;
 	int pickUpTailTime = 60 * setTailTime;
@@ -144,5 +146,4 @@ private: // メンバ変数
 	int setBossEnemyDamage = 3;
 	int bossEnemyDamage = 60 * setBossEnemyDamage;
 #pragma endregion
-
 };
