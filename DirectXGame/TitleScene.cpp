@@ -20,6 +20,9 @@ void TitleScene::Initialize() {
 	sceneNum = TITLE;
 	// 静的変数の初期化
 	StaticValueInitialize();
+
+	Scroll::GetInstance()->Initialize();
+
 	player_.release();
 	for (int i = 0; i < 6; i++) {
 		enemy_[i].release();

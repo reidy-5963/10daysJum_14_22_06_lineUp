@@ -14,6 +14,7 @@
 #include "BaseScene.h"
 #include "Player.h"
 #include "Enemy.h"
+#include "Scroll.h"
 
 class TitleScene : public BaseScene {
 public: // メンバ関数

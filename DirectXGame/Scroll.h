@@ -41,6 +41,7 @@ public:
 
 	Vector2 GetEdgePos() { return edgePos_; }
 
+
 private:
 	Scroll() = default;
 	~Scroll() = default;

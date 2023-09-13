@@ -27,6 +27,14 @@ void GameScene::Initialize() {
 	input_ = Input::GetInstance();
 	audio_ = Audio::GetInstance();
 
+	killCount_ = 0;
+	isBossRespown_ = false;
+	gameTimer = setGameTime;
+	isGameSet_ = false;
+
+	boss_.release();
+	
+
 	// 乱数
 	unsigned int currentTime = (int)time(nullptr);
 	srand(currentTime);
@@ -91,19 +99,8 @@ void GameScene::Initialize() {
 		enemyNum[i]->SetSize(tmpSize);
 	}
 #pragma endregion
-//#pragma region すこあ
-//	scoreNumPos[0] = {500.0f - 500.0f, 3.0f};
-//	scoreNumPos[1] = {scoreNumPos[0].x - 128.0f, scoreNumPos[0].y};
-//	scoreNumPos[2] = {scoreNumPos[1].x - 128.0f, scoreNumPos[1].y};
-//	scoreNumPos[3] = {scoreNumPos[2].x - 128.0f, scoreNumPos[2].y};
-//
-//	for (int i = 0; i < 4; i++) {
-//		scoreNum[i].reset(
-//		    Sprite::Create(timerNumTex_, scoreNumPos[i], {1.0f, 1.0f, 1.0f, 1.0f}, {0.5f, 0.5f}));
-//		Vector2 tmpSize = {128.0f, 128.0f};
-//		scoreNum[i]->SetSize(tmpSize);
-//	}
-//#pragma endregion
+
+	ShowCursor(false);
 	cursorTex_ = TextureManager::Load("Cursor.png");
 	cursor_.reset(
 	    Sprite::Create(cursorTex_, {-20.0f, -20.0f}, {1.0f, 1.0f, 1.0f, 1.0f}, {0.5f, 0.5f}));
@@ -191,6 +188,7 @@ void GameScene::Update() {
 		sceneNum = CLEAR;
 	
 		if ((boss_->IsDead() && !boss_->IsAlive())) {
+			scroll_->GetInstance();
 			isBossDead = true;
 		}
 	}

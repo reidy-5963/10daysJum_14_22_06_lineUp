@@ -6,9 +6,10 @@ Scroll* Scroll::GetInstance() {
 	return &instance;
 }
 
-void Scroll::Initialize() {
-	
-
+void Scroll::Initialize() { 
+	target_ = nullptr;
+	addScroll.x = 0.0f;
+	addScroll.y = 0.0f;
 }
 
 void Scroll::Update() { 

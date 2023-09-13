@@ -13,6 +13,7 @@
 
 #include "BaseScene.h"
 #include "Player.h"
+#include "Scroll.h"
 
 class ResultScene : public BaseScene {
 public: // メンバ関数

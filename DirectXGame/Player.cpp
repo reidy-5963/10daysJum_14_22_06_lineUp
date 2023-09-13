@@ -49,6 +49,7 @@ void Player::Initialize() {
 	// アニメーションで使う変数の初期化
 	AnimationValueInitialize();
 
+	sprite_.release();
 	// プレイヤーののテクスチャ読み込み
 	charaTex_ = TextureManager::Load("Player_ver2.png");
 	// プレイヤーのスプライトの生成

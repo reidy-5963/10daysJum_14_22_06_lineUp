@@ -19,10 +19,20 @@ void ResultScene::Initialize() {
 	dxCommon_ = DirectXCommon::GetInstance();
 	input_ = Input::GetInstance();
 	audio_ = Audio::GetInstance();
+	Scroll::GetInstance()->Initialize();
+
 	player_.release();
 	title2gameSceneAria_.release();
 	title_.release();
 
+	titleLogoPos_ = titleLogoStartPos_;
+	ariaPos_ = ariaStartPos_;
+	titleLogo_t_ = 0.0f;
+	titleLogoMove_ = false;
+	isSceneChange = false;
+	ariaColor_ = {0.6f, 0.6f, 0.6f, 0.6f};
+	aria_t_ = 0.0f;
+	isAriaMove_ = false;
 
 #pragma region 背景
 	backTex = TextureManager::Load("white1x1.png");
