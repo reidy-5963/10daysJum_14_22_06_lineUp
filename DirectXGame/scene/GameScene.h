@@ -114,15 +114,15 @@ private: // メンバ変数
 	uint32_t BGMHandle_ = 0u;
 #pragma endregion
 
-	int setGameTime = 60 * 60;
+	int setGameTime = 60 * 180;
 	int gameTimer = setGameTime;
 	bool isGameSet_ = false;
 
-	std::unique_ptr<Sprite> timerNum[2];
+	std::unique_ptr<Sprite> timerNum[3];
 	Vector2 TimerNumPos_{};
-	Vector2 timerNumPos[2];
+	Vector2 timerNumPos[3];
 	uint32_t timerNumTex_;
-
+	int timerHandred = 0;
 	int timerTen = 0;
 	int timerOne = 0;
 
@@ -134,8 +134,6 @@ private: // メンバ変数
 	int enemyOne = 0;
 
 
-	std::unique_ptr<Sprite> cursor_ = nullptr;
-	uint32_t cursorTex_;
 #pragma region
 	int setTailTime = 3;
 	int pickUpTailTime = 60 * setTailTime;

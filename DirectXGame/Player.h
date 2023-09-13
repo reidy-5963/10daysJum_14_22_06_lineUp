@@ -69,6 +69,8 @@ public: // メンバ関数
 #pragma endregion
 
 #pragma region 更新系
+	void CursourCalicurate();
+
 	/// <summary>
 	/// 更新処理
 	/// </summary>
@@ -271,6 +273,8 @@ private: // メンバ変数
 	// クリックした位置
 	Vector2 clickPos_{};
 
+	Vector2 yoClickPos_{};
+
 	// マーカーの線形補完中フラグ
 	bool ismarkerMove_ = false;
 	// マーカーの線形補完用t
@@ -294,6 +298,8 @@ private: // メンバ変数
 	Vector2 predictionLinePos_[2];
 
 #pragma endregion
+	std::unique_ptr<Sprite> cursor_ = nullptr;
+	uint32_t cursorTex_;
 
 #pragma region 通常時の動き用
 	// 回転するための4つ目の点
@@ -349,11 +355,15 @@ private: // メンバ変数
 
 #pragma region 通常状態の回転用
 	//
+	Vector2 yoM2AddRadian[3];
+	Vector2 yoW2AddRadian[3];
+
+
 	Vector2 M2AddRadian[3];
 	Vector2 W2AddRadian[3];
 	// 通常回転時の中心点
 	Vector2 originPos_{};
-
+	Vector2 yoOriginPos_{};
 	float radianOffset = 3.14f * ( 1.0f / 3.0f);
 
 	bool isMtM1 = false;

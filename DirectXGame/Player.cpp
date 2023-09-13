@@ -26,12 +26,19 @@ Player::~Player() {}
 /// 初期化処理
 /// </summary>
 void Player::Initialize() {
+	cursorTex_ = TextureManager::Load("Marker_ver2_0.png");
+	cursor_.reset(
+	    Sprite::Create(cursorTex_, {-20.0f, -20.0f}, {1.0f, 1.0f, 1.0f, 0.25f}, {0.5f, 0.5f}));
+	cursor_->SetTextureRect({0.0f, 0.0f}, {128.0f, 128.0f});
+	cursor_->SetSize({64.0f, 64.0f});
 	// 入力系
 	input_ = Input::GetInstance();
 	if (isGameStart) {
 		// 初期位置(仮)
 		pos_ = {-200.0f, WinApp::kWindowHeight / 2};
-	} else if (!isGameStart) {
+	}
+	//
+	else if (!isGameStart) {
 		// 初期位置(仮)
 		pos_ = {(WinApp::kWindowWidth / 2) - 500.0, (WinApp::kWindowHeight / 2) + 100.0f};
 	}
@@ -92,6 +99,21 @@ void Player::Initialize() {
 	p1.reset(Sprite::Create(markerTex_, markerPos_, {0.0f, 0.0f, 1.0f, 1.0f}, {0.5f, 0.5f}));
 	p2.reset(Sprite::Create(markerTex_, markerPos_, {0.0f, 0.0f, 0.0f, 1.0f}, {0.5f, 0.5f}));
 	origin_.reset(Sprite::Create(markerTex_, markerPos_, {0.5f, 0.5f, 0.5f, 1.0f}, {0.5f, 0.5f}));
+	
+	m1->SetTextureRect({0.0f, 0.0f}, {128.0f, 128.0f});
+	m1->SetSize({64.0f, 64.0f});
+
+	m2->SetTextureRect({0.0f, 0.0f}, {128.0f, 128.0f});
+	m2->SetSize({64.0f, 64.0f});
+
+	p1->SetTextureRect({0.0f, 0.0f}, {128.0f, 128.0f});
+	p1->SetSize({64.0f, 64.0f});
+
+	p2->SetTextureRect({0.0f, 0.0f}, {128.0f, 128.0f});
+	p2->SetSize({64.0f, 64.0f});
+	
+	origin_->SetTextureRect({0.0f, 0.0f}, {128.0f, 128.0f});
+	origin_->SetSize({64.0f, 64.0f});
 
 #endif // _DEBUG
 
@@ -99,6 +121,7 @@ void Player::Initialize() {
 	InitializeGrobalVariables();
 	if (isGameStart) {
 		clickPos_ = {700.0f, WinApp::kWindowHeight / 2};
+		yoClickPos_ = clickPos_;
 		MarkerControl();
 
 		// クリックしたときの位置を取得
@@ -124,6 +147,7 @@ void Player::Initialize() {
 	
 	else if (!isGameStart) {
 		clickPos_ = {(WinApp::kWindowWidth / 2) + 100.0f, (WinApp::kWindowHeight / 2) + 100.0f};
+		yoClickPos_ = clickPos_;
 		MarkerControl();
 
 		// クリックしたときの位置を取得
@@ -287,6 +311,8 @@ void Player::Update() {
 	// スクロールのインスタンスを取得
 	Scroll* scroll = Scroll::GetInstance();
 	// ひとまずの尻尾追加
+#ifdef _DEBUG
+	////////////////////////////////////////////////////
 	if (input_->TriggerKey(DIK_1)) {
 		AddTails();
 	}
@@ -296,8 +322,6 @@ void Player::Update() {
 		DeleteTails();
 	}
 
-#ifdef _DEBUG
-	////////////////////////////////////////////////////
 
 	////////////////////////////////////////////////////
 	// 通常状態の回転用の道順
@@ -324,6 +348,7 @@ void Player::Update() {
 
 	// カーソルの位置取得
 	GetCursor();
+	CursourCalicurate();
 
 	// もし左クリックしたら
 	if (input_->IsTriggerMouse(0) && !ismarkerMove_) {
@@ -358,8 +383,12 @@ void Player::Update() {
 
 	// マーカーの位置を反映させる
 	markerSprite_->SetPosition(markerPos_ - scroll->GetAddScroll() + sceneVelo);
-	predictionLinePos_[0] = markerPos_;
-	predictionLinePos_[1] = markerPos_;
+	//predictionLinePos_[0] = markerPos_;
+	//predictionLinePos_[1] = markerPos_;
+	predictionLinePos_[0].x = float(mousePos.x);
+	predictionLinePos_[0].y = float(mousePos.y);
+	predictionLinePos_[1].x = float(mousePos.x);
+	predictionLinePos_[1].y = float(mousePos.y);
 
 	predictionLine_[0]->SetPosition(predictionLinePos_[0] - scroll->GetAddScroll() + sceneVelo);
 	predictionLine_[1]->SetPosition(predictionLinePos_[1] - scroll->GetAddScroll() + sceneVelo);
@@ -526,8 +555,7 @@ void Player::LeftClickUpdate() {
 	preMarkerPos_ = markerPos_;
 
 	// マーカーの位置を現在のマウス位置に設定
-	clickPos_.x = float(mousePos.x);
-	clickPos_.y = float(mousePos.y);
+	clickPos_ = yoClickPos_;
 
 	MarkerControl();
 
@@ -536,16 +564,35 @@ void Player::LeftClickUpdate() {
 
 	//
 	ToMarkerMoveInitialize();
-
+	M2AddRadian[0] = yoM2AddRadian[0];
+	M2AddRadian[1] = yoM2AddRadian[1];
+	M2AddRadian[2] = yoM2AddRadian[2];
+	W2AddRadian[0] = yoW2AddRadian[0];
+	W2AddRadian[1] = yoW2AddRadian[1];
+	W2AddRadian[2] = yoW2AddRadian[2];
+	originPos_ = yoOriginPos_;
 	//
 	RootRotateMoveInitialize();
-
-	RootRotateMove2();
 
 	ismarkerMove_ = true;
 }
 
-/// <summary>
+void Player::CursourCalicurate() { 
+	yoClickPos_.x = float(mousePos.x);
+	yoClickPos_.y = float(mousePos.y);
+	RootRotateMove2();
+
+	Vector2 FireBulletDirection = yoM2AddRadian[0] - yoW2AddRadian[0];
+	float markerROtate = std::atan2(FireBulletDirection.y, FireBulletDirection.x);
+
+	cursor_->SetRotation(markerROtate + (0.5f * 3.14f));
+	predictionLine_[0]->SetRotation(markerROtate - 0.35f);
+	predictionLine_[1]->SetRotation(markerROtate + 0.7f);
+
+
+}
+
+    /// <summary>
 /// カーソルの更新処理
 /// </summary>
 void Player::GetCursor() {
@@ -555,6 +602,8 @@ void Player::GetCursor() {
 	HWND hwnd = WinApp::GetInstance()->GetHwnd();
 	ScreenToClient(hwnd, &mousePos);
 	Scroll* scroll = Scroll::GetInstance();
+	cursor_->SetPosition({float(mousePos.x), float(mousePos.y)});
+
 	mousePos.x = mousePos.x + LONG(scroll->GetAddScroll().x);
 	mousePos.y = mousePos.y + LONG(scroll->GetAddScroll().y);
 }
@@ -567,24 +616,24 @@ void Player::MarkerControl() {
 	Scroll* scroll = Scroll::GetInstance();
 
 	if (clickPos_.x < 0 + markerLimit_) {
-		clickPos_.x = markerLimit_ + scroll->GetAddScroll().x;
+		yoClickPos_.x = markerLimit_ + scroll->GetAddScroll().x;
 	}
 
 	else if (
-	    clickPos_.x > (WinApp::kWindowWidth * 1) + scroll->GetEdgePos().x +
+	    yoClickPos_.x > (WinApp::kWindowWidth * 1) + scroll->GetEdgePos().x +
 	                      (scroll->GetEdgePos().x - markerLimit_)) {
-		clickPos_.x = (WinApp::kWindowWidth * 1) + scroll->GetEdgePos().x +
+		yoClickPos_.x = (WinApp::kWindowWidth * 1) + scroll->GetEdgePos().x +
 		              (scroll->GetEdgePos().x - markerLimit_);
 	}
 
-	if (clickPos_.y < 0 + markerLimit_) {
-		clickPos_.y = markerLimit_ + scroll->GetAddScroll().y;
+	if (yoClickPos_.y < 0 + markerLimit_) {
+		yoClickPos_.y = markerLimit_ + scroll->GetAddScroll().y;
 	}
 
 	else if (
-	    clickPos_.y > (WinApp::kWindowHeight * 1) + scroll->GetEdgePos().y +
+	    yoClickPos_.y > (WinApp::kWindowHeight * 1) + scroll->GetEdgePos().y +
 	                      (scroll->GetEdgePos().y - markerLimit_)) {
-		clickPos_.y = (WinApp::kWindowHeight * 1) + scroll->GetEdgePos().y +
+		yoClickPos_.y = (WinApp::kWindowHeight * 1) + scroll->GetEdgePos().y +
 		              (scroll->GetEdgePos().y - markerLimit_);
 	}
 }
@@ -607,17 +656,10 @@ void Player::MarkerMovement() {
 	Vector2 Mark2Pla = clickPlayerPos_ - clickPos_;
 	Vector2 PMark2Pla = clickPlayerPos_ - preMarkerPos_;
 
-	// float cross = MyMath::Cross(Mark2Pla, PMark2Pla);
-	////
-
-	Vector2 FireBulletDirection = markerPos_ - originPos_;
+	Vector2 FireBulletDirection = clickPos_ - originPos_;
 	float markerROtate = std::atan2(FireBulletDirection.y, FireBulletDirection.x);
-	// if (cross > 0) {
-	//	markerSprite_->SetRotation(markerROtate - (0.5f * 3.14f));
-	// } else if (cross <= 0) {
+
 	markerSprite_->SetRotation(markerROtate + (0.5f * 3.14f));
-	predictionLine_[0]->SetRotation(markerROtate - 0.35f);
-	predictionLine_[1]->SetRotation(markerROtate + 0.7f);
 
 	//}
 }
@@ -822,11 +864,11 @@ void Player::RootRotateMove1() {
 /// 通常時の回転パターン2
 /// </summary>
 void Player::RootRotateMove2() {
-	Vector2 Mark2Pla = clickPlayerPos_ - clickPos_;
-	Vector2 PMark2Pla = clickPlayerPos_ - preMarkerPos_;
+	Vector2 Mark2Pla = pos_ - yoClickPos_;
+	Vector2 PMark2Pla = pos_ - markerPos_;
 
 	float cross = MyMath::Cross(Mark2Pla, PMark2Pla);
-	Vector2 Ple2Mark = clickPos_ - clickPlayerPos_;
+	Vector2 Ple2Mark = yoClickPos_ - pos_;
 	Mark2Pla.x = Mark2Pla.x / 2;
 	Mark2Pla.y = Mark2Pla.y / 2;
 
@@ -836,10 +878,10 @@ void Player::RootRotateMove2() {
 		Matrix3x3 Mark2PlaMat = MyMath::MakeTranslateMatrix(Mark2Pla);
 		Mark2PlaMat = MyMath::Multiply(Mark2PlaMat, Mark2PlaRotateMat);
 		Vector2 Mark2W = {Mark2PlaMat.m[2][0], Mark2PlaMat.m[2][1]};
-		originPos_.x = clickPos_.x + Mark2W.x / 2;
-		originPos_.y = clickPos_.y + Mark2W.y / 2;
-		W2AddRadian[0].x = originPos_.x + Mark2W.x / 2;
-		W2AddRadian[0].y = originPos_.y + Mark2W.y / 2;
+		yoOriginPos_.x = yoClickPos_.x + Mark2W.x / 2;
+		yoOriginPos_.y = yoClickPos_.y + Mark2W.y / 2;
+		yoW2AddRadian[0].x = yoOriginPos_.x + Mark2W.x / 2;
+		yoW2AddRadian[0].y = yoOriginPos_.y + Mark2W.y / 2;
 
 		Vector2 Origin2W;
 		Origin2W.x = Mark2W.x / 2;
@@ -849,25 +891,25 @@ void Player::RootRotateMove2() {
 
 		Matrix3x3 Origin2WRotateMat = MyMath::MakeRotateMatrix(radianOffset);
 		Origin2WRotateMat = MyMath::Multiply(Origin2WMat, Origin2WRotateMat);
-		W2AddRadian[1] = {
-		    originPos_.x + Origin2WRotateMat.m[2][0], originPos_.y + Origin2WRotateMat.m[2][1]};
+		yoW2AddRadian[1] = {
+		    yoOriginPos_.x + Origin2WRotateMat.m[2][0], yoOriginPos_.y + Origin2WRotateMat.m[2][1]};
 
 		Origin2WRotateMat = MyMath::MakeRotateMatrix(radianOffset * 2);
 		Origin2WRotateMat = MyMath::Multiply(Origin2WMat, Origin2WRotateMat);
-		W2AddRadian[2] = {
-		    originPos_.x + Origin2WRotateMat.m[2][0], originPos_.y + Origin2WRotateMat.m[2][1]};
+		yoW2AddRadian[2] = {
+		    yoOriginPos_.x + Origin2WRotateMat.m[2][0], yoOriginPos_.y + Origin2WRotateMat.m[2][1]};
 
-		M2AddRadian[0] = clickPos_;
+		yoM2AddRadian[0] = yoClickPos_;
 
 		Origin2WRotateMat = MyMath::MakeRotateMatrix(-radianOffset * 2);
 		Origin2WRotateMat = MyMath::Multiply(Origin2WMat, Origin2WRotateMat);
-		M2AddRadian[1] = {
-		    originPos_.x + Origin2WRotateMat.m[2][0], originPos_.y + Origin2WRotateMat.m[2][1]};
+		yoM2AddRadian[1] = {
+		    yoOriginPos_.x + Origin2WRotateMat.m[2][0], yoOriginPos_.y + Origin2WRotateMat.m[2][1]};
 
 		Origin2WRotateMat = MyMath::MakeRotateMatrix(-radianOffset);
 		Origin2WRotateMat = MyMath::Multiply(Origin2WMat, Origin2WRotateMat);
-		M2AddRadian[2] = {
-		    originPos_.x + Origin2WRotateMat.m[2][0], originPos_.y + Origin2WRotateMat.m[2][1]};
+		yoM2AddRadian[2] = {
+		    yoOriginPos_.x + Origin2WRotateMat.m[2][0], yoOriginPos_.y + Origin2WRotateMat.m[2][1]};
 	}
 
 	else if (cross <= 0) {
@@ -876,10 +918,10 @@ void Player::RootRotateMove2() {
 		Matrix3x3 Mark2PlaMat = MyMath::MakeTranslateMatrix(Mark2Pla);
 		Mark2PlaMat = MyMath::Multiply(Mark2PlaMat, Mark2PlaRotateMat);
 		Vector2 Mark2W = {Mark2PlaMat.m[2][0], Mark2PlaMat.m[2][1]};
-		originPos_.x = clickPos_.x + Mark2W.x / 2;
-		originPos_.y = clickPos_.y + Mark2W.y / 2;
-		W2AddRadian[0].x = originPos_.x + Mark2W.x / 2;
-		W2AddRadian[0].y = originPos_.y + Mark2W.y / 2;
+		yoOriginPos_.x = yoClickPos_.x + Mark2W.x / 2;
+		yoOriginPos_.y = yoClickPos_.y + Mark2W.y / 2;
+		yoW2AddRadian[0].x = yoOriginPos_.x + Mark2W.x / 2;
+		yoW2AddRadian[0].y = yoOriginPos_.y + Mark2W.y / 2;
 
 		Vector2 Origin2W;
 		Origin2W.x = Mark2W.x / 2;
@@ -889,25 +931,25 @@ void Player::RootRotateMove2() {
 
 		Matrix3x3 Origin2WRotateMat = MyMath::MakeRotateMatrix(radianOffset);
 		Origin2WRotateMat = MyMath::Multiply(Origin2WMat, Origin2WRotateMat);
-		W2AddRadian[1] = {
-		    originPos_.x + Origin2WRotateMat.m[2][0], originPos_.y + Origin2WRotateMat.m[2][1]};
+		yoW2AddRadian[1] = {
+		    yoOriginPos_.x + Origin2WRotateMat.m[2][0], yoOriginPos_.y + Origin2WRotateMat.m[2][1]};
 
 		Origin2WRotateMat = MyMath::MakeRotateMatrix(radianOffset * 2);
 		Origin2WRotateMat = MyMath::Multiply(Origin2WMat, Origin2WRotateMat);
-		W2AddRadian[2] = {
-		    originPos_.x + Origin2WRotateMat.m[2][0], originPos_.y + Origin2WRotateMat.m[2][1]};
+		yoW2AddRadian[2] = {
+		    yoOriginPos_.x + Origin2WRotateMat.m[2][0], yoOriginPos_.y + Origin2WRotateMat.m[2][1]};
 
-		M2AddRadian[0] = clickPos_;
+		yoM2AddRadian[0] = yoClickPos_;
 
 		Origin2WRotateMat = MyMath::MakeRotateMatrix(-radianOffset * 2);
 		Origin2WRotateMat = MyMath::Multiply(Origin2WMat, Origin2WRotateMat);
-		M2AddRadian[1] = {
-		    originPos_.x + Origin2WRotateMat.m[2][0], originPos_.y + Origin2WRotateMat.m[2][1]};
+		yoM2AddRadian[1] = {
+		    yoOriginPos_.x + Origin2WRotateMat.m[2][0], yoOriginPos_.y + Origin2WRotateMat.m[2][1]};
 
 		Origin2WRotateMat = MyMath::MakeRotateMatrix(-radianOffset);
 		Origin2WRotateMat = MyMath::Multiply(Origin2WMat, Origin2WRotateMat);
-		M2AddRadian[2] = {
-		    originPos_.x + Origin2WRotateMat.m[2][0], originPos_.y + Origin2WRotateMat.m[2][1]};
+		yoM2AddRadian[2] = {
+		    yoOriginPos_.x + Origin2WRotateMat.m[2][0], yoOriginPos_.y + Origin2WRotateMat.m[2][1]};
 	}
 }
 
@@ -943,6 +985,7 @@ void Player::ToMarkerMoveUpdate() {
 		MyMath::CountT(root_t_, 0.0f, isM1tM2, true, rootRotate_t_offset);
 	}
 }
+
 void Player::AnimationUpdate() {
 	// プレイヤーのアニメーション
 	Animation::Anime(animationTimer, animationNumber, animationScene, oneTime);
@@ -1000,11 +1043,11 @@ void Player::Draw() {
 	// スプライトの描画
 	BaseCharacter::Draw();
 #ifdef _DEBUG
-	// m1->Draw();
-	// m2->Draw();
-	// p1->Draw();
-	// p2->Draw();
-	// origin_->Draw();
+	 m1->Draw();
+	 m2->Draw();
+	 p1->Draw();
+	 p2->Draw();
+	 origin_->Draw();
 #endif // _DEBUG
 }
 
@@ -1032,6 +1075,7 @@ void Player::DrawUI() {
 
 	// UIプレイヤーの描画
 	// Animation::DrawAnimation(playerUI_.get(), UIPlayerPos_, animationNumber, charaTex_);
+	cursor_->Draw();
 }
 
 #pragma endregion
