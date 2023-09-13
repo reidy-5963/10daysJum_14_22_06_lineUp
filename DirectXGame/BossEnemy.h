@@ -339,7 +339,7 @@ private: // 揺らす系
 	std::unique_ptr<ParticleManager> particle_ = nullptr;
 	Vector4 color_ = {1.0f, 1.0f, 1.0f, 1.0f};
 
-	float alphaOffset = 0.08f;
+	float alphaOffset = 0.14f;
 	bool isParasite_ = false;
 	int collapseAniTimer = 0;
 	int collapseAniNumber = 0;

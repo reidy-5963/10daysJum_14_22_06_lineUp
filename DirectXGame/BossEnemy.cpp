@@ -202,6 +202,15 @@ void BossEnemy::Update()
 	ImGui::Text("Timer : %d", actionTimer_);
 	ImGui::End();
 #endif // _DEBUG
+	particle_->SetAlphaOffset(alphaOffset);
+	particle_->SetColor(color_);
+	particle_->SetTecture(particleTex);
+	particle_->SetLenge(pos_, {radius_, radius_});
+	particle_->SetSceneVelo(sceneVelo);
+	particle_->SetTime(13);
+	particle_->SetVelo({0.0f, 0.0f});
+	particle_->SetPattern(ParticleManager::ParticlePattarn::Straight);
+	particle_->SetIsParticle(true);
 
 	/// 死ぬ処理
 	if (isAlive_ && hp_ <= 0) {

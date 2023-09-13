@@ -21,6 +21,9 @@ void Particle::Initialize(uint32_t texture, Vector2 pos, Vector2 velo, Vector2 s
 }
 
 void Particle::Update() { 
+	if (--timer < 0) {
+		isDead_ = true;
+	}
 	if (color_.w <= 0.0f) {
 		isDead_ = true;
 	}

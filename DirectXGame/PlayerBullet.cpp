@@ -21,7 +21,7 @@ void PlayerBullet::Initialize(uint32_t texture, const Vector2& pos, Vector2 velo
 void PlayerBullet::Update() {
 	particle_->Update();
 	if (!isCollapse) {
-		particle_->SetAlphaOffset(0.1f);
+		particle_->SetAlphaOffset(0.13f);
 		pos_.x += direction_.x * bulletSpeed;
 		pos_.y += direction_.y * bulletSpeed;
 		sprite_->SetSize({radius_ * 2, radius_ * 2});
@@ -29,14 +29,14 @@ void PlayerBullet::Update() {
 		particle_->SetTecture(particleTex_);
 		particle_->SetLenge(pos_, {radius_, radius_});
 		particle_->SetSceneVelo(sceneVelo);
-		particle_->SetTime(4);
+		particle_->SetTime(7);
 		particle_->SetVelo({0.0f, 0.0f});
 		particle_->SetPattern(ParticleManager::ParticlePattarn::Straight);
 		particle_->SetIsParticle(true);
 
 	} else if (isCollapse) {
 		color_.w -= 0.08f;
-		particle_->SetAlphaOffset(0.08f);
+		particle_->SetAlphaOffset(0.14f);
 		particle_->SetColor(color_);
 		particle_->SetEndTimer(30);
 		particle_->SetIsTimer(true);
@@ -45,7 +45,7 @@ void PlayerBullet::Update() {
 		particle_->SetTecture(particleTex_);
 		particle_->SetLenge(pos_, {radius_, radius_});
 		particle_->SetSceneVelo(sceneVelo);
-		particle_->SetTime(1);
+		particle_->SetTime(1000);
 		particle_->SetVelo({0.0f, -4.0f});
 		particle_->SetIsParticle(true);
 		sprite_->SetColor(color_);
