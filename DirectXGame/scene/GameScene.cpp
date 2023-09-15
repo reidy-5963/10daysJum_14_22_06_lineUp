@@ -28,7 +28,7 @@ GameScene::~GameScene() {
 /// 初期化
 /// </summary>
 void GameScene::Initialize() {
-	sceneNum = 1;
+	sceneNum = GAMESCENE;
 	gameTimer = setGameTime;
 
 	dxCommon_ = DirectXCommon::GetInstance();
@@ -152,6 +152,8 @@ void GameScene::Initialize() {
 void GameScene::Update() {
 
 	ApplyGrobalVariables();
+	
+
 	enemyNumPos[0] = {enemyNumPos_.x - 64.0f, enemyNumPos_.y};
 	enemyNumPos[1] = {enemyNumPos_.x + 64.0f, enemyNumPos_.y};
 
@@ -242,41 +244,60 @@ void GameScene::Update() {
 
 #endif // DEBUG
 
-	int timeraaa = gameTimer / 60;
-	MyMath::HandredCount(timerHandred, timerTen, timerOne, timeraaa);
-	timerNum[0]->SetTextureRect({0.0f + (timerHandred * 128.0f), 0.0f}, {128.0f, 128.0f});
-	timerNum[1]->SetTextureRect({0.0f + (timerTen * 128.0f), 0.0f}, {128.0f, 128.0f});
-	timerNum[2]->SetTextureRect({0.0f + (timerOne * 128.0f), 0.0f}, {128.0f, 128.0f});
+	// 制限時間タイマー処理
+	{
+		int timeraaa = gameTimer / 60;
+		int timerHandred = 0;
+		int timerTen = 0;
+		int timerOne = 0;
+		MyMath::HandredCount(timerHandred, timerTen, timerOne, timeraaa);
+		timerNum[0]->SetTextureRect({0.0f + (timerHandred * 128.0f), 0.0f}, {128.0f, 128.0f});
+		timerNum[1]->SetTextureRect({0.0f + (timerTen * 128.0f), 0.0f}, {128.0f, 128.0f});
+		timerNum[2]->SetTextureRect({0.0f + (timerOne * 128.0f), 0.0f}, {128.0f, 128.0f});
 
-	timerNum[0]->SetPosition(timerNumPos[0]);
-	timerNum[1]->SetPosition(timerNumPos[1]);
-	timerNum[2]->SetPosition(timerNumPos[2]);
+		timerNum[0]->SetPosition(timerNumPos[0]);
+		timerNum[1]->SetPosition(timerNumPos[1]);
+		timerNum[2]->SetPosition(timerNumPos[2]);
+		timer_UI->SetPosition(timerUIPos_);
 
-	timeraaa = setKillCount - killCount_;
-	MyMath::TenCount(enemyTen, enemyOne, timeraaa);
-	enemyNum[0]->SetTextureRect({0.0f + (enemyTen * 128.0f), 0.0f}, {128.0f, 128.0f});
-	enemyNum[1]->SetTextureRect({0.0f + (enemyOne * 128.0f), 0.0f}, {128.0f, 128.0f});
+	}
 
-	enemyNum[0]->SetPosition(enemyNumPos[0]);
-	enemyNum[1]->SetPosition(enemyNumPos[1]);
+	// 敵カウント処理
+	{
+		int timeraaa = setKillCount - killCount_;
+		int enemyTen = 0;
+		int enemyOne = 0;
 
+		MyMath::TenCount(enemyTen, enemyOne, timeraaa);
+		enemyNum[0]->SetTextureRect({0.0f + (enemyTen * 128.0f), 0.0f}, {128.0f, 128.0f});
+		enemyNum[1]->SetTextureRect({0.0f + (enemyOne * 128.0f), 0.0f}, {128.0f, 128.0f});
+
+		enemyNum[0]->SetPosition(enemyNumPos[0]);
+		enemyNum[1]->SetPosition(enemyNumPos[1]);
+
+		enemy_UI->SetPosition(enemyUIPos_);
+		enemy_UI->SetRotation((3.14f * 0.5f));
+		enemy_UI2->SetPosition(enemy_UI2Pos_);
+
+	}
+
+	// 制限時間が最大を越えずに999で止まるように
 	if (gameTimer > 60 * 1000) {
 		gameTimer = 60 * 999;
 	}
 
+	// 背景の処理
+	for (int i = 0; i < 4; i++) {
+		back[i]->SetPosition(backPos[i] + sceneShakevelo_ - scroll_->GetAddScroll());
+	}
+
+#ifdef _DEBUG
 	pickUpTailTime = 60 * setTailTime;
 	funnelDamage = 60 * setTailTime;
 	eneBulletDamage = 60 * setEneBulletDamage;
 	bossEnemyDamage = 60 * setBossEnemyDamage;
 
-	for (int i = 0; i < 4; i++) {
-		back[i]->SetPosition(backPos[i] + sceneShakevelo_ - scroll_->GetAddScroll());
-	}
-	enemy_UI->SetPosition(enemyUIPos_);
-	enemy_UI->SetRotation((3.14f * 0.5f));
-
-	timer_UI->SetPosition(timerUIPos_);
-	enemy_UI2->SetPosition(enemy_UI2Pos_);
+#endif // _DEBUG
 }
 
 /// <summary>
@@ -295,9 +316,9 @@ void GameScene::Draw() {
 	/// </summary>
 
 	// 背景の描画
-	for (int i = 0; i < 4; i++) {
+	for (int i = 0; i < 4; i++)
 		back[i]->Draw();
-	}
+
 	// 敵の描画
 	enemyManager_->Draw();
 
@@ -305,9 +326,8 @@ void GameScene::Draw() {
 	player_->Draw();
 
 	// ボスの描画
-	if (!boss_->IsDead()) {
+	if (!boss_->IsDead())
 		boss_->Draw();
-	}
 
 	// スプライト描画後処理
 	Sprite::PostDraw();
@@ -334,15 +354,18 @@ void GameScene::Draw() {
 	/// <summary>
 	/// ここに前景スプライトの描画処理を追加できる
 	/// </summary>
+
+	// プレイヤーのUI関係の描画
 	player_->DrawUI();
 
-	timerNum[0]->Draw();
-	timerNum[1]->Draw();
-	timerNum[2]->Draw();
+	// 制限時間の描画
+	for (int i = 0; i < 3; i++)
+		timerNum[i]->Draw();
 
+	// ボスが出るまでは敵カウントを表示
 	if (!boss_->IsAlive() && !boss_->IsParasite()) {
-		enemyNum[0]->Draw();
-		enemyNum[1]->Draw();
+		for (int i = 0; i < 2; i++)
+			enemyNum[i]->Draw();
 		enemy_UI->Draw();
 		enemy_UI2->Draw();
 	}
@@ -365,11 +388,13 @@ void GameScene::InitializeGrobalVariables() { // グローバル変数系のシ�
 	gloVars->CreateGroup(groupName);
 	gloVars->AddItem(groupName, "enemyNumPos_", enemyNumPos_);
 	gloVars->AddItem(groupName, "TimerNumPos_", TimerNumPos_);
+#ifdef _DEBUG
 
 	gloVars->AddItem(groupName, "setTailTime", setTailTime);
 	gloVars->AddItem(groupName, "setFunnelDamage", setFunnelDamage);
 	gloVars->AddItem(groupName, "setEneBulletDamage", setEneBulletDamage);
 	gloVars->AddItem(groupName, "setBossEnemyDamage", setBossEnemyDamage);
+#endif // _DEBUG
 
 	gloVars->AddItem(groupName, "enemyUIPos_", enemyUIPos_);
 	gloVars->AddItem(groupName, "timerUIPos_", timerUIPos_);
@@ -383,11 +408,13 @@ void GameScene::ApplyGrobalVariables() { // グローバル変数系のシング
 	// 作ったグループにあるアイテムから値を取得
 	enemyNumPos_ = gloVars->GetVector2Value(groupName, "enemyNumPos_");
 	TimerNumPos_ = gloVars->GetVector2Value(groupName, "TimerNumPos_");
+#ifdef _DEBUG
 
 	setTailTime = gloVars->GetIntValue(groupName, "setTailTime");
 	setFunnelDamage = gloVars->GetIntValue(groupName, "setFunnelDamage");
 	setEneBulletDamage = gloVars->GetIntValue(groupName, "setEneBulletDamage");
 	setBossEnemyDamage = gloVars->GetIntValue(groupName, "setBossEnemyDamage");
+#endif // _DEBUG
 
 	enemyUIPos_ = gloVars->GetVector2Value(groupName, "enemyUIPos_");
 	timerUIPos_ = gloVars->GetVector2Value(groupName, "timerUIPos_");

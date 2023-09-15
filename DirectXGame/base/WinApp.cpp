@@ -80,6 +80,15 @@ LRESULT WinApp::WindowProc(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam) {
 		}
 		break;
 	}
+
+	case WM_DPICHANGED:
+		//auto dpi = HIWORD(wparam);
+		auto& r = *(RECT const*)lparam;
+
+		SetWindowPos(
+		    hwnd, nullptr, r.left, r.top, r.right - r.left, r.bottom - r.top,
+		    SWP_NOZORDER | SWP_NOACTIVATE);
+		break;
 	}
 	return DefWindowProc(hwnd, msg, wparam, lparam); // 標準の処理を行う
 }

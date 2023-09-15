@@ -86,7 +86,9 @@ private: // メンバ変数
 	// ボス
 	std::unique_ptr<BossEnemy> boss_ = nullptr;
 
+	// 雑魚敵を何体倒したらいいか
 	int setKillCount = 30;
+
 	// 雑魚敵の倒した数
 	int killCount_ = 0;
 
@@ -116,24 +118,31 @@ private: // メンバ変数
 	uint32_t BGMHandle_ = 0u;
 #pragma endregion
 
+#pragma region 制限時間
+	// 制限時間
 	int setGameTime = 60 * 140;
+	// 制限時間タイマー
 	int gameTimer = setGameTime;
+	// ゲーム終了フラグ
 	bool isGameSet_ = false;
 
-	std::unique_ptr<Sprite> timerNum[3];
-	Vector2 TimerNumPos_{};
-	Vector2 timerNumPos[3];
-	uint32_t timerNumTex_;
-	int timerHandred = 0;
-	int timerTen = 0;
-	int timerOne = 0;
+#pragma endregion
 
+#pragma region 制限時間のスプライト関係
+	// 制限時間スプライト
+	std::unique_ptr<Sprite> timerNum[3];
+	// 制限時間スプライトの位置(この位置をベースに)
+	Vector2 TimerNumPos_{};
+	// 数字一つ一つの位置
+	Vector2 timerNumPos[3];
+	// 数字テクスチャ
+	uint32_t timerNumTex_;
+
+#pragma endregion
 	std::unique_ptr<Sprite> enemyNum[2];
 	Vector2 enemyNumPos_{};
 	Vector2 enemyNumPos[2];
 	uint32_t enemyNumTex_;
-	int enemyTen = 0;
-	int enemyOne = 0;
 
 	uint32_t pickUpTailSEHandle_;
 
@@ -149,7 +158,7 @@ private: // メンバ変数
 	Vector2 enemy_UI2Pos_;
 	uint32_t enemy_UI2Tex_;
 
-#pragma region
+#ifdef _DEBUG
 	int setTailTime = 3;
 	int pickUpTailTime = 60 * setTailTime;
 	int setFunnelDamage = 2;
@@ -158,5 +167,5 @@ private: // メンバ変数
 	int eneBulletDamage = 60 * setEneBulletDamage;
 	int setBossEnemyDamage = 3;
 	int bossEnemyDamage = 60 * setBossEnemyDamage;
-#pragma endregion
+#endif // _DEBUG
 };

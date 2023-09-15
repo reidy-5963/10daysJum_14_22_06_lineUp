@@ -95,6 +95,8 @@ public: // メンバ関数
 	/// <returns></returns>
 	SizeChangeMode GetSizeChangeMode() const;
 
+	float GetDpi() { return dpi_; }
+
 private: // メンバ関数
 	WinApp() = default;
 	~WinApp() = default;
@@ -110,4 +112,6 @@ private: // メンバ変数
 	RECT windowRect_;
 	SizeChangeMode sizeChangeMode_ = SizeChangeMode::kNormal;
 	float aspectRatio_;
+
+	float dpi_ = 1.0f;
 };

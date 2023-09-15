@@ -537,11 +537,25 @@ void Player::AudioStop() {
 void Player::GetCursor() {
 	// カーソルの位置の取得
 	GetCursorPos(&mousePos);
-	// クライアントエリア座標に変換する
 	HWND hwnd = WinApp::GetInstance()->GetHwnd();
+	LogicalToPhysicalPointForPerMonitorDPI(hwnd, &mousePos);
+	//auto dpi = WinApp::GetInstance()->GetDpi();
+	//auto rate = dpi / 96.0f;
+
+	//mousePos.x *= LONG(rate);
+	//mousePos.y *= LONG(rate);
+
+	//SetCursorPos(mousePos.x, mousePos.y);
+	// クライアントエリア座標に変換する
 	ScreenToClient(hwnd, &mousePos);
+	
 	Scroll* scroll = Scroll::GetInstance();
+
+	
+
 	cursor_->SetPosition({float(mousePos.x), float(mousePos.y)});
+	
+
 
 	mousePos.x = mousePos.x + LONG(scroll->GetAddScroll().x);
 	mousePos.y = mousePos.y + LONG(scroll->GetAddScroll().y);
