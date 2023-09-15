@@ -1,16 +1,5 @@
 ﻿#pragma once
 
-#include "Audio.h"
-#include "DirectXCommon.h"
-#include "Input.h"
-#include "Model.h"
-#include "SafeDelete.h"
-#include "Sprite.h"
-#include "ViewProjection.h"
-#include "WorldTransform.h"
-#include <list>
-#include <memory>
-
 #include "BaseScene.h"
 #include "Player.h"
 #include "Scroll.h"
@@ -46,13 +35,6 @@ public: // メンバ関数
 	void Draw() override;
 
 private: // メンバ変数
-	DirectXCommon* dxCommon_ = nullptr;
-	Input* input_ = nullptr;
-	Audio* audio_ = nullptr;
-
-	/// <summary>
-	/// ゲームシーン用
-	/// </summary>
 	// 背景スプライト関係	
 	
 	// プレイヤー

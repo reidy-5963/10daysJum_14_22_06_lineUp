@@ -20,9 +20,8 @@ ResultScene::~ResultScene() {
 
 void ResultScene::Initialize() {
 	sceneNum = CLEAR;
-	dxCommon_ = DirectXCommon::GetInstance();
-	input_ = Input::GetInstance();
-	audio_ = Audio::GetInstance();
+	BaseScene::Initialize();
+
 	Scroll::GetInstance()->Initialize();
 	BGMHandle_ = Audio::GetInstance()->LoadWave("music/GameScene.wav");
 

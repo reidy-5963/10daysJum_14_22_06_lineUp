@@ -25,6 +25,8 @@ TitleScene::~TitleScene() {
 void TitleScene::Initialize() {
 	// このシーンはタイトル
 	sceneNum = TITLE;
+	BaseScene::Initialize();
+
 	// 静的変数の初期化
 	StaticValueInitialize();
 	BGMHandle_ = Audio::GetInstance()->LoadWave("music/GameScene.wav");
@@ -37,10 +39,6 @@ void TitleScene::Initialize() {
 	title2gameSceneAria_.release();
 	titleLogo_.release();
 
-	// いろいろ
-	dxCommon_ = DirectXCommon::GetInstance();
-	input_ = Input::GetInstance();
-	audio_ = Audio::GetInstance();
 
 	aria_t_ = 0.0f;
 	isAriaMove_ = false;
@@ -149,11 +147,7 @@ void TitleScene::Initialize() {
 }
 
 void TitleScene::StaticValueInitialize() {
-	resultTime = 0;
-	resultScore = 0;
-	resultKillCount = 0;
 	isBossDead = false;
-	is6Tails = false;
 }
 
 void TitleScene::Update() { 

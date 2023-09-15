@@ -22,7 +22,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 	// ゲームウィンドウの作成
 	win = WinApp::GetInstance();
-	win->CreateGameWindow(L"2009_わむわむ!!パンデミック");
+	win->CreateGameWindow(L"2009_わむわむ!!パンデミック_1.1");
 
 	// DirectX初期化処理
 	dxCommon = DirectXCommon::GetInstance();

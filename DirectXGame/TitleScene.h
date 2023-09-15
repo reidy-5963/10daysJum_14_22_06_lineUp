@@ -1,16 +1,5 @@
 ﻿#pragma once
 
-#include "Audio.h"
-#include "DirectXCommon.h"
-#include "Input.h"
-#include "Model.h"
-#include "SafeDelete.h"
-#include "Sprite.h"
-#include "ViewProjection.h"
-#include "WorldTransform.h"
-#include <list>
-#include <memory>
-
 #include "BaseScene.h"
 #include "Player.h"
 #include "Enemy.h"
@@ -60,13 +49,6 @@ public: // メンバ関数
 	void CheckAllCollision();
 
 private: // メンバ変数
-	DirectXCommon* dxCommon_ = nullptr;
-	Input* input_ = nullptr;
-	Audio* audio_ = nullptr;
-
-	/// <summary>
-	/// ゲームシーン用
-	/// </summary>
 #pragma region 背景
 	// 背景スプライト関係
 	std::unique_ptr<Sprite> back;

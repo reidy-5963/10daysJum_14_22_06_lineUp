@@ -28,13 +28,16 @@ GameScene::~GameScene() {
 /// 初期化
 /// </summary>
 void GameScene::Initialize() {
+	// 現在のシーンを設定
 	sceneNum = GAMESCENE;
+
+	// ベース部分の初期化処理
+	BaseScene::Initialize();
+
+	// 制限時間を設定
 	gameTimer = setGameTime;
 
-	dxCommon_ = DirectXCommon::GetInstance();
-	input_ = Input::GetInstance();
-	audio_ = Audio::GetInstance();
-
+	// 
 	killCount_ = 0;
 	isBossRespown_ = false;
 	gameTimer = setGameTime;
