@@ -538,17 +538,17 @@ void Player::GetCursor() {
 	// カーソルの位置の取得
 	GetCursorPos(&mousePos);
 	HWND hwnd = WinApp::GetInstance()->GetHwnd();
+
+	// ガチで意味分からんと思うけど、
+	// 論理座標から物理座標に変換
+	// (現在の拡大率での座標から画面上での実際の座標に変換)
+	// てやつ
 	LogicalToPhysicalPointForPerMonitorDPI(hwnd, &mousePos);
-	//auto dpi = WinApp::GetInstance()->GetDpi();
-	//auto rate = dpi / 96.0f;
 
-	//mousePos.x *= LONG(rate);
-	//mousePos.y *= LONG(rate);
-
-	//SetCursorPos(mousePos.x, mousePos.y);
 	// クライアントエリア座標に変換する
 	ScreenToClient(hwnd, &mousePos);
 	
+	//スクロールのインスタンス取得
 	Scroll* scroll = Scroll::GetInstance();
 
 	
